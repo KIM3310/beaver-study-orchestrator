@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beaver Study Orchestrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <main>
+      <header class="hero">
+        <p class="eyebrow">Winter 2026 Hackathon Build</p>
+        <h1>Beaver Study Orchestrator</h1>
+        <p class="subtitle">
+          Turn a raw syllabus into an adaptive study plan with deadline-risk signals in under 10 seconds.
+        </p>
+      </header>
+
+      <section class="panel input-panel">
+        <div class="panel-head">
+          <h2>1) Paste Syllabus Text</h2>
+          <button id="loadSample" class="ghost">Load Sample</button>
+        </div>
+        <textarea id="syllabusText" placeholder="Paste syllabus announcements, due dates, and course schedule..."></textarea>
+      </section>
+
+      <section class="panel availability-panel">
+        <div class="panel-head">
+          <h2>2) Weekly Availability (hours/day)</h2>
+          <button id="resetHours" class="ghost">Reset</button>
+        </div>
+        <div class="hours-grid" id="hoursGrid"></div>
+      </section>
+
+      <section class="actions">
+        <button id="analyzeBtn" class="primary">Generate Plan</button>
+        <button id="whatIfBtn" class="ghost" disabled>What-if +1h/day</button>
+        <button id="downloadIcsBtn" class="ghost" disabled>Download .ics</button>
+        <p id="statusText" aria-live="polite"></p>
+      </section>
+
+      <section class="results">
+        <article class="panel">
+          <h2>Extracted Tasks</h2>
+          <div id="taskSummary" class="summary-row"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>Type</th>
+                  <th>Due</th>
+                  <th>Hours</th>
+                </tr>
+              </thead>
+              <tbody id="tasksBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Adaptive Study Schedule</h2>
+          <div id="planStats" class="summary-row"></div>
+          <div id="planTimeline" class="timeline"></div>
+        </article>
+
+        <article class="panel risk-panel">
+          <h2>Deadline Risk</h2>
+          <div id="riskMeter" class="risk-meter" role="img" aria-label="risk meter">
+            <div id="riskFill" class="risk-fill"></div>
+          </div>
+          <p id="riskLabel" class="risk-label">No analysis yet</p>
+          <p id="riskRationale" class="muted"></p>
+          <h3>Top Drivers</h3>
+          <ul id="riskDrivers" class="drivers"></ul>
+          <h3>Mitigation Actions</h3>
+          <ul id="riskRecommendations" class="drivers"></ul>
+          <h3>Scenario Simulation</h3>
+          <p id="whatIfSummary" class="muted">Run analysis first, then simulate +1h/day capacity.</p>
+        </article>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
