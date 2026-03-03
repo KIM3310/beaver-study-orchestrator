@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.models import StudyPlan, Task
 
@@ -11,7 +10,8 @@ def _sanitize_text(value: str) -> str:
 
 
 def _dtstamp() -> str:
-    return datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    # `datetime.UTC` is Python 3.11+ only; use timezone.utc for 3.9 compatibility.
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
 def _event_uid(date_str: str, index: int) -> str:
