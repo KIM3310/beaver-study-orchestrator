@@ -1,0 +1,115 @@
+# Beaver Study Orchestrator
+
+A resume-ready full-stack project for Winter 2026 Hackathon submission.
+
+## 4-Line Problem Frame
+- **User:** Busy students juggling multiple deadlines across classes.
+- **Problem:** Syllabi are unstructured; students underestimate workload and cram late.
+- **Constraint:** Planning must be fast, interpretable, and usable without paid APIs.
+- **Success Test:** From raw syllabus text, generate an actionable study plan + risk score in under 10 seconds.
+
+## Why This Is Competitive
+- Solves a concrete student pain with clear measurable output.
+- Combines NLP-style extraction, planning optimization, and interpretable risk modeling.
+- Live demo is straightforward: paste syllabus -> click -> show plan + risk drivers.
+- Highly discussable in interviews (data modeling, tradeoffs, explainability, product decisions).
+
+## Core Features
+1. **Syllabus extraction**
+- Parses due dates from free-form text lines.
+- Detects task types (assignment, exam, project, lab, report, quiz).
+- Estimates effort using interpretable rule-based heuristics.
+
+2. **Adaptive schedule generation**
+- Builds date-by-date study allocations based on weekday availability.
+- Avoids single-day cram by chunking workload.
+- Reports unscheduled spillover when capacity is insufficient.
+
+3. **Deadline risk analytics**
+- Produces risk score (`0.0-1.0`) and level (`low/medium/high`).
+- Shows top risk drivers (coverage gap, urgency, workload, capacity).
+- Generates mitigation recommendations based on spillover and urgency.
+- Supports “what-if” simulation by changing availability inputs.
+
+4. **Calendar export for execution**
+- Exports generated study sessions as `.ics`.
+- Imports directly into Google Calendar / Apple Calendar.
+- Keeps demo focused on real habit formation, not just analysis.
+
+5. **What-if scenario simulator**
+- Simulates how risk changes if the student adds `+1h/day` capacity.
+- Compares baseline vs boosted risk and unscheduled-hour reduction.
+- Generates a direct recommendation for action.
+
+6. **Demo-safe failure handling**
+- If no due dates are found, API returns a valid response (no 500 crash).
+- UI shows corrective guidance with a concrete date-format example.
+
+## Tech Stack
+- **Backend:** FastAPI, Pydantic
+- **Frontend:** Vanilla JS + HTML/CSS
+- **Testing:** Pytest, FastAPI TestClient
+- **Runtime:** Python 3.11+
+
+## Architecture
+```text
+[Browser UI]
+   |  POST /api/analyze, POST /api/what-if
+   v
+[FastAPI app.main]
+   ├─ syllabus_parser.py   (text -> tasks)
+   ├─ scheduler.py         (tasks + availability -> daily plan)
+   ├─ risk_model.py        (tasks + plan -> interpretable risk + mitigation)
+   └─ calendar_export.py   (plan -> .ics)
+```
+
+## Quickstart
+```bash
+make setup
+make run
+```
+Open `http://127.0.0.1:8000`
+
+## Run Tests
+```bash
+make test
+```
+
+## CI
+- GitHub Actions runs `pytest` on every push/PR.
+- Workflow file: `.github/workflows/ci.yml`
+
+## Submission Assets Mapping
+- **Working Prototype:** This web app (`uvicorn app.main:app`)
+- **Video (2-4 min):** Script suggestion below
+- **GitHub Repo:** Includes commit-ready structure, tests, docs
+- **Final Checklist:** `docs/submission-checklist.md`
+- **Live Pitch Playbook:** `docs/winning-runbook.md`
+- **Devpost Draft:** `docs/devpost-description-template.md`
+- **Timed Demo Script:** `docs/demo-script-2to4min.md`
+
+## 2-4 Minute Demo Script (Suggested)
+1. Show raw syllabus text with mixed formatting.
+2. Click **Generate Plan**.
+3. Walk through extracted tasks and estimated hours.
+4. Show adaptive daily schedule and unscheduled spillover logic.
+5. Explain risk score and top drivers.
+6. Change availability and regenerate to show dynamic planning.
+
+## Decision Log
+- **Rule-based extraction over LLM calls:** deterministic, offline-friendly, no token cost.
+- **Interpretable risk model over black-box model:** judge-friendly reasoning and clear feature effects.
+- **Single-page app:** fast demo flow with no auth friction.
+
+## Known Limitations
+- Date parser supports common English month formats and `MM/DD` / `MM-DD`.
+- Task effort estimation is heuristic, not personalized by historical performance.
+- No calendar/LMS sync yet.
+
+## Next Steps
+1. Add Google Calendar and Canvas integration.
+2. Add user profile calibration from past completion data.
+3. Add per-course configuration and personalized weight calibration.
+
+## License
+MIT
