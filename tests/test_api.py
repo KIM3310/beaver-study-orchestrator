@@ -10,6 +10,10 @@ def test_health():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ok"
+    assert data["service"] == "beaver-study-orchestrator"
+    assert data["ops_contract"]["schema"] == "ops-envelope-v1"
+    assert data["links"]["analyze"] == "/api/analyze"
+    assert "next_action" in data["diagnostics"]
 
 
 def test_analyze_endpoint_returns_plan_and_risk():
@@ -39,6 +43,8 @@ def test_analyze_endpoint_returns_plan_and_risk():
     assert len(data["extraction"]["tasks"]) >= 2
     assert 0 <= data["plan"]["risk"]["score"] <= 1
     assert len(data["plan"]["risk"]["recommendations"]) >= 1
+    assert data["plan"]["diagnostics"]["focus_days"] >= 1
+    assert "next_action" in data["plan"]["diagnostics"]
 
 
 def test_analyze_endpoint_respects_custom_start_date():
@@ -65,6 +71,7 @@ def test_analyze_endpoint_respects_custom_start_date():
     data = response.json()
     first_item = data["plan"]["study_plan"]["items"][0]
     assert first_item["date"] == "2026-03-10"
+    assert data["plan"]["diagnostics"]["start_date"] == "2026-03-10"
 
 
 def test_analyze_endpoint_handles_no_extractable_dates():
@@ -88,6 +95,8 @@ def test_analyze_endpoint_handles_no_extractable_dates():
     assert data["plan"]["risk"]["score"] == 0
     assert data["plan"]["risk"]["level"] == "low"
     assert len(data["plan"]["risk"]["recommendations"]) == 1
+    assert data["plan"]["diagnostics"]["focus_days"] == 0
+    assert "dated syllabus line" in data["plan"]["diagnostics"]["next_action"].lower()
 
 
 def test_export_ics_returns_calendar_content():
@@ -151,6 +160,7 @@ def test_what_if_endpoint_compares_capacity_scenarios():
             "sunday": 1,
         },
         "daily_boost": 1.0,
+        "start_date": "2026-03-08",
     }
 
     response = client.post("/api/what-if", json=payload)
@@ -161,3 +171,5 @@ def test_what_if_endpoint_compares_capacity_scenarios():
     assert data["boosted"]["risk_score"] <= data["baseline"]["risk_score"]
     assert data["boosted"]["allocated_hours"] >= data["baseline"]["allocated_hours"]
     assert isinstance(data["recommendation"], str)
+    assert data["start_date_used"] == "2026-03-08"
+    assert data["daily_boost"] == 1.0
