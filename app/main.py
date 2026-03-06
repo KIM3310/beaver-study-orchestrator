@@ -79,11 +79,12 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         reference_year=request.reference_year,
     )
     extraction = ExtractionResponse(tasks=tasks, discarded_lines=discarded)
+    start = request.start_date or date.today()
 
     study_plan = create_study_plan(
         tasks=tasks,
         availability=request.availability.as_list(),
-        start_date=date.today(),
+        start_date=start,
     )
     risk = assess_risk(tasks=tasks, plan=study_plan, availability=request.availability.as_list())
     plan_response = PlanResponse(study_plan=study_plan, risk=risk)

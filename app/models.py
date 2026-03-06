@@ -132,6 +132,7 @@ class AnalyzeRequest(BaseModel):
     syllabus_text: str = Field(..., min_length=20, max_length=20000)
     availability: WeeklyAvailability
     reference_year: Optional[int] = Field(default=None, ge=2024, le=2030)
+    start_date: Optional[date] = None
 
     @field_validator("syllabus_text")
     @classmethod
