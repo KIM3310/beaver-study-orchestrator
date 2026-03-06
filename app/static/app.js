@@ -33,6 +33,7 @@ const loadSampleBtn = document.getElementById("loadSample");
 const resetHoursBtn = document.getElementById("resetHours");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const whatIfBtn = document.getElementById("whatIfBtn");
+const whatIfBoostInput = document.getElementById("whatIfBoost");
 const downloadIcsBtn = document.getElementById("downloadIcsBtn");
 const statusText = document.getElementById("statusText");
 const hoursGrid = document.getElementById("hoursGrid");
@@ -48,6 +49,8 @@ const riskRationale = document.getElementById("riskRationale");
 const riskDrivers = document.getElementById("riskDrivers");
 const riskRecommendations = document.getElementById("riskRecommendations");
 const whatIfSummary = document.getElementById("whatIfSummary");
+const diagnosticsGrid = document.getElementById("diagnosticsGrid");
+const diagnosticsAction = document.getElementById("diagnosticsAction");
 let latestPlanRequest = null;
 
 function formatDateInputValue(date) {
@@ -59,6 +62,15 @@ function formatDateInputValue(date) {
 
 function readStartDate() {
   return startDateInput.value || undefined;
+}
+
+function readWhatIfBoost() {
+  const parsed = Number.parseFloat(whatIfBoostInput.value || "1");
+  return Math.min(4, Math.max(0.5, Number.isFinite(parsed) ? parsed : 1));
+}
+
+function syncWhatIfLabel() {
+  whatIfBtn.textContent = `What-if +${readWhatIfBoost().toFixed(1)}h/day`;
 }
 
 function renderHourInputs() {
@@ -171,6 +183,47 @@ function renderRisk(risk) {
   });
 }
 
+function renderDiagnostics(diagnostics) {
+  diagnosticsGrid.innerHTML = "";
+
+  if (!diagnostics) {
+    diagnosticsGrid.innerHTML =
+      "<p class='muted'>Generate a plan to see pacing, buffer, and recovery diagnostics.</p>";
+    diagnosticsAction.textContent = "No execution guidance yet.";
+    return;
+  }
+
+  const cards = [
+    ["Plan start", diagnostics.start_date],
+    ["First deadline", diagnostics.first_due_date || "No dated deadlines"],
+    ["Focus days", `${diagnostics.focus_days} day(s)`],
+    [
+      "Peak day",
+      diagnostics.busiest_day
+        ? `${diagnostics.busiest_day.date} · ${diagnostics.busiest_day.allocated_hours.toFixed(1)}h`
+        : "No sessions yet",
+    ],
+    ["Deadline buffer", `${diagnostics.buffer_days_before_first_deadline} day(s)`],
+    ["Unscheduled", `${diagnostics.total_unscheduled_hours.toFixed(1)}h`],
+    ["Overdue tasks", `${diagnostics.overdue_tasks}`],
+    [
+      "Recovery boost",
+      diagnostics.recommended_daily_boost_hours > 0
+        ? `+${diagnostics.recommended_daily_boost_hours.toFixed(1)}h/day`
+        : "Not needed",
+    ],
+  ];
+
+  cards.forEach(([label, value]) => {
+    const card = document.createElement("div");
+    card.className = "signal-card";
+    card.innerHTML = `<span class="signal-label">${label}</span><strong>${value}</strong>`;
+    diagnosticsGrid.appendChild(card);
+  });
+
+  diagnosticsAction.textContent = diagnostics.next_action;
+}
+
 async function downloadIcs() {
   if (!latestPlanRequest || !latestPlanRequest.tasks?.length) {
     setStatus("Generate a plan first to export calendar events.", true);
@@ -214,12 +267,13 @@ async function runWhatIf() {
 
   whatIfBtn.disabled = true;
   try {
+    const dailyBoost = readWhatIfBoost();
     const response = await fetch("/api/what-if", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...latestPlanRequest,
-        daily_boost: 1.0,
+        daily_boost: dailyBoost,
       }),
     });
 
@@ -232,8 +286,10 @@ async function runWhatIf() {
     const boostedPct = Math.round(data.boosted.risk_score * 100);
     const improvementPp = Math.round(data.risk_reduction * 100);
     whatIfSummary.textContent =
-      `Current ${currentPct}% (${data.baseline.risk_level}) -> +1h/day ${boostedPct}% (${data.boosted.risk_level}), ` +
-      `improvement ${improvementPp}pp, unscheduled ${data.baseline.unscheduled_hours.toFixed(1)}h -> ${data.boosted.unscheduled_hours.toFixed(1)}h. ` +
+      `Start ${data.start_date_used} · Current ${currentPct}% (${data.baseline.risk_level}) -> ` +
+      `+${data.daily_boost.toFixed(1)}h/day ${boostedPct}% (${data.boosted.risk_level}), ` +
+      `improvement ${improvementPp}pp, unscheduled ${data.baseline.unscheduled_hours.toFixed(1)}h -> ` +
+      `${data.boosted.unscheduled_hours.toFixed(1)}h. ` +
       `${data.recommendation}`;
     setStatus("What-if simulation completed.");
   } catch (error) {
@@ -273,12 +329,13 @@ async function analyze() {
     renderTasks(data.extraction.tasks);
     renderPlan(data.plan.study_plan);
     renderRisk(data.plan.risk);
+    renderDiagnostics(data.plan.diagnostics);
     latestPlanRequest = {
       tasks: data.extraction.tasks,
       availability: payload.availability,
       start_date: payload.start_date,
     };
-    whatIfSummary.textContent = "Click 'What-if +1h/day' to simulate risk reduction from extra capacity.";
+    whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
     whatIfBtn.disabled = data.extraction.tasks.length === 0;
     downloadIcsBtn.disabled = data.extraction.tasks.length === 0;
 
@@ -296,7 +353,8 @@ async function analyze() {
     }
   } catch (error) {
     latestPlanRequest = null;
-    whatIfSummary.textContent = "Run analysis first, then simulate +1h/day capacity.";
+    renderDiagnostics(null);
+    whatIfSummary.textContent = "Run analysis first, then simulate extra daily capacity.";
     whatIfBtn.disabled = true;
     downloadIcsBtn.disabled = true;
     setStatus(`Analysis failed: ${error.message}`, true);
@@ -318,8 +376,16 @@ resetHoursBtn.addEventListener("click", () => {
 analyzeBtn.addEventListener("click", analyze);
 whatIfBtn.addEventListener("click", runWhatIf);
 downloadIcsBtn.addEventListener("click", downloadIcs);
+whatIfBoostInput.addEventListener("input", () => {
+  syncWhatIfLabel();
+  if (latestPlanRequest?.tasks?.length) {
+    whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
+  }
+});
 
 renderHourInputs();
 syllabusText.value = sampleText;
 startDateInput.value = formatDateInputValue(new Date());
+syncWhatIfLabel();
+renderDiagnostics(null);
 setStatus("Ready. Update sample text or paste your own syllabus.");
