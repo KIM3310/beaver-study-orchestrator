@@ -44,6 +44,10 @@
           <span>Plan Start</span>
           <input id="startDate" type="date" />
         </label>
+        <label class="date-control" for="whatIfBoost">
+          <span>What-if Boost</span>
+          <input id="whatIfBoost" type="number" min="0.5" max="4" step="0.5" value="1.0" />
+        </label>
         <button id="analyzeBtn" class="primary">Generate Plan</button>
         <button id="whatIfBtn" class="ghost" disabled>What-if +1h/day</button>
         <button id="downloadIcsBtn" class="ghost" disabled>Download .ics</button>
@@ -88,6 +92,14 @@
           <ul id="riskRecommendations" class="drivers"></ul>
           <h3>Scenario Simulation</h3>
           <p id="whatIfSummary" class="muted">Run analysis first, then simulate +1h/day capacity.</p>
+        </article>
+
+        <article class="panel signals-panel">
+          <h2>Execution Signals</h2>
+          <div id="diagnosticsGrid" class="signals-grid">
+            <p class="muted">Generate a plan to see pacing, buffer, and recovery diagnostics.</p>
+          </div>
+          <p id="diagnosticsAction" class="summary-row">No execution guidance yet.</p>
         </article>
       </section>
     </main>

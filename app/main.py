@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -9,6 +9,7 @@ from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.core.calendar_export import build_ics_calendar
+from app.core.plan_diagnostics import build_plan_diagnostics
 from app.core.risk_model import assess_risk
 from app.core.scheduler import create_study_plan
 from app.core.syllabus_parser import extract_tasks_from_syllabus
@@ -44,7 +45,27 @@ def index() -> FileResponse:
 
 @app.get("/api/health", response_model=HealthResponse)
 def health() -> HealthResponse:
-    return HealthResponse(status="ok", service="beaver-study-orchestrator")
+    return HealthResponse(
+        status="ok",
+        service="beaver-study-orchestrator",
+        generated_at=datetime.now(timezone.utc),
+        diagnostics={
+            "parser_mode": "rule-based",
+            "calendar_export_ready": True,
+            "what_if_supports_custom_start_date": True,
+            "next_action": "POST /api/analyze with syllabus text to generate an execution-ready plan.",
+        },
+        links={
+            "analyze": "/api/analyze",
+            "what_if": "/api/what-if",
+            "export_ics": "/api/export/ics",
+        },
+        ops_contract={
+            "schema": "ops-envelope-v1",
+            "version": 1,
+            "required_fields": ["service", "status", "diagnostics.next_action"],
+        },
+    )
 
 
 @app.post("/api/extract", response_model=ExtractionResponse)
@@ -69,7 +90,8 @@ def plan(request: PlanRequest) -> PlanResponse:
         plan=study_plan,
         availability=request.availability.as_list(),
     )
-    return PlanResponse(study_plan=study_plan, risk=risk)
+    diagnostics = build_plan_diagnostics(request.tasks, study_plan, start)
+    return PlanResponse(study_plan=study_plan, risk=risk, diagnostics=diagnostics)
 
 
 @app.post("/api/analyze", response_model=AnalyzeResponse)
@@ -87,7 +109,8 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         start_date=start,
     )
     risk = assess_risk(tasks=tasks, plan=study_plan, availability=request.availability.as_list())
-    plan_response = PlanResponse(study_plan=study_plan, risk=risk)
+    diagnostics = build_plan_diagnostics(tasks, study_plan, start)
+    plan_response = PlanResponse(study_plan=study_plan, risk=risk, diagnostics=diagnostics)
 
     return AnalyzeResponse(extraction=extraction, plan=plan_response)
 
@@ -108,7 +131,7 @@ def export_ics(request: PlanRequest) -> PlainTextResponse:
 
 @app.post("/api/what-if", response_model=WhatIfResponse)
 def what_if(request: WhatIfRequest) -> WhatIfResponse:
-    today = date.today()
+    start = request.start_date or date.today()
     base_availability = request.availability.as_list()
     boosted_availability = [
         round(min(12.0, value + request.daily_boost), 2) for value in base_availability
@@ -117,7 +140,7 @@ def what_if(request: WhatIfRequest) -> WhatIfResponse:
     base_plan = create_study_plan(
         tasks=request.tasks,
         availability=base_availability,
-        start_date=today,
+        start_date=start,
     )
     base_risk = assess_risk(
         tasks=request.tasks,
@@ -128,7 +151,7 @@ def what_if(request: WhatIfRequest) -> WhatIfResponse:
     boosted_plan = create_study_plan(
         tasks=request.tasks,
         availability=boosted_availability,
-        start_date=today,
+        start_date=start,
     )
     boosted_risk = assess_risk(
         tasks=request.tasks,
@@ -176,6 +199,8 @@ def what_if(request: WhatIfRequest) -> WhatIfResponse:
             allocated_hours=boosted_plan.total_allocated_hours,
             unscheduled_hours=boosted_unscheduled,
         ),
+        start_date_used=start,
+        daily_boost=request.daily_boost,
         risk_reduction=risk_reduction,
         recommendation=recommendation,
     )
