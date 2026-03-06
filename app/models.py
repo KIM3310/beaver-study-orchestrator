@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
@@ -102,15 +102,34 @@ class RiskAssessment(BaseModel):
     recommendations: List[str] = Field(default_factory=list)
 
 
+class PeakLoadDay(BaseModel):
+    date: date
+    allocated_hours: float
+
+
+class PlanDiagnostics(BaseModel):
+    start_date: date
+    first_due_date: Optional[date] = None
+    focus_days: int = Field(..., ge=0)
+    total_unscheduled_hours: float = Field(..., ge=0)
+    overdue_tasks: int = Field(..., ge=0)
+    buffer_days_before_first_deadline: int = Field(..., ge=0)
+    recommended_daily_boost_hours: float = Field(..., ge=0, le=4.0)
+    busiest_day: Optional[PeakLoadDay] = None
+    next_action: str
+
+
 class PlanResponse(BaseModel):
     study_plan: StudyPlan
     risk: RiskAssessment
+    diagnostics: PlanDiagnostics
 
 
 class WhatIfRequest(BaseModel):
     tasks: List[Task] = Field(..., min_length=1, max_length=80)
     availability: WeeklyAvailability
     daily_boost: float = Field(default=1.0, ge=0.5, le=4.0)
+    start_date: Optional[date] = None
 
 
 class ScenarioSnapshot(BaseModel):
@@ -124,6 +143,8 @@ class ScenarioSnapshot(BaseModel):
 class WhatIfResponse(BaseModel):
     baseline: ScenarioSnapshot
     boosted: ScenarioSnapshot
+    start_date_used: date
+    daily_boost: float = Field(..., ge=0.5, le=4.0)
     risk_reduction: float
     recommendation: str
 
@@ -148,3 +169,7 @@ class AnalyzeResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: Literal["ok"]
     service: str
+    generated_at: datetime
+    diagnostics: dict[str, object]
+    links: dict[str, str]
+    ops_contract: dict[str, object]

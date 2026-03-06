@@ -37,11 +37,16 @@ A resume-ready full-stack project for Winter 2026 Hackathon submission.
 - Keeps demo focused on real habit formation, not just analysis.
 
 5. **What-if scenario simulator**
-- Simulates how risk changes if the student adds `+1h/day` capacity.
+- Simulates how risk changes if the student adds a configurable `+0.5h ~ +4.0h/day` capacity.
 - Compares baseline vs boosted risk and unscheduled-hour reduction.
+- Respects the same planning start date used in the main analysis flow.
 - Generates a direct recommendation for action.
 
-6. **Demo-safe failure handling**
+6. **Execution diagnostics cockpit**
+- Highlights the busiest study day, first deadline buffer, and total focus days.
+- Estimates additional daily hours needed to recover unscheduled spillover.
+- Produces a concrete `next_action` instead of only showing a risk score.
+7. **Demo-safe failure handling**
 - If no due dates are found, API returns a valid response (no 500 crash).
 - UI shows corrective guidance with a concrete date-format example.
 
@@ -93,8 +98,8 @@ make test
 2. Click **Generate Plan**.
 3. Walk through extracted tasks and estimated hours.
 4. Show adaptive daily schedule and unscheduled spillover logic.
-5. Explain risk score and top drivers.
-6. Change availability and regenerate to show dynamic planning.
+5. Explain risk score, top drivers, and execution signals.
+6. Change the what-if boost value to show dynamic recovery planning.
 
 ## Decision Log
 - **Rule-based extraction over LLM calls:** deterministic, offline-friendly, no token cost.
