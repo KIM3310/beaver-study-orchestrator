@@ -36,6 +36,7 @@ const whatIfBtn = document.getElementById("whatIfBtn");
 const downloadIcsBtn = document.getElementById("downloadIcsBtn");
 const statusText = document.getElementById("statusText");
 const hoursGrid = document.getElementById("hoursGrid");
+const startDateInput = document.getElementById("startDate");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -48,6 +49,17 @@ const riskDrivers = document.getElementById("riskDrivers");
 const riskRecommendations = document.getElementById("riskRecommendations");
 const whatIfSummary = document.getElementById("whatIfSummary");
 let latestPlanRequest = null;
+
+function formatDateInputValue(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function readStartDate() {
+  return startDateInput.value || undefined;
+}
 
 function renderHourInputs() {
   hoursGrid.innerHTML = "";
@@ -235,6 +247,7 @@ async function analyze() {
   const payload = {
     syllabus_text: syllabusText.value,
     availability: readAvailability(),
+    start_date: readStartDate(),
   };
 
   if (!payload.syllabus_text || payload.syllabus_text.trim().length < 20) {
@@ -263,6 +276,7 @@ async function analyze() {
     latestPlanRequest = {
       tasks: data.extraction.tasks,
       availability: payload.availability,
+      start_date: payload.start_date,
     };
     whatIfSummary.textContent = "Click 'What-if +1h/day' to simulate risk reduction from extra capacity.";
     whatIfBtn.disabled = data.extraction.tasks.length === 0;
@@ -307,4 +321,5 @@ downloadIcsBtn.addEventListener("click", downloadIcs);
 
 renderHourInputs();
 syllabusText.value = sampleText;
+startDateInput.value = formatDateInputValue(new Date());
 setStatus("Ready. Update sample text or paste your own syllabus.");

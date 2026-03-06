@@ -41,6 +41,32 @@ def test_analyze_endpoint_returns_plan_and_risk():
     assert len(data["plan"]["risk"]["recommendations"]) >= 1
 
 
+def test_analyze_endpoint_respects_custom_start_date():
+    payload = {
+        "syllabus_text": """
+        Assignment 1 due March 12, 2026
+        Midterm Exam on March 22, 2026
+        """,
+        "availability": {
+            "monday": 2,
+            "tuesday": 2,
+            "wednesday": 2,
+            "thursday": 2,
+            "friday": 2,
+            "saturday": 3,
+            "sunday": 3,
+        },
+        "start_date": "2026-03-10",
+    }
+
+    response = client.post("/api/analyze", json=payload)
+    assert response.status_code == 200
+
+    data = response.json()
+    first_item = data["plan"]["study_plan"]["items"][0]
+    assert first_item["date"] == "2026-03-10"
+
+
 def test_analyze_endpoint_handles_no_extractable_dates():
     payload = {
         "syllabus_text": "Read chapter 4 and prepare office hour questions before next week.",
