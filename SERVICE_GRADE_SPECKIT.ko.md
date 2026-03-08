@@ -11,14 +11,14 @@ Last updated: 2026-03-08
 - 입력 syllabus가 어떻게 actionable study plan으로 변하는지가 중요하다.
 
 ## E - Execution
-- `/api/meta`, `/api/runtime/brief`, `/api/schema/analysis-report`를 추가해 health 밖에서도 reviewer surface를 고정한다.
+- `/api/meta`, `/api/runtime/brief`, `/api/review-pack`, `/api/schema/analysis-report`를 추가해 health 밖에서도 reviewer surface를 고정한다.
 - landing UI 상단에 runtime brief panel을 추가해 parser posture, schema, route count, operator rules를 먼저 보여준다.
 - input parsing rules와 output schedule contract를 계속 테스트로 고정한다.
 
 ## C - Criteria
 - local verification green
 - README에서 입력/출력 경로와 review surfaces가 즉시 이해됨
-- `/api/health`, `/api/meta`, `/api/runtime/brief`, `/api/schema/analysis-report` contract가 일관된다.
+- `/api/health`, `/api/meta`, `/api/runtime/brief`, `/api/review-pack`, `/api/schema/analysis-report` contract가 일관된다.
 - parsing edge cases가 흔들리지 않음
 
 ## K - Keep

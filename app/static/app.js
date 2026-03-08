@@ -48,6 +48,16 @@ const briefReviewFlow = document.getElementById("briefReviewFlow");
 const briefOperatorRules = document.getElementById("briefOperatorRules");
 const briefStageContract = document.getElementById("briefStageContract");
 const briefWatchouts = document.getElementById("briefWatchouts");
+const reviewPackBadge = document.getElementById("reviewPackBadge");
+const reviewPackHeadline = document.getElementById("reviewPackHeadline");
+const reviewPackRuntime = document.getElementById("reviewPackRuntime");
+const reviewPackRoutes = document.getElementById("reviewPackRoutes");
+const reviewPackSchema = document.getElementById("reviewPackSchema");
+const reviewPackExport = document.getElementById("reviewPackExport");
+const reviewPackPromises = document.getElementById("reviewPackPromises");
+const reviewPackBoundary = document.getElementById("reviewPackBoundary");
+const reviewPackSequence = document.getElementById("reviewPackSequence");
+const reviewPackWatchouts = document.getElementById("reviewPackWatchouts");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -178,6 +188,44 @@ async function loadRuntimeBrief() {
     renderBriefList(briefOperatorRules, ["No operator rules loaded."]);
     renderStageContract([]);
     renderBriefList(briefWatchouts, [`${error.message}`]);
+  }
+}
+
+async function loadReviewPack() {
+  try {
+    const response = await fetch("/api/review-pack");
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const pack = await response.json();
+    const proofBundle = pack.proof_bundle || {};
+    const analysisContract = pack.analysis_contract || {};
+
+    reviewPackBadge.classList.remove("warn");
+    reviewPackBadge.classList.add("ok");
+    reviewPackBadge.textContent = String(pack.status || "ok").toUpperCase();
+    reviewPackHeadline.textContent = pack.headline || "Review pack available.";
+    reviewPackRuntime.textContent = proofBundle.parser_mode || "-";
+    reviewPackRoutes.textContent = `${(proofBundle.review_routes || []).length} routes`;
+    reviewPackSchema.textContent = analysisContract.schema || "-";
+    reviewPackExport.textContent = proofBundle.calendar_export_ready ? "Ready" : "Check";
+    renderBriefList(reviewPackPromises, pack.executive_promises || []);
+    renderBriefList(reviewPackBoundary, pack.trust_boundary || []);
+    renderBriefList(reviewPackSequence, pack.review_sequence || []);
+    renderBriefList(reviewPackWatchouts, pack.watchouts || []);
+  } catch (error) {
+    reviewPackBadge.classList.remove("ok");
+    reviewPackBadge.classList.add("warn");
+    reviewPackBadge.textContent = "ERROR";
+    reviewPackHeadline.textContent = "Review pack unavailable.";
+    reviewPackRuntime.textContent = "-";
+    reviewPackRoutes.textContent = "-";
+    reviewPackSchema.textContent = "-";
+    reviewPackExport.textContent = "-";
+    renderBriefList(reviewPackPromises, ["Open /api/review-pack when the backend becomes available."]);
+    renderBriefList(reviewPackBoundary, []);
+    renderBriefList(reviewPackSequence, []);
+    renderBriefList(reviewPackWatchouts, [`${error.message}`]);
   }
 }
 
@@ -460,4 +508,5 @@ startDateInput.value = formatDateInputValue(new Date());
 syncWhatIfLabel();
 renderDiagnostics(null);
 loadRuntimeBrief();
+loadReviewPack();
 setStatus("Ready. Update sample text or paste your own syllabus.");
