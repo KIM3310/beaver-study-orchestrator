@@ -119,6 +119,13 @@ h1 {
   gap: 10px;
 }
 
+.brief-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
 .brief-card,
 .brief-section {
   border: 1px solid #35415a;
