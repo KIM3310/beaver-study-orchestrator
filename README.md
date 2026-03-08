@@ -75,6 +75,13 @@ make run
 ```
 Open `http://127.0.0.1:8000`
 
+## Service-Grade Surfaces
+- `GET /api/health`: exposes parser posture, export readiness, review links, and runtime contract.
+- `GET /api/meta`: returns the same health contract in a reviewer-friendly metadata envelope.
+- `GET /api/runtime/brief`: summarizes the extract -> plan -> simulate workflow, review flow, and watchouts.
+- `GET /api/schema/analysis-report`: pins the expected analysis payload for extraction, study plan, risk, and diagnostics.
+- Landing-page runtime brief: the top of the UI now shows schema, parser mode, export readiness, route count, operator rules, and watchouts before analysis runs.
+
 ## Run Tests
 ```bash
 make test

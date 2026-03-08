@@ -38,6 +38,16 @@ const downloadIcsBtn = document.getElementById("downloadIcsBtn");
 const statusText = document.getElementById("statusText");
 const hoursGrid = document.getElementById("hoursGrid");
 const startDateInput = document.getElementById("startDate");
+const briefBadge = document.getElementById("briefBadge");
+const briefHeadline = document.getElementById("briefHeadline");
+const briefSchema = document.getElementById("briefSchema");
+const briefParserMode = document.getElementById("briefParserMode");
+const briefCalendarReady = document.getElementById("briefCalendarReady");
+const briefRouteCount = document.getElementById("briefRouteCount");
+const briefReviewFlow = document.getElementById("briefReviewFlow");
+const briefOperatorRules = document.getElementById("briefOperatorRules");
+const briefStageContract = document.getElementById("briefStageContract");
+const briefWatchouts = document.getElementById("briefWatchouts");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -108,6 +118,67 @@ function readAvailability() {
 function setStatus(message, isError = false) {
   statusText.textContent = message;
   statusText.style.color = isError ? "#ff8fa1" : "#a7b2c9";
+}
+
+function renderBriefList(container, items) {
+  container.innerHTML = "";
+  (items || []).forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    container.appendChild(li);
+  });
+}
+
+function renderStageContract(items) {
+  briefStageContract.innerHTML = "";
+  (items || []).forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.stage}: ${item.responsibility}`;
+    briefStageContract.appendChild(li);
+  });
+}
+
+async function loadRuntimeBrief() {
+  try {
+    const [healthResponse, briefResponse] = await Promise.all([
+      fetch("/api/health"),
+      fetch("/api/runtime/brief"),
+    ]);
+
+    if (!healthResponse.ok || !briefResponse.ok) {
+      throw new Error(`HTTP ${Math.max(healthResponse.status, briefResponse.status)}`);
+    }
+
+    const health = await healthResponse.json();
+    const brief = await briefResponse.json();
+    const reportContract = brief.report_contract || {};
+
+    briefBadge.classList.remove("warn");
+    briefBadge.classList.add("ok");
+    briefBadge.textContent = String(brief.status || "ok").toUpperCase();
+    briefHeadline.textContent = brief.headline || "Runtime brief available.";
+    briefSchema.textContent = reportContract.schema || "-";
+    briefParserMode.textContent = health.diagnostics?.parser_mode || "-";
+    briefCalendarReady.textContent = health.diagnostics?.calendar_export_ready ? "Ready" : "Check";
+    briefRouteCount.textContent = `${(brief.routes || []).length} routes`;
+    renderBriefList(briefReviewFlow, brief.review_flow || []);
+    renderBriefList(briefOperatorRules, reportContract.operator_rules || []);
+    renderStageContract(brief.stage_contract || []);
+    renderBriefList(briefWatchouts, brief.watchouts || []);
+  } catch (error) {
+    briefBadge.classList.remove("ok");
+    briefBadge.classList.add("warn");
+    briefBadge.textContent = "ERROR";
+    briefHeadline.textContent = "Runtime brief unavailable.";
+    briefSchema.textContent = "-";
+    briefParserMode.textContent = "-";
+    briefCalendarReady.textContent = "-";
+    briefRouteCount.textContent = "-";
+    renderBriefList(briefReviewFlow, ["Open /api/health when the backend becomes available."]);
+    renderBriefList(briefOperatorRules, ["No operator rules loaded."]);
+    renderStageContract([]);
+    renderBriefList(briefWatchouts, [`${error.message}`]);
+  }
 }
 
 function renderTasks(tasks) {
@@ -388,4 +459,5 @@ syllabusText.value = sampleText;
 startDateInput.value = formatDateInputValue(new Date());
 syncWhatIfLabel();
 renderDiagnostics(null);
+loadRuntimeBrief();
 setStatus("Ready. Update sample text or paste your own syllabus.");
