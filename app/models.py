@@ -173,3 +173,7 @@ class HealthResponse(BaseModel):
     diagnostics: dict[str, object]
     links: dict[str, str]
     ops_contract: dict[str, object]
+    readiness_contract: str
+    report_contract: dict[str, object]
+    capabilities: list[str]
+    routes: list[str]
