@@ -30,10 +30,12 @@ APP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = APP_DIR / "static"
 ANALYSIS_REPORT_SCHEMA = "beaver-study-analysis-report-v1"
 RUNTIME_BRIEF_CONTRACT = "beaver-study-runtime-brief-v1"
+REVIEW_PACK_CONTRACT = "beaver-study-review-pack-v1"
 RUNTIME_ROUTES = [
     "/api/health",
     "/api/meta",
     "/api/runtime/brief",
+    "/api/review-pack",
     "/api/schema/analysis-report",
     "/api/analyze",
     "/api/what-if",
@@ -113,6 +115,62 @@ def build_runtime_brief() -> dict[str, object]:
     }
 
 
+def build_review_pack() -> dict[str, object]:
+    brief = build_runtime_brief()
+    return {
+        "status": "ok",
+        "service": "beaver-study-orchestrator",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "readiness_contract": REVIEW_PACK_CONTRACT,
+        "headline": "Reviewer pack for syllabus extraction, adaptive study planning, what-if simulation, and calendar export.",
+        "proof_bundle": {
+            "parser_mode": "rule-based",
+            "calendar_export_ready": True,
+            "what_if_supported": True,
+            "review_routes": [
+                "/api/health",
+                "/api/meta",
+                "/api/runtime/brief",
+                "/api/review-pack",
+                "/api/schema/analysis-report",
+            ],
+        },
+        "executive_promises": [
+            "Extraction, plan generation, risk scoring, and calendar export stay reviewable through explicit contracts.",
+            "What-if simulation is available before operators commit to a final study schedule.",
+            "Calendar export is downstream of the reviewed plan rather than a side effect of raw extraction.",
+        ],
+        "trust_boundary": [
+            "Rule-based extraction keeps due-date heuristics inspectable rather than opaque.",
+            "Generated plans and what-if simulations are local computations over the extracted task set.",
+            "Calendar export mirrors the approved plan, so extraction mistakes must be caught before export.",
+        ],
+        "review_sequence": [
+            "Open /api/health or /api/meta to confirm parser posture and export readiness.",
+            "Run /api/analyze with representative syllabus text and review due dates, spillover, and risk drivers.",
+            "Use /api/what-if before exporting the final .ics calendar.",
+        ],
+        "analysis_contract": {
+            "schema": ANALYSIS_REPORT_SCHEMA,
+            "report_routes": brief["routes"],
+        },
+        "watchouts": [
+            "Rule-based parsing is only as good as the syllabus date formatting it receives.",
+            "A lower risk score does not guarantee that the extracted deadlines were correct.",
+            "Calendar export propagates the plan exactly as reviewed.",
+        ],
+        "links": {
+            "health": "/api/health",
+            "meta": "/api/meta",
+            "runtime_brief": "/api/runtime/brief",
+            "review_pack": "/api/review-pack",
+            "analysis_schema": "/api/schema/analysis-report",
+            "what_if": "/api/what-if",
+            "export_ics": "/api/export/ics",
+        },
+    }
+
+
 @app.get("/", include_in_schema=False)
 def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
@@ -130,11 +188,12 @@ def health() -> HealthResponse:
             "parser_mode": "rule-based",
             "calendar_export_ready": True,
             "what_if_supports_custom_start_date": True,
-            "next_action": "POST /api/analyze with syllabus text to generate an execution-ready plan.",
+            "next_action": "Review /api/review-pack, then POST /api/analyze with syllabus text to generate an execution-ready plan.",
         },
         links={
             "meta": "/api/meta",
             "runtime_brief": "/api/runtime/brief",
+            "review_pack": "/api/review-pack",
             "analysis_schema": "/api/schema/analysis-report",
             "analyze": "/api/analyze",
             "what_if": "/api/what-if",
@@ -152,6 +211,7 @@ def health() -> HealthResponse:
             "ics-export",
             "runtime-brief-surface",
             "analysis-schema-surface",
+            "review-pack-surface",
         ],
         routes=RUNTIME_ROUTES,
     )
@@ -169,6 +229,11 @@ def meta() -> dict[str, object]:
 @app.get("/api/runtime/brief")
 def runtime_brief() -> dict[str, object]:
     return build_runtime_brief()
+
+
+@app.get("/api/review-pack")
+def review_pack() -> dict[str, object]:
+    return build_review_pack()
 
 
 @app.get("/api/schema/analysis-report")

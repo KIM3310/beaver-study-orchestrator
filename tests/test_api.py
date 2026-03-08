@@ -16,10 +16,13 @@ def test_health():
     assert data["report_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert data["links"]["meta"] == "/api/meta"
     assert data["links"]["runtime_brief"] == "/api/runtime/brief"
+    assert data["links"]["review_pack"] == "/api/review-pack"
     assert data["links"]["analysis_schema"] == "/api/schema/analysis-report"
     assert data["links"]["analyze"] == "/api/analyze"
     assert "/api/runtime/brief" in data["routes"]
+    assert "/api/review-pack" in data["routes"]
     assert "runtime-brief-surface" in data["capabilities"]
+    assert "review-pack-surface" in data["capabilities"]
     assert "next_action" in data["diagnostics"]
 
 
@@ -38,6 +41,13 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert brief_payload["report_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert brief_payload["evidence_counts"]["weekly_inputs"] == 7
     assert len(brief_payload["stage_contract"]) == 3
+
+    review_pack = client.get("/api/review-pack")
+    assert review_pack.status_code == 200
+    review_payload = review_pack.json()
+    assert review_payload["readiness_contract"] == "beaver-study-review-pack-v1"
+    assert "/api/review-pack" in review_payload["proof_bundle"]["review_routes"]
+    assert review_payload["analysis_contract"]["schema"] == "beaver-study-analysis-report-v1"
 
     schema = client.get("/api/schema/analysis-report")
     assert schema.status_code == 200
