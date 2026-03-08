@@ -62,6 +62,8 @@ const reviewPackBoundary = document.getElementById("reviewPackBoundary");
 const reviewPackSequence = document.getElementById("reviewPackSequence");
 const reviewPackProofAssets = document.getElementById("reviewPackProofAssets");
 const reviewPackWatchouts = document.getElementById("reviewPackWatchouts");
+const copyRuntimeBriefBtn = document.getElementById("copyRuntimeBriefBtn");
+const copyReviewPackBtn = document.getElementById("copyReviewPackBtn");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -76,6 +78,8 @@ const whatIfSummary = document.getElementById("whatIfSummary");
 const diagnosticsGrid = document.getElementById("diagnosticsGrid");
 const diagnosticsAction = document.getElementById("diagnosticsAction");
 let latestPlanRequest = null;
+let latestRuntimeBrief = null;
+let latestReviewPack = null;
 
 function formatDateInputValue(date) {
   const year = date.getFullYear();
@@ -164,6 +168,24 @@ function renderProofAssets(container, items) {
   });
 }
 
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+
+  const helper = document.createElement("textarea");
+  helper.value = text;
+  helper.setAttribute("readonly", "true");
+  helper.style.position = "absolute";
+  helper.style.left = "-9999px";
+  document.body.appendChild(helper);
+  helper.select();
+  document.execCommand("copy");
+  helper.remove();
+  return true;
+}
+
 async function loadRuntimeBrief() {
   try {
     const [healthResponse, briefResponse] = await Promise.all([
@@ -177,6 +199,7 @@ async function loadRuntimeBrief() {
 
     const health = await healthResponse.json();
     const brief = await briefResponse.json();
+    latestRuntimeBrief = brief;
     const reportContract = brief.report_contract || {};
 
     briefBadge.classList.remove("warn");
@@ -218,6 +241,7 @@ async function loadReviewPack() {
       throw new Error(`HTTP ${response.status}`);
     }
     const pack = await response.json();
+    latestReviewPack = pack;
     const proofBundle = pack.proof_bundle || {};
     const analysisContract = pack.analysis_contract || {};
 
@@ -250,6 +274,56 @@ async function loadReviewPack() {
     renderBriefList(reviewPackSequence, []);
     renderProofAssets(reviewPackProofAssets, []);
     renderBriefList(reviewPackWatchouts, [`${error.message}`]);
+  }
+}
+
+async function handleCopyRuntimeBrief() {
+  const brief = latestRuntimeBrief || {};
+  const lines = [
+    "beaver-study runtime brief",
+    `Headline: ${brief.headline || briefHeadline.textContent || "-"}`,
+    `Schema: ${brief.report_contract?.schema || briefSchema.textContent || "-"}`,
+    `Parser mode: ${briefParserMode.textContent || "-"}`,
+    `Calendar export: ${briefCalendarReady.textContent || "-"}`,
+    "",
+    "2-minute review",
+    ...((brief.two_minute_review || []).map((item) => `- ${item}`)),
+  ];
+
+  try {
+    await copyTextToClipboard(lines.join("\n"));
+    setStatus("Runtime brief copied.");
+  } catch {
+    setStatus("Runtime brief copy failed.", true);
+  }
+}
+
+async function handleCopyReviewPack() {
+  const pack = latestReviewPack || {};
+  const lines = [
+    "beaver-study review pack",
+    `Headline: ${pack.headline || reviewPackHeadline.textContent || "-"}`,
+    `Runtime: ${reviewPackRuntime.textContent || "-"}`,
+    `Schema: ${reviewPackSchema.textContent || "-"}`,
+    `Export: ${reviewPackExport.textContent || "-"}`,
+    "",
+    "Review sequence",
+    ...((pack.review_sequence || []).map((item) => `- ${item}`)),
+    "",
+    "Proof assets",
+    ...((pack.proof_assets || []).map((item) => {
+      const label = item.label || "Asset";
+      const path = item.path || "-";
+      const why = item.why || "";
+      return why ? `- ${label}: ${path} - ${why}` : `- ${label}: ${path}`;
+    })),
+  ];
+
+  try {
+    await copyTextToClipboard(lines.join("\n"));
+    setStatus("Review pack copied.");
+  } catch {
+    setStatus("Review pack copy failed.", true);
   }
 }
 
@@ -519,6 +593,8 @@ resetHoursBtn.addEventListener("click", () => {
 analyzeBtn.addEventListener("click", analyze);
 whatIfBtn.addEventListener("click", runWhatIf);
 downloadIcsBtn.addEventListener("click", downloadIcs);
+copyRuntimeBriefBtn.addEventListener("click", handleCopyRuntimeBrief);
+copyReviewPackBtn.addEventListener("click", handleCopyReviewPack);
 whatIfBoostInput.addEventListener("input", () => {
   syncWhatIfLabel();
   if (latestPlanRequest?.tasks?.length) {
