@@ -65,6 +65,7 @@ const reviewPackWatchouts = document.getElementById("reviewPackWatchouts");
 const copyRuntimeBriefBtn = document.getElementById("copyRuntimeBriefBtn");
 const copyReviewRoutesBtn = document.getElementById("copyReviewRoutesBtn");
 const copyReviewPackBtn = document.getElementById("copyReviewPackBtn");
+const copyDiagnosticsBtn = document.getElementById("copyDiagnosticsBtn");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -81,6 +82,8 @@ const diagnosticsAction = document.getElementById("diagnosticsAction");
 let latestPlanRequest = null;
 let latestRuntimeBrief = null;
 let latestReviewPack = null;
+let latestRisk = null;
+let latestDiagnostics = null;
 
 function formatDateInputValue(date) {
   const year = date.getFullYear();
@@ -341,6 +344,54 @@ async function handleCopyReviewRoutes() {
   }
 }
 
+async function handleCopyDiagnostics() {
+  if (!latestDiagnostics) {
+    setStatus("Generate a plan first to copy diagnostics.", true);
+    return;
+  }
+
+  const riskPct = latestRisk ? Math.round(latestRisk.score * 100) : null;
+  const lines = [
+    "beaver-study diagnostics snapshot",
+    `Tasks: ${latestPlanRequest?.tasks?.length || 0}`,
+    `Plan start: ${latestDiagnostics.start_date || "-"}`,
+    `First deadline: ${latestDiagnostics.first_due_date || "No dated deadlines"}`,
+    `Focus days: ${latestDiagnostics.focus_days || 0}`,
+    `Peak day: ${
+      latestDiagnostics.busiest_day
+        ? `${latestDiagnostics.busiest_day.date} · ${latestDiagnostics.busiest_day.allocated_hours.toFixed(1)}h`
+        : "No sessions yet"
+    }`,
+    `Deadline buffer: ${latestDiagnostics.buffer_days_before_first_deadline || 0} day(s)`,
+    `Unscheduled: ${(latestDiagnostics.total_unscheduled_hours || 0).toFixed(1)}h`,
+    `Overdue: ${latestDiagnostics.overdue_tasks || 0}`,
+    `Recovery boost: ${
+      latestDiagnostics.recommended_daily_boost_hours > 0
+        ? `+${latestDiagnostics.recommended_daily_boost_hours.toFixed(1)}h/day`
+        : "Not needed"
+    }`,
+    `Risk: ${
+      latestRisk ? `${latestRisk.level.toUpperCase()} ${riskPct}%` : riskLabel.textContent || "-"
+    }`,
+    `Rationale: ${latestRisk?.rationale || riskRationale.textContent || "-"}`,
+    "",
+    "Top drivers",
+    ...((latestRisk?.top_drivers || []).map(
+      (driver) => `- ${driver.label}: ${driver.effect > 0 ? "+" : ""}${driver.effect}`
+    )),
+    "",
+    "Next action",
+    `- ${latestDiagnostics.next_action || diagnosticsAction.textContent || "-"}`,
+  ];
+
+  try {
+    await copyTextToClipboard(lines.join("\n"));
+    setStatus("Diagnostics copied.");
+  } catch {
+    setStatus("Diagnostics copy failed.", true);
+  }
+}
+
 function renderTasks(tasks) {
   tasksBody.innerHTML = "";
 
@@ -394,6 +445,7 @@ function renderPlan(studyPlan) {
 }
 
 function renderRisk(risk) {
+  latestRisk = risk || null;
   const percent = Math.round(risk.score * 100);
   riskFill.style.width = `${100 - percent}%`;
   riskLabel.textContent = `${risk.level.toUpperCase()} RISK · ${percent}%`;
@@ -415,6 +467,7 @@ function renderRisk(risk) {
 }
 
 function renderDiagnostics(diagnostics) {
+  latestDiagnostics = diagnostics || null;
   diagnosticsGrid.innerHTML = "";
 
   if (!diagnostics) {
@@ -610,6 +663,7 @@ downloadIcsBtn.addEventListener("click", downloadIcs);
 copyRuntimeBriefBtn.addEventListener("click", handleCopyRuntimeBrief);
 copyReviewRoutesBtn.addEventListener("click", handleCopyReviewRoutes);
 copyReviewPackBtn.addEventListener("click", handleCopyReviewPack);
+copyDiagnosticsBtn.addEventListener("click", handleCopyDiagnostics);
 whatIfBoostInput.addEventListener("input", () => {
   syncWhatIfLabel();
   if (latestPlanRequest?.tasks?.length) {
