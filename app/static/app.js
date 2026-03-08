@@ -63,6 +63,7 @@ const reviewPackSequence = document.getElementById("reviewPackSequence");
 const reviewPackProofAssets = document.getElementById("reviewPackProofAssets");
 const reviewPackWatchouts = document.getElementById("reviewPackWatchouts");
 const copyRuntimeBriefBtn = document.getElementById("copyRuntimeBriefBtn");
+const copyReviewRoutesBtn = document.getElementById("copyReviewRoutesBtn");
 const copyReviewPackBtn = document.getElementById("copyReviewPackBtn");
 
 const tasksBody = document.getElementById("tasksBody");
@@ -324,6 +325,19 @@ async function handleCopyReviewPack() {
     setStatus("Review pack copied.");
   } catch {
     setStatus("Review pack copy failed.", true);
+  }
+}
+
+async function handleCopyReviewRoutes() {
+  const pack = latestReviewPack || {};
+  const routes = pack.proof_bundle?.review_routes || [];
+  const lines = ["beaver-study review routes", ...routes.map((item) => `- ${item}`)];
+
+  try {
+    await copyTextToClipboard(lines.join("\n"));
+    setStatus("Review routes copied.");
+  } catch {
+    setStatus("Review routes copy failed.", true);
   }
 }
 
@@ -594,6 +608,7 @@ analyzeBtn.addEventListener("click", analyze);
 whatIfBtn.addEventListener("click", runWhatIf);
 downloadIcsBtn.addEventListener("click", downloadIcs);
 copyRuntimeBriefBtn.addEventListener("click", handleCopyRuntimeBrief);
+copyReviewRoutesBtn.addEventListener("click", handleCopyReviewRoutes);
 copyReviewPackBtn.addEventListener("click", handleCopyReviewPack);
 whatIfBoostInput.addEventListener("input", () => {
   syncWhatIfLabel();
