@@ -28,6 +28,17 @@ from app.models import (
 
 APP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = APP_DIR / "static"
+ANALYSIS_REPORT_SCHEMA = "beaver-study-analysis-report-v1"
+RUNTIME_BRIEF_CONTRACT = "beaver-study-runtime-brief-v1"
+RUNTIME_ROUTES = [
+    "/api/health",
+    "/api/meta",
+    "/api/runtime/brief",
+    "/api/schema/analysis-report",
+    "/api/analyze",
+    "/api/what-if",
+    "/api/export/ics",
+]
 
 app = FastAPI(
     title="Beaver Study Orchestrator",
@@ -36,6 +47,70 @@ app = FastAPI(
 )
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+def build_analysis_report_schema() -> dict[str, object]:
+    return {
+        "schema": ANALYSIS_REPORT_SCHEMA,
+        "required_sections": [
+            "extraction.tasks",
+            "extraction.discarded_lines",
+            "plan.study_plan",
+            "plan.risk",
+            "plan.diagnostics",
+        ],
+        "operator_rules": [
+            "Review extracted due dates before trusting the generated plan.",
+            "Run what-if analysis only after a baseline plan exists for the same task set.",
+            "Export the .ics calendar only after checking unscheduled spillover and risk recommendations.",
+        ],
+    }
+
+
+def build_runtime_brief() -> dict[str, object]:
+    return {
+        "status": "ok",
+        "service": "beaver-study-orchestrator",
+        "generated_at": datetime.now(timezone.utc),
+        "readiness_contract": RUNTIME_BRIEF_CONTRACT,
+        "headline": (
+            "Rule-based study-planning runtime that turns messy syllabus text into extracted tasks, "
+            "an adaptive schedule, interpretable risk, and calendar-ready execution."
+        ),
+        "report_contract": build_analysis_report_schema(),
+        "evidence_counts": {
+            "weekly_inputs": 7,
+            "max_daily_boost_hours": 4.0,
+            "runtime_routes": len(RUNTIME_ROUTES),
+            "diagnostic_cards": 8,
+        },
+        "review_flow": [
+            "Open /api/health or /api/meta to confirm parser posture and export readiness.",
+            "Run /api/analyze with representative syllabus text and inspect extracted due dates first.",
+            "Review risk drivers, recommendations, and unscheduled spillover before trusting the plan.",
+            "Use /api/what-if and /api/export/ics only after the baseline plan looks correct.",
+        ],
+        "watchouts": [
+            "Date extraction is rule-based and only as good as the syllabus formatting it receives.",
+            "A clean-looking schedule can still be risky if unscheduled spillover remains.",
+            "Calendar export reflects the generated plan; poor extraction propagates downstream.",
+        ],
+        "stage_contract": [
+            {
+                "stage": "extract",
+                "responsibility": "Parse syllabus lines into due-dated tasks with interpretable heuristics.",
+            },
+            {
+                "stage": "plan",
+                "responsibility": "Allocate study hours against weekly availability and surface spillover.",
+            },
+            {
+                "stage": "simulate",
+                "responsibility": "Compare baseline and boosted availability before finalizing execution.",
+            },
+        ],
+        "routes": RUNTIME_ROUTES,
+    }
 
 
 @app.get("/", include_in_schema=False)
@@ -49,6 +124,8 @@ def health() -> HealthResponse:
         status="ok",
         service="beaver-study-orchestrator",
         generated_at=datetime.now(timezone.utc),
+        readiness_contract=RUNTIME_BRIEF_CONTRACT,
+        report_contract=build_analysis_report_schema(),
         diagnostics={
             "parser_mode": "rule-based",
             "calendar_export_ready": True,
@@ -56,6 +133,9 @@ def health() -> HealthResponse:
             "next_action": "POST /api/analyze with syllabus text to generate an execution-ready plan.",
         },
         links={
+            "meta": "/api/meta",
+            "runtime_brief": "/api/runtime/brief",
+            "analysis_schema": "/api/schema/analysis-report",
             "analyze": "/api/analyze",
             "what_if": "/api/what-if",
             "export_ics": "/api/export/ics",
@@ -65,7 +145,40 @@ def health() -> HealthResponse:
             "version": 1,
             "required_fields": ["service", "status", "diagnostics.next_action"],
         },
+        capabilities=[
+            "rule-based-syllabus-extraction",
+            "adaptive-study-planning",
+            "risk-simulation",
+            "ics-export",
+            "runtime-brief-surface",
+            "analysis-schema-surface",
+        ],
+        routes=RUNTIME_ROUTES,
     )
+
+
+@app.get("/api/meta")
+def meta() -> dict[str, object]:
+    health_payload = health().model_dump(mode="json")
+    return {
+        **health_payload,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@app.get("/api/runtime/brief")
+def runtime_brief() -> dict[str, object]:
+    return build_runtime_brief()
+
+
+@app.get("/api/schema/analysis-report")
+def analysis_schema() -> dict[str, object]:
+    return {
+        "status": "ok",
+        "service": "beaver-study-orchestrator",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        **build_analysis_report_schema(),
+    }
 
 
 @app.post("/api/extract", response_model=ExtractionResponse)
