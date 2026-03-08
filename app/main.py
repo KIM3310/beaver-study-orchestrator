@@ -92,6 +92,12 @@ def build_runtime_brief() -> dict[str, object]:
             "Review risk drivers, recommendations, and unscheduled spillover before trusting the plan.",
             "Use /api/what-if and /api/export/ics only after the baseline plan looks correct.",
         ],
+        "two_minute_review": [
+            "Open /api/health or /api/meta to confirm parser posture, route coverage, and export readiness.",
+            "Open /api/runtime/brief and pin the analysis schema, operator rules, and stage contract.",
+            "Run /api/analyze with representative syllabus text and verify due dates before reading risk or schedule output.",
+            "Use /api/what-if and /api/export/ics only after spillover and recommendations look reasonable.",
+        ],
         "watchouts": [
             "Date extraction is rule-based and only as good as the syllabus formatting it receives.",
             "A clean-looking schedule can still be risky if unscheduled spillover remains.",
@@ -109,6 +115,28 @@ def build_runtime_brief() -> dict[str, object]:
             {
                 "stage": "simulate",
                 "responsibility": "Compare baseline and boosted availability before finalizing execution.",
+            },
+        ],
+        "proof_assets": [
+            {
+                "label": "Health Route",
+                "path": "/api/health",
+                "why": "Confirms parser posture, export readiness, and next operator action.",
+            },
+            {
+                "label": "Runtime Brief",
+                "path": "/api/runtime/brief",
+                "why": "Pins schema, stage contract, review flow, and watchouts before analysis.",
+            },
+            {
+                "label": "Review Pack",
+                "path": "/api/review-pack",
+                "why": "Packages reviewer promises, trust boundary, and export posture in one envelope.",
+            },
+            {
+                "label": "Analysis Schema",
+                "path": "/api/schema/analysis-report",
+                "why": "Locks the expected extraction, planning, and diagnostics contract.",
             },
         ],
         "routes": RUNTIME_ROUTES,
@@ -150,6 +178,12 @@ def build_review_pack() -> dict[str, object]:
             "Run /api/analyze with representative syllabus text and review due dates, spillover, and risk drivers.",
             "Use /api/what-if before exporting the final .ics calendar.",
         ],
+        "two_minute_review": [
+            "Open /api/health, /api/runtime/brief, and /api/review-pack to confirm parser posture and reviewer routes.",
+            "Run /api/analyze and verify extracted due dates before trusting schedule quality or risk level.",
+            "Use /api/what-if to compare the baseline and boosted plan before selecting a final path.",
+            "Export .ics only after the reviewer checks spillover, diagnostics, and recommendations together.",
+        ],
         "analysis_contract": {
             "schema": ANALYSIS_REPORT_SCHEMA,
             "report_routes": brief["routes"],
@@ -158,6 +192,28 @@ def build_review_pack() -> dict[str, object]:
             "Rule-based parsing is only as good as the syllabus date formatting it receives.",
             "A lower risk score does not guarantee that the extracted deadlines were correct.",
             "Calendar export propagates the plan exactly as reviewed.",
+        ],
+        "proof_assets": [
+            {
+                "label": "Health Route",
+                "path": "/api/health",
+                "why": "Shows parser posture, export readiness, and next action before analysis.",
+            },
+            {
+                "label": "Review Pack",
+                "path": "/api/review-pack",
+                "why": "Packages reviewer sequence, boundary, and promises into one contract.",
+            },
+            {
+                "label": "What-If Route",
+                "path": "/api/what-if",
+                "why": "Compares baseline versus boosted capacity before execution commitment.",
+            },
+            {
+                "label": "Calendar Export",
+                "path": "/api/export/ics",
+                "why": "Represents the downstream execution artifact after sign-off.",
+            },
         ],
         "links": {
             "health": "/api/health",
