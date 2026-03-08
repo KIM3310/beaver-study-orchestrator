@@ -45,8 +45,10 @@ const briefParserMode = document.getElementById("briefParserMode");
 const briefCalendarReady = document.getElementById("briefCalendarReady");
 const briefRouteCount = document.getElementById("briefRouteCount");
 const briefReviewFlow = document.getElementById("briefReviewFlow");
+const briefTwoMinuteReview = document.getElementById("briefTwoMinuteReview");
 const briefOperatorRules = document.getElementById("briefOperatorRules");
 const briefStageContract = document.getElementById("briefStageContract");
+const briefProofAssets = document.getElementById("briefProofAssets");
 const briefWatchouts = document.getElementById("briefWatchouts");
 const reviewPackBadge = document.getElementById("reviewPackBadge");
 const reviewPackHeadline = document.getElementById("reviewPackHeadline");
@@ -55,8 +57,10 @@ const reviewPackRoutes = document.getElementById("reviewPackRoutes");
 const reviewPackSchema = document.getElementById("reviewPackSchema");
 const reviewPackExport = document.getElementById("reviewPackExport");
 const reviewPackPromises = document.getElementById("reviewPackPromises");
+const reviewPackTwoMinuteReview = document.getElementById("reviewPackTwoMinuteReview");
 const reviewPackBoundary = document.getElementById("reviewPackBoundary");
 const reviewPackSequence = document.getElementById("reviewPackSequence");
+const reviewPackProofAssets = document.getElementById("reviewPackProofAssets");
 const reviewPackWatchouts = document.getElementById("reviewPackWatchouts");
 
 const tasksBody = document.getElementById("tasksBody");
@@ -148,6 +152,18 @@ function renderStageContract(items) {
   });
 }
 
+function renderProofAssets(container, items) {
+  container.innerHTML = "";
+  (items || []).forEach((item) => {
+    const li = document.createElement("li");
+    const label = item.label || "Asset";
+    const path = item.path || "";
+    const why = item.why || "";
+    li.textContent = why ? `${label} (${path}) — ${why}` : `${label} (${path})`;
+    container.appendChild(li);
+  });
+}
+
 async function loadRuntimeBrief() {
   try {
     const [healthResponse, briefResponse] = await Promise.all([
@@ -172,8 +188,10 @@ async function loadRuntimeBrief() {
     briefCalendarReady.textContent = health.diagnostics?.calendar_export_ready ? "Ready" : "Check";
     briefRouteCount.textContent = `${(brief.routes || []).length} routes`;
     renderBriefList(briefReviewFlow, brief.review_flow || []);
+    renderBriefList(briefTwoMinuteReview, brief.two_minute_review || []);
     renderBriefList(briefOperatorRules, reportContract.operator_rules || []);
     renderStageContract(brief.stage_contract || []);
+    renderProofAssets(briefProofAssets, brief.proof_assets || []);
     renderBriefList(briefWatchouts, brief.watchouts || []);
   } catch (error) {
     briefBadge.classList.remove("ok");
@@ -185,8 +203,10 @@ async function loadRuntimeBrief() {
     briefCalendarReady.textContent = "-";
     briefRouteCount.textContent = "-";
     renderBriefList(briefReviewFlow, ["Open /api/health when the backend becomes available."]);
+    renderBriefList(briefTwoMinuteReview, ["Open health, runtime brief, representative analyze flow, then export routes."]);
     renderBriefList(briefOperatorRules, ["No operator rules loaded."]);
     renderStageContract([]);
+    renderProofAssets(briefProofAssets, []);
     renderBriefList(briefWatchouts, [`${error.message}`]);
   }
 }
@@ -210,8 +230,10 @@ async function loadReviewPack() {
     reviewPackSchema.textContent = analysisContract.schema || "-";
     reviewPackExport.textContent = proofBundle.calendar_export_ready ? "Ready" : "Check";
     renderBriefList(reviewPackPromises, pack.executive_promises || []);
+    renderBriefList(reviewPackTwoMinuteReview, pack.two_minute_review || []);
     renderBriefList(reviewPackBoundary, pack.trust_boundary || []);
     renderBriefList(reviewPackSequence, pack.review_sequence || []);
+    renderProofAssets(reviewPackProofAssets, pack.proof_assets || []);
     renderBriefList(reviewPackWatchouts, pack.watchouts || []);
   } catch (error) {
     reviewPackBadge.classList.remove("ok");
@@ -223,8 +245,10 @@ async function loadReviewPack() {
     reviewPackSchema.textContent = "-";
     reviewPackExport.textContent = "-";
     renderBriefList(reviewPackPromises, ["Open /api/review-pack when the backend becomes available."]);
+    renderBriefList(reviewPackTwoMinuteReview, ["Open health, runtime brief, analyze, what-if, then export routes."]);
     renderBriefList(reviewPackBoundary, []);
     renderBriefList(reviewPackSequence, []);
+    renderProofAssets(reviewPackProofAssets, []);
     renderBriefList(reviewPackWatchouts, [`${error.message}`]);
   }
 }
