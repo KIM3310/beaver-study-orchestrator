@@ -1,4 +1,4 @@
-# Winning Runbook (GDG Winter 2026)
+# Pitch Runbook
 
 ## Demo Flow (2-4 min)
 1. Problem in 15 seconds: students miss deadlines because syllabus data is unstructured.
@@ -9,21 +9,20 @@
 6. Show mitigation actions and explain one tradeoff.
 7. Click **Download .ics** and show calendar-ready execution.
 
-## Judge-Facing Talking Points
+## Reviewer-Facing Talking Points
 - **Technical depth:** free-text parsing + allocation algorithm + interpretable risk model + scenario simulation.
 - **Reliability:** handles empty/no-date input without server crashes.
 - **User value:** turns analysis into action via calendar export.
 - **Engineering quality:** tests + CI + reproducible local setup.
 
-## Q&A Prep (Fast Answers)
+## Q&A Prep
 - Why rule-based parser?
   - Deterministic, cheap, and reproducible for student use-cases.
 - Why not black-box ML for risk?
-  - Judges can inspect every feature and coefficient; easier trust and debugging.
+  - Reviewers can inspect every feature and coefficient; easier trust and debugging.
 - Biggest bug fixed?
   - No-date syllabi previously caused 500; now graceful response with guidance.
 
-## Submission Hygiene
+## Presentation Hygiene
 - Keep README first screen concise and outcome-driven.
-- Include all team OSU emails in Devpost.
-- Ensure hosted demo or local run instructions are tested right before deadline.
+- Ensure hosted demo or local run instructions are tested right before a review.
