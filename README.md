@@ -149,6 +149,7 @@ source .venv/bin/activate
 python -m pip install -U pip
 python -m pip install -e ".[dev]"
 python -m pytest
+python scripts/exercise_runtime_scorecard.py
 ```
 
 ## Repository Hygiene
