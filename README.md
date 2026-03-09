@@ -83,7 +83,7 @@ Open `http://127.0.0.1:8000`
 - `GET /api/schema/analysis-report`: pins the expected analysis payload for extraction, study plan, risk, and diagnostics.
 - Landing-page runtime brief: the top of the UI now shows schema, parser mode, export readiness, route count, operator rules, and watchouts before analysis runs.
 
-## Quick Review Path
+## Review Flow
 - Open `/api/health` or `/api/meta` to confirm parser posture, route coverage, and export readiness.
 - Open `/api/runtime/brief` and pin the analysis schema, operator rules, and stage contract.
 - Run `/api/analyze` with representative syllabus text and verify due dates before reading risk or schedule quality.
