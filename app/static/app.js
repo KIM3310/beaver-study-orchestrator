@@ -80,11 +80,14 @@ const riskRecommendations = document.getElementById("riskRecommendations");
 const whatIfSummary = document.getElementById("whatIfSummary");
 const diagnosticsGrid = document.getElementById("diagnosticsGrid");
 const diagnosticsAction = document.getElementById("diagnosticsAction");
+const historySummary = document.getElementById("historySummary");
+const historyTimeline = document.getElementById("historyTimeline");
 let latestPlanRequest = null;
 let latestRuntimeBrief = null;
 let latestReviewPack = null;
 let latestRisk = null;
 let latestDiagnostics = null;
+let latestHistoryPayload = null;
 
 function formatDateInputValue(date) {
   const year = date.getFullYear();
@@ -539,6 +542,48 @@ function renderDiagnostics(diagnostics) {
   diagnosticsAction.textContent = diagnostics.next_action;
 }
 
+async function loadRecentHistory() {
+  try {
+    const response = await fetch("/api/history/recent?limit=6");
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const items = payload.items || [];
+    latestHistoryPayload = payload;
+    historyTimeline.innerHTML = "";
+
+    if (!items.length) {
+      historySummary.textContent = "Recent plan attempts will appear here after analysis runs.";
+      historyTimeline.innerHTML = "<p class='muted'>No recent analyses have been recorded yet.</p>";
+      return;
+    }
+
+    const highRiskCount = items.filter((item) => item.risk_level === "high").length;
+    const spilloverCount = items.filter((item) => Number(item.unscheduled_hours || 0) > 0).length;
+    historySummary.textContent = `${items.length} recent analyses loaded | ${highRiskCount} high-risk | ${spilloverCount} with spillover`;
+
+    items.forEach((item) => {
+      const card = document.createElement("div");
+      card.className = "timeline-item";
+      const riskPct = Math.round((Number(item.risk_score) || 0) * 100);
+      const firstDue = item.first_due_date || "No dated deadlines";
+      card.innerHTML = `
+        <strong>${item.headline}</strong>
+        <div class="timeline-meta">${item.created_at} · ${item.task_count} task(s) · ${item.risk_level.toUpperCase()} ${riskPct}%</div>
+        <div>Start ${item.start_date} · First due ${firstDue} · Focus ${item.focus_days} day(s) · Unscheduled ${Number(item.unscheduled_hours || 0).toFixed(1)}h</div>
+        <div class="timeline-meta">${item.next_action}</div>
+      `;
+      historyTimeline.appendChild(card);
+    });
+  } catch (error) {
+    latestHistoryPayload = null;
+    historySummary.textContent = "Recent analyses unavailable.";
+    historyTimeline.innerHTML = `<p class='muted'>${error.message}</p>`;
+  }
+}
+
 async function downloadIcs() {
   if (!latestPlanRequest || !latestPlanRequest.tasks?.length) {
     setStatus("Generate a plan first to export calendar events.", true);
@@ -666,6 +711,7 @@ async function analyze() {
     } else {
       setStatus("Done. Plan generated successfully.");
     }
+    loadRecentHistory();
   } catch (error) {
     latestPlanRequest = null;
     renderDiagnostics(null);
@@ -708,6 +754,7 @@ syllabusText.value = sampleText;
 startDateInput.value = formatDateInputValue(new Date());
 syncWhatIfLabel();
 renderDiagnostics(null);
+loadRecentHistory();
 loadRuntimeBrief();
 loadReviewPack();
 setStatus("Ready. Update sample text or paste your own syllabus.");

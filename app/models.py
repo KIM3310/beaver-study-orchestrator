@@ -166,6 +166,22 @@ class AnalyzeResponse(BaseModel):
     plan: PlanResponse
 
 
+class AnalysisHistoryItem(BaseModel):
+    analysis_id: str = Field(..., min_length=8, max_length=64)
+    created_at: datetime
+    headline: str = Field(..., min_length=3, max_length=160)
+    task_count: int = Field(..., ge=0)
+    start_date: date
+    first_due_date: Optional[date] = None
+    weekly_capacity_hours: float = Field(..., ge=0, le=84)
+    risk_level: Literal["low", "medium", "high"]
+    risk_score: float = Field(..., ge=0, le=1)
+    unscheduled_hours: float = Field(..., ge=0)
+    focus_days: int = Field(..., ge=0)
+    recommended_daily_boost_hours: float = Field(..., ge=0, le=4.0)
+    next_action: str = Field(..., min_length=3, max_length=240)
+
+
 class HealthResponse(BaseModel):
     status: Literal["ok"]
     service: str

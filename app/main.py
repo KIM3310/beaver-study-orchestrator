@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import json
+import os
+import tempfile
 from datetime import date, datetime, timezone
 from pathlib import Path
+from uuid import uuid4
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
@@ -16,6 +20,7 @@ from app.core.syllabus_parser import extract_tasks_from_syllabus
 from app.models import (
     AnalyzeRequest,
     AnalyzeResponse,
+    AnalysisHistoryItem,
     ExtractionRequest,
     ExtractionResponse,
     HealthResponse,
@@ -31,12 +36,21 @@ STATIC_DIR = APP_DIR / "static"
 ANALYSIS_REPORT_SCHEMA = "beaver-study-analysis-report-v1"
 RUNTIME_BRIEF_CONTRACT = "beaver-study-runtime-brief-v1"
 REVIEW_PACK_CONTRACT = "beaver-study-review-pack-v1"
+ANALYSIS_HISTORY_SCHEMA = "beaver-study-analysis-history-v1"
+ANALYSIS_HISTORY_PATH = Path(
+    os.getenv(
+        "BEAVER_STUDY_HISTORY_PATH",
+        str(Path(tempfile.gettempdir()) / "beaver_study_analysis_history.jsonl"),
+    )
+).expanduser()
 RUNTIME_ROUTES = [
     "/api/health",
     "/api/meta",
     "/api/runtime/brief",
     "/api/review-pack",
     "/api/schema/analysis-report",
+    "/api/history/recent",
+    "/api/history/recent/schema",
     "/api/analyze",
     "/api/what-if",
     "/api/export/ics",
@@ -67,6 +81,100 @@ def build_analysis_report_schema() -> dict[str, object]:
             "Export the .ics calendar only after checking unscheduled spillover and risk recommendations.",
         ],
     }
+
+
+def build_analysis_history_schema() -> dict[str, object]:
+    return {
+        "schema": ANALYSIS_HISTORY_SCHEMA,
+        "storage_mode": "append-only jsonl snapshots with latest-first review",
+        "required_fields": [
+            "analysis_id",
+            "created_at",
+            "headline",
+            "task_count",
+            "start_date",
+            "risk_level",
+            "risk_score",
+            "unscheduled_hours",
+            "focus_days",
+            "next_action",
+        ],
+        "operator_rules": [
+            "Recent analyses are compact review snapshots, not a replacement for the full analyze payload.",
+            "Review extraction quality and first due date before trusting a low-risk score.",
+            "Use recent history to compare recent plan attempts and spot repeated spillover or tight buffers.",
+        ],
+    }
+
+
+def clamp_history_limit(limit: int) -> int:
+    return max(1, min(int(limit or 6), 12))
+
+
+def normalize_risk_level_filter(risk_level: str | None) -> str | None:
+    normalized = str(risk_level or "").strip().lower()
+    if not normalized:
+        return None
+    if normalized not in {"low", "medium", "high"}:
+        raise ValueError("invalid risk_level filter")
+    return normalized
+
+
+def make_analysis_history_item(
+    *,
+    request: AnalyzeRequest,
+    extraction: ExtractionResponse,
+    plan: PlanResponse,
+    start: date,
+) -> AnalysisHistoryItem:
+    tasks = extraction.tasks
+    diagnostics = plan.diagnostics
+    risk = plan.risk
+    headline = tasks[0].title if tasks else "No dated tasks extracted"
+    weekly_capacity_hours = round(sum(request.availability.as_list()), 2)
+    return AnalysisHistoryItem(
+        analysis_id=uuid4().hex,
+        created_at=datetime.now(timezone.utc),
+        headline=headline,
+        task_count=len(tasks),
+        start_date=start,
+        first_due_date=diagnostics.first_due_date,
+        weekly_capacity_hours=weekly_capacity_hours,
+        risk_level=risk.level,
+        risk_score=risk.score,
+        unscheduled_hours=diagnostics.total_unscheduled_hours,
+        focus_days=diagnostics.focus_days,
+        recommended_daily_boost_hours=diagnostics.recommended_daily_boost_hours,
+        next_action=diagnostics.next_action,
+    )
+
+
+def append_analysis_history(item: AnalysisHistoryItem) -> None:
+    ANALYSIS_HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with ANALYSIS_HISTORY_PATH.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(item.model_dump(mode="json"), ensure_ascii=True))
+        handle.write("\n")
+
+
+def list_recent_analysis_history(*, limit: int = 6, risk_level: str | None = None) -> list[dict[str, object]]:
+    items: list[AnalysisHistoryItem] = []
+    if ANALYSIS_HISTORY_PATH.exists():
+        with ANALYSIS_HISTORY_PATH.open("r", encoding="utf-8") as handle:
+            for line in handle:
+                raw = line.strip()
+                if not raw:
+                    continue
+                try:
+                    item = AnalysisHistoryItem.model_validate_json(raw)
+                except Exception:
+                    continue
+                items.append(item)
+
+    if risk_level:
+        items = [item for item in items if item.risk_level == risk_level]
+
+    items.sort(key=lambda item: item.created_at, reverse=True)
+    return [item.model_dump(mode="json") for item in items[:clamp_history_limit(limit)]]
 
 
 def build_runtime_brief() -> dict[str, object]:
@@ -137,6 +245,11 @@ def build_runtime_brief() -> dict[str, object]:
                 "label": "Analysis Schema",
                 "path": "/api/schema/analysis-report",
                 "why": "Locks the expected extraction, planning, and diagnostics contract.",
+            },
+            {
+                "label": "Recent History",
+                "path": "/api/history/recent",
+                "why": "Shows recent plan attempts so operators can compare risk and spillover over time.",
             },
         ],
         "routes": RUNTIME_ROUTES,
@@ -214,6 +327,11 @@ def build_review_pack() -> dict[str, object]:
                 "path": "/api/export/ics",
                 "why": "Represents the downstream execution artifact after sign-off.",
             },
+            {
+                "label": "Recent History",
+                "path": "/api/history/recent",
+                "why": "Lets reviewers compare recent plans before exporting or re-running.",
+            },
         ],
         "links": {
             "health": "/api/health",
@@ -221,6 +339,7 @@ def build_review_pack() -> dict[str, object]:
             "runtime_brief": "/api/runtime/brief",
             "review_pack": "/api/review-pack",
             "analysis_schema": "/api/schema/analysis-report",
+            "analysis_history": "/api/history/recent",
             "what_if": "/api/what-if",
             "export_ics": "/api/export/ics",
         },
@@ -251,6 +370,7 @@ def health() -> HealthResponse:
             "runtime_brief": "/api/runtime/brief",
             "review_pack": "/api/review-pack",
             "analysis_schema": "/api/schema/analysis-report",
+            "analysis_history": "/api/history/recent",
             "analyze": "/api/analyze",
             "what_if": "/api/what-if",
             "export_ics": "/api/export/ics",
@@ -267,6 +387,7 @@ def health() -> HealthResponse:
             "ics-export",
             "runtime-brief-surface",
             "analysis-schema-surface",
+            "analysis-history-surface",
             "review-pack-surface",
         ],
         routes=RUNTIME_ROUTES,
@@ -299,6 +420,36 @@ def analysis_schema() -> dict[str, object]:
         "service": "beaver-study-orchestrator",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         **build_analysis_report_schema(),
+    }
+
+
+@app.get("/api/history/recent/schema")
+def analysis_history_schema() -> dict[str, object]:
+    return {
+        "status": "ok",
+        "service": "beaver-study-orchestrator",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        **build_analysis_history_schema(),
+    }
+
+
+@app.get("/api/history/recent")
+def analysis_history_recent(limit: int = 6, risk_level: str | None = None) -> dict[str, object]:
+    try:
+        normalized_risk_level = normalize_risk_level_filter(risk_level)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return {
+        "status": "ok",
+        "service": "beaver-study-orchestrator",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "schema": ANALYSIS_HISTORY_SCHEMA,
+        "filters": {
+            "limit": clamp_history_limit(limit),
+            "risk_level": normalized_risk_level,
+        },
+        "items": list_recent_analysis_history(limit=limit, risk_level=normalized_risk_level),
     }
 
 
@@ -345,6 +496,14 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     risk = assess_risk(tasks=tasks, plan=study_plan, availability=request.availability.as_list())
     diagnostics = build_plan_diagnostics(tasks, study_plan, start)
     plan_response = PlanResponse(study_plan=study_plan, risk=risk, diagnostics=diagnostics)
+    append_analysis_history(
+        make_analysis_history_item(
+            request=request,
+            extraction=extraction,
+            plan=plan_response,
+            start=start,
+        )
+    )
 
     return AnalyzeResponse(extraction=extraction, plan=plan_response)
 
