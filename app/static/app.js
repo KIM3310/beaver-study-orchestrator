@@ -66,6 +66,7 @@ const copyRuntimeBriefBtn = document.getElementById("copyRuntimeBriefBtn");
 const copyReviewRoutesBtn = document.getElementById("copyReviewRoutesBtn");
 const copyReviewPackBtn = document.getElementById("copyReviewPackBtn");
 const copyDiagnosticsBtn = document.getElementById("copyDiagnosticsBtn");
+const copyExecutionSnapshotBtn = document.getElementById("copyExecutionSnapshotBtn");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -392,6 +393,36 @@ async function handleCopyDiagnostics() {
   }
 }
 
+async function handleCopyExecutionSnapshot() {
+  if (!latestPlanRequest || !latestDiagnostics) {
+    setStatus("Generate a plan first to copy an execution snapshot.", true);
+    return;
+  }
+
+  const riskPct = latestRisk ? Math.round(latestRisk.score * 100) : null;
+  const lines = [
+    "beaver-study execution snapshot",
+    `Task count: ${latestPlanRequest.tasks?.length || 0}`,
+    `Plan start: ${latestDiagnostics.start_date || readStartDate() || "-"}`,
+    `Parser mode: ${briefParserMode.textContent || "-"}`,
+    `Schema: ${briefSchema.textContent || reviewPackSchema.textContent || "-"}`,
+    `Calendar export: ${reviewPackExport.textContent || briefCalendarReady.textContent || "-"}`,
+    `Risk: ${latestRisk ? `${latestRisk.level.toUpperCase()} ${riskPct}%` : riskLabel.textContent || "-"}`,
+    `Next action: ${latestDiagnostics.next_action || diagnosticsAction.textContent || "-"}`,
+    `What-if: ${whatIfSummary.textContent || "not simulated"}`,
+    "",
+    "Focused routes",
+    ...((latestReviewPack?.proof_bundle?.review_routes || []).slice(0, 4).map((item) => `- ${item}`)),
+  ];
+
+  try {
+    await copyTextToClipboard(lines.join("\n"));
+    setStatus("Execution snapshot copied.");
+  } catch {
+    setStatus("Execution snapshot copy failed.", true);
+  }
+}
+
 function renderTasks(tasks) {
   tasksBody.innerHTML = "";
 
@@ -664,6 +695,7 @@ copyRuntimeBriefBtn.addEventListener("click", handleCopyRuntimeBrief);
 copyReviewRoutesBtn.addEventListener("click", handleCopyReviewRoutes);
 copyReviewPackBtn.addEventListener("click", handleCopyReviewPack);
 copyDiagnosticsBtn.addEventListener("click", handleCopyDiagnostics);
+copyExecutionSnapshotBtn.addEventListener("click", handleCopyExecutionSnapshot);
 whatIfBoostInput.addEventListener("input", () => {
   syncWhatIfLabel();
   if (latestPlanRequest?.tasks?.length) {
