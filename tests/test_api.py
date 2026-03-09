@@ -1,4 +1,13 @@
+import os
+import tempfile
+from pathlib import Path
+
 from fastapi.testclient import TestClient
+
+HISTORY_PATH = Path(tempfile.gettempdir()) / "beaver_study_history_test.jsonl"
+os.environ["BEAVER_STUDY_HISTORY_PATH"] = str(HISTORY_PATH)
+if HISTORY_PATH.exists():
+    HISTORY_PATH.unlink()
 
 from app.main import app
 
@@ -59,6 +68,11 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert schema_payload["schema"] == "beaver-study-analysis-report-v1"
     assert "plan.risk" in schema_payload["required_sections"]
 
+    history_schema = client.get("/api/history/recent/schema")
+    assert history_schema.status_code == 200
+    history_schema_payload = history_schema.json()
+    assert history_schema_payload["schema"] == "beaver-study-analysis-history-v1"
+
 
 def test_analyze_endpoint_returns_plan_and_risk():
     payload = {
@@ -89,6 +103,13 @@ def test_analyze_endpoint_returns_plan_and_risk():
     assert len(data["plan"]["risk"]["recommendations"]) >= 1
     assert data["plan"]["diagnostics"]["focus_days"] >= 1
     assert "next_action" in data["plan"]["diagnostics"]
+
+    history = client.get("/api/history/recent?limit=3")
+    assert history.status_code == 200
+    history_payload = history.json()
+    assert history_payload["schema"] == "beaver-study-analysis-history-v1"
+    assert history_payload["items"][0]["task_count"] >= 2
+    assert history_payload["items"][0]["risk_level"] in {"low", "medium", "high"}
 
 
 def test_analyze_endpoint_respects_custom_start_date():
