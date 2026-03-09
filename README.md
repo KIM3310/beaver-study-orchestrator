@@ -1,6 +1,6 @@
 # Beaver Study Orchestrator
 
-A service-grade full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
+A production-minded full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
 
 ## 4-Line Problem Frame
 - **User:** Busy students juggling multiple deadlines across classes.
@@ -75,7 +75,7 @@ make run
 ```
 Open `http://127.0.0.1:8000`
 
-## Service-Grade Surfaces
+## Runtime Surfaces
 - `GET /api/health`: exposes parser posture, export readiness, review links, and runtime contract.
 - `GET /api/meta`: returns the same health contract in a reviewer-friendly metadata envelope.
 - `GET /api/runtime/brief`: summarizes the extract -> plan -> simulate workflow, review flow, and watchouts.
@@ -83,7 +83,7 @@ Open `http://127.0.0.1:8000`
 - `GET /api/schema/analysis-report`: pins the expected analysis payload for extraction, study plan, risk, and diagnostics.
 - Landing-page runtime brief: the top of the UI now shows schema, parser mode, export readiness, route count, operator rules, and watchouts before analysis runs.
 
-## 2-Minute Review Path
+## Quick Review Path
 - Open `/api/health` or `/api/meta` to confirm parser posture, route coverage, and export readiness.
 - Open `/api/runtime/brief` and pin the analysis schema, operator rules, and stage contract.
 - Run `/api/analyze` with representative syllabus text and verify due dates before reading risk or schedule quality.
@@ -141,7 +141,6 @@ make test
 ## License
 MIT
 
-<!-- codex:local-verification:start -->
 ## Local Verification
 ```bash
 /Library/Developer/CommandLineTools/usr/bin/python3 -m venv .venv
@@ -155,6 +154,3 @@ python scripts/exercise_runtime_scorecard.py
 ## Repository Hygiene
 - Keep runtime artifacts out of commits (`.codex_runs/`, cache folders, temporary venvs).
 - Prefer running verification commands above before opening a PR.
-
-_Last updated: 2026-03-04_
-<!-- codex:local-verification:end -->
