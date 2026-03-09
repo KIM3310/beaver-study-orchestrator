@@ -1,6 +1,6 @@
 # Beaver Study Orchestrator
 
-A resume-ready full-stack project for Winter 2026 Hackathon submission.
+A service-grade full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
 
 ## 4-Line Problem Frame
 - **User:** Busy students juggling multiple deadlines across classes.
@@ -106,13 +106,13 @@ make test
 - GitHub Actions runs `pytest` on every push/PR.
 - Workflow file: `.github/workflows/ci.yml`
 
-## Submission Assets Mapping
+## Demo Assets Mapping
 - **Working Prototype:** This web app (`uvicorn app.main:app`)
 - **Video (2-4 min):** Script suggestion below
 - **GitHub Repo:** Includes commit-ready structure, tests, docs
-- **Final Checklist:** `docs/submission-checklist.md`
-- **Live Pitch Playbook:** `docs/winning-runbook.md`
-- **Devpost Draft:** `docs/devpost-description-template.md`
+- **Final Checklist:** `docs/demo-package-checklist.md`
+- **Live Pitch Playbook:** `docs/pitch-runbook.md`
+- **Project Description Draft:** `docs/project-description-template.md`
 - **Timed Demo Script:** `docs/demo-script-2to4min.md`
 
 ## 2-4 Minute Demo Script (Suggested)
