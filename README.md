@@ -1,6 +1,6 @@
 # Beaver Study Orchestrator
 
-A production-minded full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
+A full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
 
 ## 4-Line Problem Frame
 - **User:** Busy students juggling multiple deadlines across classes.
