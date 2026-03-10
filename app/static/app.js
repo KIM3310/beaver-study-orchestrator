@@ -35,6 +35,7 @@ const analyzeBtn = document.getElementById("analyzeBtn");
 const whatIfBtn = document.getElementById("whatIfBtn");
 const whatIfBoostInput = document.getElementById("whatIfBoost");
 const downloadIcsBtn = document.getElementById("downloadIcsBtn");
+const copyCurrentViewBtn = document.getElementById("copyCurrentViewBtn");
 const statusText = document.getElementById("statusText");
 const hoursGrid = document.getElementById("hoursGrid");
 const startDateInput = document.getElementById("startDate");
@@ -88,6 +89,7 @@ let latestReviewPack = null;
 let latestRisk = null;
 let latestDiagnostics = null;
 let latestHistoryPayload = null;
+const initialViewParams = new URLSearchParams(window.location.search);
 
 function formatDateInputValue(date) {
   const year = date.getFullYear();
@@ -107,6 +109,26 @@ function readWhatIfBoost() {
 
 function syncWhatIfLabel() {
   whatIfBtn.textContent = `What-if +${readWhatIfBoost().toFixed(1)}h/day`;
+}
+
+function updateReviewViewUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (startDateInput.value) params.set("start", startDateInput.value);
+  else params.delete("start");
+  params.set("boost", readWhatIfBoost().toFixed(1));
+  const search = params.toString();
+  const nextUrl = `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`;
+  window.history.replaceState(window.history.state, "", nextUrl);
+}
+
+async function copyCurrentViewLink() {
+  updateReviewViewUrl();
+  try {
+    await copyTextToClipboard(window.location.href);
+    setStatus("Current review link copied.");
+  } catch {
+    setStatus("Current review link copy failed.", true);
+  }
 }
 
 function renderHourInputs() {
@@ -742,19 +764,26 @@ copyReviewRoutesBtn.addEventListener("click", handleCopyReviewRoutes);
 copyReviewPackBtn.addEventListener("click", handleCopyReviewPack);
 copyDiagnosticsBtn.addEventListener("click", handleCopyDiagnostics);
 copyExecutionSnapshotBtn.addEventListener("click", handleCopyExecutionSnapshot);
+copyCurrentViewBtn.addEventListener("click", copyCurrentViewLink);
 whatIfBoostInput.addEventListener("input", () => {
   syncWhatIfLabel();
+  updateReviewViewUrl();
   if (latestPlanRequest?.tasks?.length) {
     whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
   }
 });
+startDateInput.addEventListener("change", updateReviewViewUrl);
 
 renderHourInputs();
 syllabusText.value = sampleText;
-startDateInput.value = formatDateInputValue(new Date());
+startDateInput.value = initialViewParams.get("start") || formatDateInputValue(new Date());
+if (initialViewParams.get("boost")) {
+  whatIfBoostInput.value = initialViewParams.get("boost");
+}
 syncWhatIfLabel();
 renderDiagnostics(null);
 loadRecentHistory();
 loadRuntimeBrief();
 loadReviewPack();
+updateReviewViewUrl();
 setStatus("Ready. Update sample text or paste your own syllabus.");
