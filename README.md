@@ -2,6 +2,10 @@
 
 A full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
 
+## Portfolio posture
+- Treat this repo as a focused study-planning workflow, not a general chatbot.
+- The planning API, what-if simulator, and ICS export are the proof surfaces for the product story.
+
 ## 4-Line Problem Frame
 - **User:** Busy students juggling multiple deadlines across classes.
 - **Problem:** Syllabi are unstructured; students underestimate workload and cram late.
