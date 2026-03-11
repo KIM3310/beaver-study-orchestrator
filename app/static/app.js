@@ -1,12 +1,32 @@
-const sampleText = `CS 499 - Product Engineering
-Homework 1 due March 8, 2026
-Lab 2 due March 13, 2026
-Team Project Proposal due March 18, 2026
-Midterm Exam on March 24, 2026
-Assignment 3 due April 2, 2026
-Group Project Milestone due April 10, 2026
-Final Presentation due April 18, 2026
-Final Exam April 22, 2026`;
+function formatSampleDate(date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function buildSampleText() {
+  const today = new Date();
+  const milestones = [
+    ["Homework 1 due", 7],
+    ["Lab 2 due", 12],
+    ["Team Project Proposal due", 17],
+    ["Midterm Exam on", 23],
+    ["Assignment 3 due", 32],
+    ["Group Project Milestone due", 40],
+    ["Final Presentation due", 48],
+    ["Final Exam", 52],
+  ];
+  const lines = milestones.map(([label, dayOffset]) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() + dayOffset);
+    return `${label} ${formatSampleDate(date)}`;
+  });
+  return ["CS 499 - Product Engineering", ...lines].join("\n");
+}
+
+const sampleText = buildSampleText();
 
 const weekdays = [
   ["monday", "Mon"],
@@ -256,7 +276,7 @@ async function loadRuntimeBrief() {
     briefCalendarReady.textContent = "-";
     briefRouteCount.textContent = "-";
     renderBriefList(briefReviewFlow, ["Open /api/health when the backend becomes available."]);
-    renderBriefList(briefTwoMinuteReview, ["Open health, runtime brief, representative analyze flow, then export routes."]);
+    renderBriefList(briefTwoMinuteReview, ["Open /api/health, /api/runtime/brief, a representative analyze flow, then /api/export/ics."]);
     renderBriefList(briefOperatorRules, ["No operator rules loaded."]);
     renderStageContract([]);
     renderProofAssets(briefProofAssets, []);
@@ -299,7 +319,7 @@ async function loadReviewPack() {
     reviewPackSchema.textContent = "-";
     reviewPackExport.textContent = "-";
     renderBriefList(reviewPackPromises, ["Open /api/review-pack when the backend becomes available."]);
-    renderBriefList(reviewPackTwoMinuteReview, ["Open health, runtime brief, analyze, what-if, then export routes."]);
+    renderBriefList(reviewPackTwoMinuteReview, ["Open /api/health, /api/runtime/brief, /api/analyze, /api/what-if, then /api/export/ics."]);
     renderBriefList(reviewPackBoundary, []);
     renderBriefList(reviewPackSequence, []);
     renderProofAssets(reviewPackProofAssets, []);

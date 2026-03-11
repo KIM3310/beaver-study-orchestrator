@@ -16,7 +16,7 @@ A full-stack study planning project built around extraction, scheduling, and int
 - **User:** Busy students juggling multiple deadlines across classes.
 - **Problem:** Syllabi are unstructured; students underestimate workload and cram late.
 - **Constraint:** Planning must be fast, interpretable, and usable without paid APIs.
-- **Success Test:** From raw syllabus text, generate an actionable study plan + risk score in under 10 seconds.
+- **Success Test:** From raw syllabus text, generate an actionable study plan + risk score fast enough for a real student workflow (target: under 10 seconds in local demo conditions).
 
 ## Why This Is Competitive
 - Solves a concrete student pain with clear measurable output.
