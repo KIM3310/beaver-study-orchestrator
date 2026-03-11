@@ -9,7 +9,7 @@ A full-stack study planning project built around extraction, scheduling, and int
 
 ## Role signals
 - **AI engineer:** syllabus parsing, planning heuristics, and interpretable risk modeling are all exposed instead of hidden.
-- **Solution architect:** extraction, scheduling, and review surfaces are separated enough to discuss trade-offs cleanly.
+- **Solution / cloud architect:** extraction, scheduling, and review surfaces are separated enough to discuss trade-offs cleanly.
 - **Field / solutions engineer:** the demo path is immediate: raw syllabus in, study plan and risk drivers out.
 
 ## 4-Line Problem Frame
