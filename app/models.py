@@ -149,6 +149,35 @@ class WhatIfResponse(BaseModel):
     recommendation: str
 
 
+class RecoveryRequest(BaseModel):
+    tasks: List[Task] = Field(..., min_length=1, max_length=80)
+    availability: WeeklyAvailability
+    missed_dates: List[date] = Field(..., min_length=1, max_length=14)
+    start_date: Optional[date] = None
+
+
+class RecoveryScenarioSnapshot(BaseModel):
+    label: str
+    start_date: date
+    risk_score: float = Field(..., ge=0, le=1)
+    risk_level: Literal["low", "medium", "high"]
+    allocated_hours: float
+    unscheduled_hours: float
+    recommended_daily_boost_hours: float = Field(..., ge=0, le=4.0)
+    next_action: str
+
+
+class RecoveryResponse(BaseModel):
+    baseline: RecoveryScenarioSnapshot
+    slipped: RecoveryScenarioSnapshot
+    recovered: RecoveryScenarioSnapshot
+    missed_dates: List[date]
+    missed_days: int = Field(..., ge=1, le=14)
+    auto_recovery_hours: float = Field(..., ge=0, le=4.0)
+    delta: dict[str, float | int]
+    recommendation: str
+
+
 class AnalyzeRequest(BaseModel):
     syllabus_text: str = Field(..., min_length=20, max_length=20000)
     availability: WeeklyAvailability

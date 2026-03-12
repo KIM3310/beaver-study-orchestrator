@@ -28,6 +28,7 @@ def test_health():
     assert data["links"]["review_pack"] == "/api/review-pack"
     assert data["links"]["analysis_schema"] == "/api/schema/analysis-report"
     assert data["links"]["analyze"] == "/api/analyze"
+    assert data["links"]["recover"] == "/api/recover"
     assert "/api/runtime/brief" in data["routes"]
     assert "/api/review-pack" in data["routes"]
     assert "runtime-brief-surface" in data["capabilities"]
@@ -42,6 +43,7 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert meta_payload["service"] == "beaver-study-orchestrator"
     assert meta_payload["readiness_contract"] == "beaver-study-runtime-brief-v1"
     assert meta_payload["report_contract"]["schema"] == "beaver-study-analysis-report-v1"
+    assert "/api/recover" in meta_payload["routes"]
 
     brief = client.get("/api/runtime/brief")
     assert brief.status_code == 200
@@ -49,7 +51,7 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert brief_payload["readiness_contract"] == "beaver-study-runtime-brief-v1"
     assert brief_payload["report_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert brief_payload["evidence_counts"]["weekly_inputs"] == 7
-    assert len(brief_payload["stage_contract"]) == 3
+    assert len(brief_payload["stage_contract"]) == 4
     assert len(brief_payload["two_minute_review"]) == 4
     assert brief_payload["proof_assets"][0]["path"] == "/api/health"
 
@@ -58,6 +60,7 @@ def test_meta_runtime_brief_and_schema() -> None:
     review_payload = review_pack.json()
     assert review_payload["readiness_contract"] == "beaver-study-review-pack-v1"
     assert "/api/review-pack" in review_payload["proof_bundle"]["review_routes"]
+    assert "/api/recover" in review_payload["proof_bundle"]["review_routes"]
     assert review_payload["analysis_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert len(review_payload["two_minute_review"]) == 4
     assert review_payload["proof_assets"][0]["label"] == "Health Route"
@@ -238,3 +241,47 @@ def test_what_if_endpoint_compares_capacity_scenarios():
     assert isinstance(data["recommendation"], str)
     assert data["start_date_used"] == "2026-03-08"
     assert data["daily_boost"] == 1.0
+
+
+def test_recover_endpoint_replans_after_missed_sessions():
+    payload = {
+        "tasks": [
+            {
+                "title": "Final Project",
+                "due_date": "2026-03-18",
+                "task_type": "project",
+                "estimated_hours": 12,
+                "difficulty": 0.9,
+                "impact_weight": 1.4,
+            },
+            {
+                "title": "Midterm",
+                "due_date": "2026-03-20",
+                "task_type": "exam",
+                "estimated_hours": 8,
+                "difficulty": 0.8,
+                "impact_weight": 1.2,
+            },
+        ],
+        "availability": {
+            "monday": 2,
+            "tuesday": 2,
+            "wednesday": 2,
+            "thursday": 2,
+            "friday": 2,
+            "saturday": 2,
+            "sunday": 2,
+        },
+        "start_date": "2026-03-10",
+        "missed_dates": ["2026-03-11", "2026-03-12"],
+    }
+
+    response = client.post("/api/recover", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["missed_dates"] == ["2026-03-11", "2026-03-12"]
+    assert data["missed_days"] == 2
+    assert data["auto_recovery_hours"] >= 0
+    assert data["delta"]["missed_session_days"] == 2
+    assert data["recovered"]["start_date"] == "2026-03-12"
+    assert data["slipped"]["risk_score"] >= data["baseline"]["risk_score"]

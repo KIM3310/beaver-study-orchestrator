@@ -53,7 +53,9 @@ const loadSampleBtn = document.getElementById("loadSample");
 const resetHoursBtn = document.getElementById("resetHours");
 const analyzeBtn = document.getElementById("analyzeBtn");
 const whatIfBtn = document.getElementById("whatIfBtn");
+const recoverBtn = document.getElementById("recoverBtn");
 const whatIfBoostInput = document.getElementById("whatIfBoost");
+const missedDaysInput = document.getElementById("missedDays");
 const downloadIcsBtn = document.getElementById("downloadIcsBtn");
 const copyCurrentViewBtn = document.getElementById("copyCurrentViewBtn");
 const statusText = document.getElementById("statusText");
@@ -99,6 +101,7 @@ const riskRationale = document.getElementById("riskRationale");
 const riskDrivers = document.getElementById("riskDrivers");
 const riskRecommendations = document.getElementById("riskRecommendations");
 const whatIfSummary = document.getElementById("whatIfSummary");
+const recoverySummary = document.getElementById("recoverySummary");
 const diagnosticsGrid = document.getElementById("diagnosticsGrid");
 const diagnosticsAction = document.getElementById("diagnosticsAction");
 const historySummary = document.getElementById("historySummary");
@@ -125,6 +128,11 @@ function readStartDate() {
 function readWhatIfBoost() {
   const parsed = Number.parseFloat(whatIfBoostInput.value || "1");
   return Math.min(4, Math.max(0.5, Number.isFinite(parsed) ? parsed : 1));
+}
+
+function readMissedDays() {
+  const parsed = Number.parseInt(missedDaysInput.value || "2", 10);
+  return Math.min(14, Math.max(1, Number.isFinite(parsed) ? parsed : 2));
 }
 
 function syncWhatIfLabel() {
@@ -701,6 +709,54 @@ async function runWhatIf() {
   }
 }
 
+async function runRecovery() {
+  if (!latestPlanRequest || !latestPlanRequest.tasks?.length) {
+    setStatus("Generate a plan first before running recovery replanning.", true);
+    return;
+  }
+
+  recoverBtn.disabled = true;
+  try {
+    const missedDays = readMissedDays();
+    const start = latestPlanRequest.start_date || readStartDate();
+    const startDate = start ? new Date(start) : new Date();
+    const missedDates = Array.from({ length: missedDays }, (_, index) => {
+      const next = new Date(startDate);
+      next.setDate(startDate.getDate() + index + 1);
+      return formatDateInputValue(next);
+    });
+
+    const response = await fetch("/api/recover", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tasks: latestPlanRequest.tasks,
+        availability: latestPlanRequest.availability,
+        start_date: start,
+        missed_dates: missedDates,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    const baselinePct = Math.round(data.baseline.risk_score * 100);
+    const recoveredPct = Math.round(data.recovered.risk_score * 100);
+    recoverySummary.textContent =
+      `${data.missed_dates.length} missed day(s) -> recovery start ${data.recovered.start_date}. ` +
+      `Risk ${baselinePct}% (${data.baseline.risk_level}) -> ${recoveredPct}% (${data.recovered.risk_level}), ` +
+      `missed-session hours ${Number(data.delta.missed_session_hours || 0).toFixed(1)}h, ` +
+      `auto recovery +${Number(data.auto_recovery_hours || 0).toFixed(1)}h/day. ${data.recommendation}`;
+    setStatus("Recovery replan completed.");
+  } catch (error) {
+    setStatus(`Recovery replan failed: ${error.message}`, true);
+  } finally {
+    recoverBtn.disabled = false;
+  }
+}
+
 async function analyze() {
   const payload = {
     syllabus_text: syllabusText.value,
@@ -738,7 +794,9 @@ async function analyze() {
       start_date: payload.start_date,
     };
     whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
+    recoverySummary.textContent = `Click 'Recover Missed Sessions' to replan after ${readMissedDays()} missed day(s).`;
     whatIfBtn.disabled = data.extraction.tasks.length === 0;
+    recoverBtn.disabled = data.extraction.tasks.length === 0;
     downloadIcsBtn.disabled = data.extraction.tasks.length === 0;
 
     if (data.extraction.tasks.length === 0) {
@@ -759,6 +817,8 @@ async function analyze() {
     renderDiagnostics(null);
     whatIfSummary.textContent = "Run analysis first, then simulate extra daily capacity.";
     whatIfBtn.disabled = true;
+    recoverySummary.textContent = "Generate a plan first, then replan after missed study days.";
+    recoverBtn.disabled = true;
     downloadIcsBtn.disabled = true;
     setStatus(`Analysis failed: ${error.message}`, true);
   } finally {
@@ -778,6 +838,7 @@ resetHoursBtn.addEventListener("click", () => {
 
 analyzeBtn.addEventListener("click", analyze);
 whatIfBtn.addEventListener("click", runWhatIf);
+recoverBtn.addEventListener("click", runRecovery);
 downloadIcsBtn.addEventListener("click", downloadIcs);
 copyRuntimeBriefBtn.addEventListener("click", handleCopyRuntimeBrief);
 copyReviewRoutesBtn.addEventListener("click", handleCopyReviewRoutes);
@@ -802,6 +863,7 @@ if (initialViewParams.get("boost")) {
 }
 syncWhatIfLabel();
 renderDiagnostics(null);
+recoverBtn.disabled = true;
 loadRecentHistory();
 loadRuntimeBrief();
 loadReviewPack();

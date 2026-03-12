@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.core.calendar_export import build_ics_calendar
 from app.core.plan_diagnostics import build_plan_diagnostics
+from app.core.recovery_replan import build_recovery_replan
 from app.core.risk_model import assess_risk
 from app.core.scheduler import create_study_plan
 from app.core.syllabus_parser import extract_tasks_from_syllabus
@@ -26,6 +27,8 @@ from app.models import (
     HealthResponse,
     PlanRequest,
     PlanResponse,
+    RecoveryRequest,
+    RecoveryResponse,
     ScenarioSnapshot,
     WhatIfRequest,
     WhatIfResponse,
@@ -53,6 +56,8 @@ RUNTIME_ROUTES = [
     "/api/history/recent/schema",
     "/api/analyze",
     "/api/what-if",
+    "/api/recover-plan",
+    "/api/recover",
     "/api/export/ics",
 ]
 
@@ -78,6 +83,7 @@ def build_analysis_report_schema() -> dict[str, object]:
         "operator_rules": [
             "Review extracted due dates before trusting the generated plan.",
             "Run what-if analysis only after a baseline plan exists for the same task set.",
+            "Use recovery replanning after missed study days instead of silently shifting deadlines in your head.",
             "Export the .ics calendar only after checking unscheduled spillover and risk recommendations.",
         ],
     }
@@ -198,13 +204,13 @@ def build_runtime_brief() -> dict[str, object]:
             "Open /api/health or /api/meta to confirm parser posture and export readiness.",
             "Run /api/analyze with representative syllabus text and inspect extracted due dates first.",
             "Review risk drivers, recommendations, and unscheduled spillover before trusting the plan.",
-            "Use /api/what-if and /api/export/ics only after the baseline plan looks correct.",
+            "Use /api/what-if, /api/recover, and /api/export/ics only after the baseline plan looks correct.",
         ],
         "two_minute_review": [
             "Open /api/health or /api/meta to confirm parser posture, route coverage, and export readiness.",
             "Open /api/runtime/brief and pin the analysis schema, operator rules, and stage contract.",
             "Run /api/analyze with representative syllabus text and verify due dates before reading risk or schedule output.",
-            "Use /api/what-if and /api/export/ics only after spillover and recommendations look reasonable.",
+            "Use /api/what-if, /api/recover, and /api/export/ics only after spillover and recommendations look reasonable.",
         ],
         "watchouts": [
             "Date extraction is rule-based and only as good as the syllabus formatting it receives.",
@@ -223,6 +229,10 @@ def build_runtime_brief() -> dict[str, object]:
             {
                 "stage": "simulate",
                 "responsibility": "Compare baseline and boosted availability before finalizing execution.",
+            },
+            {
+                "stage": "recover",
+                "responsibility": "Replan automatically after missed study days and quantify the risk delta.",
             },
         ],
         "proof_assets": [
@@ -251,6 +261,11 @@ def build_runtime_brief() -> dict[str, object]:
                 "path": "/api/history/recent",
                 "why": "Shows recent plan attempts so operators can compare risk and spillover over time.",
             },
+            {
+                "label": "Recovery Replan",
+                "path": "/api/recover",
+                "why": "Shows how missed study days change risk and what extra capacity recovers the plan.",
+            },
         ],
         "routes": RUNTIME_ROUTES,
     }
@@ -274,27 +289,31 @@ def build_review_pack() -> dict[str, object]:
                 "/api/runtime/brief",
                 "/api/review-pack",
                 "/api/schema/analysis-report",
+                "/api/recover",
+                "/api/recover-plan",
             ],
         },
         "executive_promises": [
             "Extraction, plan generation, risk scoring, and calendar export stay reviewable through explicit contracts.",
             "What-if simulation is available before operators commit to a final study schedule.",
+            "Missed-session recovery is explicit, measurable, and reviewable instead of hidden in a manual reschedule.",
             "Calendar export is downstream of the reviewed plan rather than a side effect of raw extraction.",
         ],
         "trust_boundary": [
             "Rule-based extraction keeps due-date heuristics inspectable rather than opaque.",
             "Generated plans and what-if simulations are local computations over the extracted task set.",
+            "Recovery replanning reuses the same extracted task set so before/after risk deltas stay comparable.",
             "Calendar export mirrors the approved plan, so extraction mistakes must be caught before export.",
         ],
         "review_sequence": [
             "Open /api/health or /api/meta to confirm parser posture and export readiness.",
             "Run /api/analyze with representative syllabus text and review due dates, spillover, and risk drivers.",
-            "Use /api/what-if before exporting the final .ics calendar.",
+            "Use /api/what-if and /api/recover before exporting the final .ics calendar.",
         ],
         "two_minute_review": [
             "Open /api/health, /api/runtime/brief, and /api/review-pack to confirm parser posture and reviewer routes.",
             "Run /api/analyze and verify extracted due dates before trusting schedule quality or risk level.",
-            "Use /api/what-if to compare the baseline and boosted plan before selecting a final path.",
+            "Use /api/what-if and /api/recover to compare boosted and missed-session recovery paths before selecting a final path.",
             "Export .ics only after the reviewer checks spillover, diagnostics, and recommendations together.",
         ],
         "analysis_contract": {
@@ -323,6 +342,11 @@ def build_review_pack() -> dict[str, object]:
                 "why": "Compares baseline versus boosted capacity before execution commitment.",
             },
             {
+                "label": "Recovery Replan Route",
+                "path": "/api/recover",
+                "why": "Quantifies missed-session penalty and the recovery plan needed to get back on track.",
+            },
+            {
                 "label": "Calendar Export",
                 "path": "/api/export/ics",
                 "why": "Represents the downstream execution artifact after sign-off.",
@@ -341,6 +365,8 @@ def build_review_pack() -> dict[str, object]:
             "analysis_schema": "/api/schema/analysis-report",
             "analysis_history": "/api/history/recent",
             "what_if": "/api/what-if",
+            "recover_plan": "/api/recover-plan",
+            "recover": "/api/recover",
             "export_ics": "/api/export/ics",
         },
     }
@@ -363,6 +389,7 @@ def health() -> HealthResponse:
             "parser_mode": "rule-based",
             "calendar_export_ready": True,
             "what_if_supports_custom_start_date": True,
+            "recovery_replan_ready": True,
             "next_action": "Review /api/review-pack, then POST /api/analyze with syllabus text to generate an execution-ready plan.",
         },
         links={
@@ -372,7 +399,9 @@ def health() -> HealthResponse:
             "analysis_schema": "/api/schema/analysis-report",
             "analysis_history": "/api/history/recent",
             "analyze": "/api/analyze",
+            "recover_plan": "/api/recover-plan",
             "what_if": "/api/what-if",
+            "recover": "/api/recover",
             "export_ics": "/api/export/ics",
         },
         ops_contract={
@@ -384,6 +413,7 @@ def health() -> HealthResponse:
             "rule-based-syllabus-extraction",
             "adaptive-study-planning",
             "risk-simulation",
+            "recovery-replanning",
             "ics-export",
             "runtime-brief-surface",
             "analysis-schema-surface",
@@ -596,4 +626,16 @@ def what_if(request: WhatIfRequest) -> WhatIfResponse:
         daily_boost=request.daily_boost,
         risk_reduction=risk_reduction,
         recommendation=recommendation,
+    )
+
+
+@app.post("/api/recover", response_model=RecoveryResponse)
+@app.post("/api/recover-plan", response_model=RecoveryResponse)
+def recover_plan(request: RecoveryRequest) -> RecoveryResponse:
+    start = request.start_date or date.today()
+    return build_recovery_replan(
+        tasks=request.tasks,
+        availability=request.availability.as_list(),
+        start_date=start,
+        missed_dates=request.missed_dates,
     )
