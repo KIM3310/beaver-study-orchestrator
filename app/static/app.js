@@ -90,6 +90,15 @@ const copyReviewRoutesBtn = document.getElementById("copyReviewRoutesBtn");
 const copyReviewPackBtn = document.getElementById("copyReviewPackBtn");
 const copyDiagnosticsBtn = document.getElementById("copyDiagnosticsBtn");
 const copyExecutionSnapshotBtn = document.getElementById("copyExecutionSnapshotBtn");
+const lensHeadline = document.getElementById("lensHeadline");
+const lensSummary = document.getElementById("lensSummary");
+const lensGrid = document.getElementById("lensGrid");
+const lensPlannerBtn = document.getElementById("lensPlannerBtn");
+const lensReviewerBtn = document.getElementById("lensReviewerBtn");
+const lensRecoveryBtn = document.getElementById("lensRecoveryBtn");
+const lensPrimaryBtn = document.getElementById("lensPrimaryBtn");
+const lensSecondaryBtn = document.getElementById("lensSecondaryBtn");
+const lensTertiaryBtn = document.getElementById("lensTertiaryBtn");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -112,6 +121,39 @@ let latestReviewPack = null;
 let latestRisk = null;
 let latestDiagnostics = null;
 let latestHistoryPayload = null;
+let currentLens = "planner";
+const LENSES = {
+  planner: {
+    headline: "Planner Lens",
+    summary: "Start with risk, then the generated schedule, then the calendar/export artifact.",
+    cards: [
+      ["01 · Risk First", "Open the plan and risk summary before talking about export or calendar polish."],
+      ["02 · Schedule Proof", "Use the generated tasks and adaptive schedule to prove the planner is doing real work."],
+      ["03 · Export Last", "Only move to ICS once the schedule and diagnostics agree on the story."],
+    ],
+    actions: ["Copy Runtime Brief", "Copy Diagnostics", "Copy Execution Snapshot"],
+  },
+  reviewer: {
+    headline: "Reviewer Lens",
+    summary: "Keep the brief, review pack, and proof assets together so the study workflow reads as one deliberate product.",
+    cards: [
+      ["01 · Runtime Contract", "Read the runtime brief before the syllabus sample so the operator posture is anchored."],
+      ["02 · Review Pack", "Use the reviewer contract to explain trust boundary, promises, and export posture."],
+      ["03 · Shareable Path", "Copy routes or the current view only after the evidence is stable."],
+    ],
+    actions: ["Copy Review Pack", "Copy Review Routes", "Copy Current View"],
+  },
+  recovery: {
+    headline: "Recovery Lens",
+    summary: "Use this mode when you want to show adaptation: missed sessions, what-if boosts, and risk deltas in one flow.",
+    cards: [
+      ["01 · What-if", "Start with the boost simulation to show how the schedule responds to more study time."],
+      ["02 · Recovery", "Run missed-session recovery only after the baseline plan is visible."],
+      ["03 · Replanned Story", "End with diagnostics or execution snapshot so the delta is easy to explain."],
+    ],
+    actions: ["What-if +1h/day", "Recover Missed Sessions", "Copy Execution Snapshot"],
+  },
+};
 const RECORDED_REVIEW = {
   runtimeBrief: {
     status: "recorded-review",
@@ -298,6 +340,39 @@ function renderProofAssets(container, items) {
     li.textContent = why ? `${label} (${path}) — ${why}` : `${label} (${path})`;
     container.appendChild(li);
   });
+}
+
+function renderLensPanel() {
+  const config = LENSES[currentLens] || LENSES.planner;
+  lensHeadline.textContent = config.headline;
+  lensSummary.textContent = config.summary;
+  lensGrid.innerHTML = config.cards
+    .map(
+      ([title, body]) => `
+        <div class="brief-section">
+          <span class="brief-label">${title}</span>
+          <p class="subtitle">${body}</p>
+        </div>`,
+    )
+    .join("");
+  [lensPlannerBtn, lensReviewerBtn, lensRecoveryBtn].forEach((btn) => btn?.classList.remove("active"));
+  if (currentLens === "planner") lensPlannerBtn?.classList.add("active");
+  if (currentLens === "reviewer") lensReviewerBtn?.classList.add("active");
+  if (currentLens === "recovery") lensRecoveryBtn?.classList.add("active");
+  lensPrimaryBtn.textContent = config.actions[0];
+  lensSecondaryBtn.textContent = config.actions[1];
+  lensTertiaryBtn.textContent = config.actions[2];
+}
+
+function runLensAction(action) {
+  if (action === "Copy Runtime Brief") return handleCopyRuntimeBrief();
+  if (action === "Copy Diagnostics") return handleCopyDiagnostics();
+  if (action === "Copy Execution Snapshot") return handleCopyExecutionSnapshot();
+  if (action === "Copy Review Pack") return handleCopyReviewPack();
+  if (action === "Copy Review Routes") return handleCopyReviewRoutes();
+  if (action === "Copy Current View") return copyCurrentViewLink();
+  if (action === "What-if +1h/day") return runWhatIf();
+  if (action === "Recover Missed Sessions") return runRecovery();
 }
 
 async function copyTextToClipboard(text) {
@@ -927,6 +1002,21 @@ copyReviewPackBtn.addEventListener("click", handleCopyReviewPack);
 copyDiagnosticsBtn.addEventListener("click", handleCopyDiagnostics);
 copyExecutionSnapshotBtn.addEventListener("click", handleCopyExecutionSnapshot);
 copyCurrentViewBtn.addEventListener("click", copyCurrentViewLink);
+lensPlannerBtn.addEventListener("click", () => {
+  currentLens = "planner";
+  renderLensPanel();
+});
+lensReviewerBtn.addEventListener("click", () => {
+  currentLens = "reviewer";
+  renderLensPanel();
+});
+lensRecoveryBtn.addEventListener("click", () => {
+  currentLens = "recovery";
+  renderLensPanel();
+});
+lensPrimaryBtn.addEventListener("click", () => runLensAction(lensPrimaryBtn.textContent));
+lensSecondaryBtn.addEventListener("click", () => runLensAction(lensSecondaryBtn.textContent));
+lensTertiaryBtn.addEventListener("click", () => runLensAction(lensTertiaryBtn.textContent));
 whatIfBoostInput.addEventListener("input", () => {
   syncWhatIfLabel();
   updateReviewViewUrl();
@@ -943,6 +1033,7 @@ if (initialViewParams.get("boost")) {
   whatIfBoostInput.value = initialViewParams.get("boost");
 }
 syncWhatIfLabel();
+renderLensPanel();
 renderDiagnostics(null);
 recoverBtn.disabled = true;
 loadRecentHistory();

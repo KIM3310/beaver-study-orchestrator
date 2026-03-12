@@ -101,6 +101,12 @@ h1 {
   background: rgba(255, 93, 115, 0.12);
 }
 
+.ghost.active {
+  border-color: rgba(70, 217, 197, 0.45);
+  background: rgba(70, 217, 197, 0.14);
+  color: var(--text);
+}
+
 .brief-headline {
   margin: 0;
   color: var(--text);

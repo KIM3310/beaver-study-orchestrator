@@ -46,6 +46,40 @@
       <section class="panel brief-panel">
         <div class="panel-head">
           <div>
+            <p class="brief-kicker">Audience Lens</p>
+            <h2 id="lensHeadline">Planner Lens</h2>
+          </div>
+          <div class="brief-actions">
+            <button id="lensPlannerBtn" class="ghost active" type="button">Planner</button>
+            <button id="lensReviewerBtn" class="ghost" type="button">Reviewer</button>
+            <button id="lensRecoveryBtn" class="ghost" type="button">Recovery</button>
+          </div>
+        </div>
+        <p id="lensSummary" class="brief-headline">Start with risk, then the generated schedule, then the calendar/export artifact.</p>
+        <div class="brief-grid" id="lensGrid">
+          <div class="brief-section">
+            <span class="brief-label">01 · Risk First</span>
+            <p class="subtitle">Open the plan and risk summary before talking about export or calendar polish.</p>
+          </div>
+          <div class="brief-section">
+            <span class="brief-label">02 · Schedule Proof</span>
+            <p class="subtitle">Use the generated tasks and adaptive schedule to prove the planner is doing real work.</p>
+          </div>
+          <div class="brief-section">
+            <span class="brief-label">03 · Export Last</span>
+            <p class="subtitle">Only move to ICS once the schedule and diagnostics agree on the story.</p>
+          </div>
+        </div>
+        <div class="brief-actions">
+          <button id="lensPrimaryBtn" class="ghost" type="button">Copy Runtime Brief</button>
+          <button id="lensSecondaryBtn" class="ghost" type="button">Copy Diagnostics</button>
+          <button id="lensTertiaryBtn" class="ghost" type="button">Copy Execution Snapshot</button>
+        </div>
+      </section>
+
+      <section class="panel brief-panel">
+        <div class="panel-head">
+          <div>
             <p class="brief-kicker">Runtime Brief</p>
             <h2>Operator Contract</h2>
           </div>
