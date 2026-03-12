@@ -12,6 +12,12 @@ A full-stack study planning project built around extraction, scheduling, and int
 - **Solution / cloud architect:** extraction, scheduling, and review surfaces are separated enough to discuss trade-offs cleanly.
 - **Field / solutions engineer:** the demo path is immediate: raw syllabus in, study plan and risk drivers out.
 
+
+## Portfolio context
+- **Portfolio family:** applied document and workflow systems
+- **This repo's role:** planning / scheduling workflow surface that shows productized automation beyond chat.
+- **Related repos:** `enterprise-llm-adoption-kit`, `Upstage-DocuAgent`, `honeypot`
+
 ## 4-Line Problem Frame
 - **User:** Busy students juggling multiple deadlines across classes.
 - **Problem:** Syllabi are unstructured; students underestimate workload and cram late.
