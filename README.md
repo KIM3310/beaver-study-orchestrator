@@ -3,7 +3,7 @@
 A full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
 
 ## Portfolio posture
-- Treat this repo as a planning tool with a clear execution surface, not as a syllabus-themed chatbot.
+- Read this repo like a study-planning product with an execution surface, not like a syllabus-themed chatbot.
 - The real product story is parse → plan → risk → recovery → calendar handoff.
 
 
