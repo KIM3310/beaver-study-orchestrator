@@ -39,7 +39,7 @@
         <p class="eyebrow">Service-Grade Study Planner</p>
         <h1>Beaver Study Orchestrator</h1>
         <p class="subtitle">
-          Turn a raw syllabus into an adaptive study plan with deadline-risk signals in under 10 seconds.
+          Turn a raw syllabus into an adaptive study plan, compare baseline vs. recovery scenarios, and coach the next scheduling move in under 10 seconds.
         </p>
       </header>
 
@@ -51,7 +51,7 @@
           </div>
           <div class="brief-actions">
             <button id="lensPlannerBtn" class="ghost active" type="button">Study plan</button>
-            <button id="lensReviewerBtn" class="ghost" type="button">Review pass</button>
+            <button id="lensReviewerBtn" class="ghost" type="button">First review</button>
             <button id="lensRecoveryBtn" class="ghost" type="button">Recovery drill</button>
           </div>
         </div>
@@ -279,6 +279,36 @@
             <p class="muted">Generate a plan to see pacing, buffer, and recovery diagnostics.</p>
           </div>
           <p id="diagnosticsAction" class="summary-row">No execution guidance yet.</p>
+        </article>
+
+        <article class="panel compare-panel">
+          <div class="panel-head">
+            <div>
+              <h2>Scenario Comparison</h2>
+              <p id="scenarioSummary" class="summary-row">Generate a plan to compare the baseline, boosted-capacity, and missed-session recovery paths.</p>
+            </div>
+            <div id="scenarioBadge" class="brief-badge">BASELINE ONLY</div>
+          </div>
+          <p id="scenarioCoach" class="brief-headline">
+            The first reviewer path is simple: baseline risk first, then execution signals, then one adaptation path before export.
+          </p>
+          <div id="scenarioGrid" class="scenario-grid">
+            <article class="scenario-card pending">
+              <span class="brief-label">Current Plan</span>
+              <strong>Waiting for analysis</strong>
+              <p class="muted">Generate a plan to see the baseline schedule before comparing changes.</p>
+            </article>
+            <article class="scenario-card pending">
+              <span class="brief-label">Capacity Boost</span>
+              <strong>Not simulated yet</strong>
+              <p class="muted">Run the what-if path to show how extra daily capacity changes risk and spillover.</p>
+            </article>
+            <article class="scenario-card pending">
+              <span class="brief-label">Missed Sessions</span>
+              <strong>No recovery drill yet</strong>
+              <p class="muted">Run missed-session recovery to show whether the planner can recover without hiding pressure.</p>
+            </article>
+          </div>
         </article>
 
         <article class="panel history-panel">

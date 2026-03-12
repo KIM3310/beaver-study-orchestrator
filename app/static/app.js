@@ -113,6 +113,10 @@ const whatIfSummary = document.getElementById("whatIfSummary");
 const recoverySummary = document.getElementById("recoverySummary");
 const diagnosticsGrid = document.getElementById("diagnosticsGrid");
 const diagnosticsAction = document.getElementById("diagnosticsAction");
+const scenarioSummary = document.getElementById("scenarioSummary");
+const scenarioBadge = document.getElementById("scenarioBadge");
+const scenarioCoach = document.getElementById("scenarioCoach");
+const scenarioGrid = document.getElementById("scenarioGrid");
 const historySummary = document.getElementById("historySummary");
 const historyTimeline = document.getElementById("historyTimeline");
 let latestPlanRequest = null;
@@ -121,6 +125,8 @@ let latestReviewPack = null;
 let latestRisk = null;
 let latestDiagnostics = null;
 let latestHistoryPayload = null;
+let latestWhatIf = null;
+let latestRecovery = null;
 let currentLens = "planner";
 const LENSES = {
   planner: {
@@ -134,12 +140,12 @@ const LENSES = {
     actions: ["Copy Runtime Brief", "Copy Diagnostics", "Copy Execution Snapshot"],
   },
   reviewer: {
-    headline: "Review pass lens",
-    summary: "Keep the brief, review pack, and proof assets together so the study workflow reads as one deliberate product.",
+    headline: "First review lens",
+    summary: "Give a first reviewer one honest route: baseline risk, execution signals, one adaptation path, then export only if the story stays clean.",
     cards: [
-      ["01 · Runtime Contract", "Read the runtime brief before the syllabus sample so the operator posture is anchored."],
-      ["02 · Review Pack", "Use the reviewer contract to explain trust boundary, promises, and export posture."],
-      ["03 · Shareable Path", "Copy routes or the current view only after the evidence is stable."],
+      ["01 · Baseline First", "Read the baseline risk and execution signals before opening shareable artifacts or export."],
+      ["02 · One Adaptive Proof", "Show either the what-if path or missed-session recovery so the planner feels resilient, not static."],
+      ["03 · Shareable Path", "Copy the review pack or current view only after the baseline and adaptation story agree."],
     ],
     actions: ["Copy Review Pack", "Copy Review Routes", "Copy Current View"],
   },
@@ -748,6 +754,155 @@ function renderDiagnostics(diagnostics) {
   diagnosticsAction.textContent = diagnostics.next_action;
 }
 
+function formatRiskPercent(score) {
+  return `${Math.round((Number(score) || 0) * 100)}%`;
+}
+
+function getScenarioTone(level, unscheduledHours = 0) {
+  if (level === "high" || Number(unscheduledHours || 0) > 0) return "risk";
+  if (level === "medium") return "warn";
+  return "good";
+}
+
+function buildScenarioCard(label, headline, metrics, note, tone = "pending") {
+  return `
+    <article class="scenario-card ${tone}">
+      <span class="brief-label">${label}</span>
+      <strong>${headline}</strong>
+      <div class="scenario-metrics">
+        ${metrics.map((item) => `<span>${item}</span>`).join("")}
+      </div>
+      <p class="scenario-note">${note}</p>
+    </article>
+  `;
+}
+
+function renderScenarioComparison() {
+  const cards = [];
+  const baselineTone = latestRisk && latestDiagnostics
+    ? getScenarioTone(latestRisk.level, latestDiagnostics.total_unscheduled_hours)
+    : "pending";
+
+  if (latestRisk && latestDiagnostics) {
+    cards.push(
+      buildScenarioCard(
+        "Current Plan",
+        `${latestRisk.level.toUpperCase()} ${formatRiskPercent(latestRisk.score)}`,
+        [
+          `Start ${latestDiagnostics.start_date || readStartDate() || "-"}`,
+          `Buffer ${latestDiagnostics.buffer_days_before_first_deadline || 0} day(s)`,
+          `Unscheduled ${(latestDiagnostics.total_unscheduled_hours || 0).toFixed(1)}h`,
+        ],
+        latestDiagnostics.next_action || "Review the generated baseline before trying simulations.",
+        baselineTone,
+      ),
+    );
+  } else {
+    cards.push(
+      buildScenarioCard(
+        "Current Plan",
+        "Waiting for analysis",
+        ["Generate a baseline plan", "Risk and buffer appear here", "Execution signals follow analysis"],
+        "The first reviewer path starts only after the baseline schedule exists.",
+      ),
+    );
+  }
+
+  if (latestWhatIf) {
+    const improvement = Math.round((Number(latestWhatIf.risk_reduction) || 0) * 100);
+    cards.push(
+      buildScenarioCard(
+        "Capacity Boost",
+        `${latestWhatIf.boosted.risk_level.toUpperCase()} ${formatRiskPercent(latestWhatIf.boosted.risk_score)}`,
+        [
+          `Boost +${Number(latestWhatIf.daily_boost || 0).toFixed(1)}h/day`,
+          `Risk delta ${improvement >= 0 ? "-" : "+"}${Math.abs(improvement)}pp`,
+          `Unscheduled ${Number(latestWhatIf.baseline.unscheduled_hours || 0).toFixed(1)}h → ${Number(latestWhatIf.boosted.unscheduled_hours || 0).toFixed(1)}h`,
+        ],
+        latestWhatIf.recommendation,
+        getScenarioTone(latestWhatIf.boosted.risk_level, latestWhatIf.boosted.unscheduled_hours),
+      ),
+    );
+  } else {
+    cards.push(
+      buildScenarioCard(
+        "Capacity Boost",
+        "Not simulated yet",
+        ["Run what-if after analysis", "Shows boosted capacity effect", "Compare against the baseline"],
+        "Use this when a reviewer asks whether time protection alone can rescue the plan.",
+      ),
+    );
+  }
+
+  if (latestRecovery) {
+    cards.push(
+      buildScenarioCard(
+        "Missed Sessions",
+        `${latestRecovery.slipped.risk_level.toUpperCase()} ${formatRiskPercent(latestRecovery.slipped.risk_score)}`,
+        [
+          `${latestRecovery.missed_days} missed day(s)`,
+          `Slip start ${latestRecovery.slipped.start_date}`,
+          `Penalty ${Number(latestRecovery.delta?.missed_session_hours || 0).toFixed(1)}h`,
+        ],
+        latestRecovery.slipped.next_action || "Show the penalty before claiming the plan is resilient.",
+        getScenarioTone(latestRecovery.slipped.risk_level, latestRecovery.slipped.unscheduled_hours),
+      ),
+    );
+    cards.push(
+      buildScenarioCard(
+        "Recovery Plan",
+        `${latestRecovery.recovered.risk_level.toUpperCase()} ${formatRiskPercent(latestRecovery.recovered.risk_score)}`,
+        [
+          `Restart ${latestRecovery.recovered.start_date}`,
+          `Auto boost +${Number(latestRecovery.auto_recovery_hours || 0).toFixed(1)}h/day`,
+          `Unscheduled ${Number(latestRecovery.recovered.unscheduled_hours || 0).toFixed(1)}h`,
+        ],
+        latestRecovery.recommendation,
+        getScenarioTone(latestRecovery.recovered.risk_level, latestRecovery.recovered.unscheduled_hours),
+      ),
+    );
+  } else {
+    cards.push(
+      buildScenarioCard(
+        "Missed Sessions",
+        "No recovery drill yet",
+        ["Run missed-session recovery", "Shows the slip before the rescue", "Keeps pressure visible"],
+        "Use recovery when you need to prove the planner can recover honestly after lost study days.",
+      ),
+    );
+  }
+
+  let summary = "Generate a plan to compare the baseline, boosted-capacity, and missed-session recovery paths.";
+  let badge = "BASELINE ONLY";
+  let coach =
+    "The first reviewer path is simple: baseline risk first, then execution signals, then one adaptation path before export.";
+
+  if (latestRisk && latestDiagnostics) {
+    summary = `Baseline ${latestRisk.level.toUpperCase()} ${formatRiskPercent(latestRisk.score)} | ` +
+      `buffer ${latestDiagnostics.buffer_days_before_first_deadline || 0} day(s) | ` +
+      `unscheduled ${(latestDiagnostics.total_unscheduled_hours || 0).toFixed(1)}h`;
+    coach =
+      Number(latestDiagnostics.total_unscheduled_hours || 0) > 0 || latestRisk.level === "high"
+        ? "Coach: keep the planner honest. Do not lead with export; show the baseline shortfall, then the strongest recovery path."
+        : "Coach: baseline is readable. Show one adaptation path next so reviewers see resilience, not just a one-shot schedule.";
+  }
+
+  if (latestWhatIf && latestRecovery) {
+    badge = "FULL COMPARISON";
+    coach =
+      Number(latestRecovery.recovered.risk_score || 0) < Number(latestWhatIf.boosted.risk_score || 0)
+        ? "Coach: recovery outperforms the simple capacity boost. Lead with the missed-session story when asked how the planner adapts under stress."
+        : "Coach: the lighter capacity boost is already competitive. Lead with baseline -> what-if, then keep recovery as the stress-test proof.";
+  } else if (latestWhatIf || latestRecovery) {
+    badge = "ADAPTIVE PATH READY";
+  }
+
+  scenarioSummary.textContent = summary;
+  scenarioBadge.textContent = badge;
+  scenarioCoach.textContent = coach;
+  scenarioGrid.innerHTML = cards.join("");
+}
+
 async function loadRecentHistory() {
   try {
     const response = await fetch("/api/history/recent?limit=6");
@@ -848,6 +1003,7 @@ async function runWhatIf() {
     }
 
     const data = await response.json();
+    latestWhatIf = data;
     const currentPct = Math.round(data.baseline.risk_score * 100);
     const boostedPct = Math.round(data.boosted.risk_score * 100);
     const improvementPp = Math.round(data.risk_reduction * 100);
@@ -857,8 +1013,11 @@ async function runWhatIf() {
       `improvement ${improvementPp}pp, unscheduled ${data.baseline.unscheduled_hours.toFixed(1)}h -> ` +
       `${data.boosted.unscheduled_hours.toFixed(1)}h. ` +
       `${data.recommendation}`;
+    renderScenarioComparison();
     setStatus("What-if simulation completed.");
   } catch (error) {
+    latestWhatIf = null;
+    renderScenarioComparison();
     setStatus(`What-if simulation failed: ${error.message}`, true);
   } finally {
     whatIfBtn.disabled = false;
@@ -898,6 +1057,7 @@ async function runRecovery() {
     }
 
     const data = await response.json();
+    latestRecovery = data;
     const baselinePct = Math.round(data.baseline.risk_score * 100);
     const recoveredPct = Math.round(data.recovered.risk_score * 100);
     recoverySummary.textContent =
@@ -905,8 +1065,11 @@ async function runRecovery() {
       `Risk ${baselinePct}% (${data.baseline.risk_level}) -> ${recoveredPct}% (${data.recovered.risk_level}), ` +
       `missed-session hours ${Number(data.delta.missed_session_hours || 0).toFixed(1)}h, ` +
       `auto recovery +${Number(data.auto_recovery_hours || 0).toFixed(1)}h/day. ${data.recommendation}`;
+    renderScenarioComparison();
     setStatus("Recovery replan completed.");
   } catch (error) {
+    latestRecovery = null;
+    renderScenarioComparison();
     setStatus(`Recovery replan failed: ${error.message}`, true);
   } finally {
     recoverBtn.disabled = false;
@@ -949,11 +1112,14 @@ async function analyze() {
       availability: payload.availability,
       start_date: payload.start_date,
     };
+    latestWhatIf = null;
+    latestRecovery = null;
     whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
     recoverySummary.textContent = `Click 'Recover Missed Sessions' to replan after ${readMissedDays()} missed day(s).`;
     whatIfBtn.disabled = data.extraction.tasks.length === 0;
     recoverBtn.disabled = data.extraction.tasks.length === 0;
     downloadIcsBtn.disabled = data.extraction.tasks.length === 0;
+    renderScenarioComparison();
 
     if (data.extraction.tasks.length === 0) {
       setStatus(
@@ -970,12 +1136,16 @@ async function analyze() {
     loadRecentHistory();
   } catch (error) {
     latestPlanRequest = null;
+    latestWhatIf = null;
+    latestRecovery = null;
     renderDiagnostics(null);
+    latestRisk = null;
     whatIfSummary.textContent = "Run analysis first, then simulate extra daily capacity.";
     whatIfBtn.disabled = true;
     recoverySummary.textContent = "Generate a plan first, then replan after missed study days.";
     recoverBtn.disabled = true;
     downloadIcsBtn.disabled = true;
+    renderScenarioComparison();
     setStatus(`Analysis failed: ${error.message}`, true);
   } finally {
     analyzeBtn.disabled = false;
@@ -1021,7 +1191,16 @@ whatIfBoostInput.addEventListener("input", () => {
   syncWhatIfLabel();
   updateReviewViewUrl();
   if (latestPlanRequest?.tasks?.length) {
+    latestWhatIf = null;
     whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
+    renderScenarioComparison();
+  }
+});
+missedDaysInput.addEventListener("input", () => {
+  if (latestPlanRequest?.tasks?.length) {
+    latestRecovery = null;
+    recoverySummary.textContent = `Click 'Recover Missed Sessions' to replan after ${readMissedDays()} missed day(s).`;
+    renderScenarioComparison();
   }
 });
 startDateInput.addEventListener("change", updateReviewViewUrl);
@@ -1035,6 +1214,7 @@ if (initialViewParams.get("boost")) {
 syncWhatIfLabel();
 renderLensPanel();
 renderDiagnostics(null);
+renderScenarioComparison();
 recoverBtn.disabled = true;
 loadRecentHistory();
 loadRuntimeBrief();
