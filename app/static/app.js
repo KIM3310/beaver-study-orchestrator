@@ -112,6 +112,80 @@ let latestReviewPack = null;
 let latestRisk = null;
 let latestDiagnostics = null;
 let latestHistoryPayload = null;
+const RECORDED_REVIEW = {
+  runtimeBrief: {
+    status: "recorded-review",
+    headline: "Recorded runtime brief for the fastest recruiter walkthrough.",
+    report_contract: {
+      schema: "beaver-study-plan-v1",
+      operator_rules: [
+        "Review risk first, then study schedule, then calendar export.",
+        "Treat what-if and recovery plans as decision aids, not cosmetic extras.",
+        "Keep spillover and overdue work visible before calling the plan safe.",
+      ],
+    },
+    routes: ["/api/health", "/api/runtime/brief", "/api/review-pack", "/api/export/ics"],
+    two_minute_review: [
+      "Load the sample syllabus and skim the risk meter first.",
+      "Read the study plan plus diagnostics before opening export.",
+      "Use what-if and missed-session recovery to show adaptation, not just planning.",
+    ],
+    review_flow: [
+      "Confirm runtime brief and review pack before demoing analysis.",
+      "Generate one representative plan and inspect deadline risk.",
+      "Only talk about export after the plan, risk, and diagnostics agree.",
+    ],
+    stage_contract: [
+      { stage: "parse", responsibility: "Turn raw syllabus text into tasks and dated milestones." },
+      { stage: "plan", responsibility: "Allocate study hours across the calendar with visible spillover." },
+      { stage: "recover", responsibility: "Replan around missed sessions without hiding risk." },
+    ],
+    proof_assets: [
+      { label: "Runtime Brief", path: "/api/runtime/brief", why: "Pins the planning contract and review routes." },
+      { label: "Review Pack", path: "/api/review-pack", why: "Packages promises, trust boundary, and export posture." },
+      { label: "ICS Export", path: "/api/export/ics", why: "Shows the downstream calendar artifact once the plan is trustworthy." },
+    ],
+    watchouts: [
+      "Recorded mode proves the workflow shape, not live parsing latency.",
+      "A recovery plan is only credible when the risk meter still stays visible.",
+    ],
+  },
+  reviewPack: {
+    status: "recorded-review",
+    headline: "Recorded reviewer contract for study-plan risk, adaptation, and export posture.",
+    proof_bundle: {
+      parser_mode: "recorded-demo",
+      review_routes: ["/api/health", "/api/runtime/brief", "/api/review-pack", "/api/export/ics"],
+      calendar_export_ready: true,
+    },
+    analysis_contract: {
+      schema: "beaver-study-plan-v1",
+    },
+    executive_promises: [
+      "One input turns into tasks, schedule, risk drivers, and a calendar artifact.",
+      "What-if and missed-session recovery stay in the same story, so replanning feels intentional.",
+    ],
+    two_minute_review: [
+      "Load sample -> generate plan -> read risk -> test what-if -> review export.",
+      "Keep diagnostics and buffer days visible while explaining the schedule.",
+    ],
+    trust_boundary: [
+      "This surface is a planning and review tool, not a calendar system of record.",
+      "Exports should follow the reviewed schedule, not replace the planning proof.",
+    ],
+    review_sequence: [
+      "Runtime brief -> generated plan -> risk drivers -> what-if -> recovery -> calendar export.",
+    ],
+    proof_assets: [
+      { label: "Runtime Brief", path: "/api/runtime/brief", why: "Locks the operator contract." },
+      { label: "Review Pack", path: "/api/review-pack", why: "Packages the recruiter-facing proof path." },
+      { label: "ICS Export", path: "/api/export/ics", why: "Shows the final artifact after review." },
+    ],
+    watchouts: [
+      "Recorded mode is best for first-pass review when the backend is not running.",
+    ],
+  },
+};
 const initialViewParams = new URLSearchParams(window.location.search);
 
 function formatDateInputValue(date) {
@@ -275,20 +349,23 @@ async function loadRuntimeBrief() {
     renderProofAssets(briefProofAssets, brief.proof_assets || []);
     renderBriefList(briefWatchouts, brief.watchouts || []);
   } catch (error) {
-    briefBadge.classList.remove("ok");
-    briefBadge.classList.add("warn");
-    briefBadge.textContent = "ERROR";
-    briefHeadline.textContent = "Runtime brief unavailable.";
-    briefSchema.textContent = "-";
-    briefParserMode.textContent = "-";
-    briefCalendarReady.textContent = "-";
-    briefRouteCount.textContent = "-";
-    renderBriefList(briefReviewFlow, ["Open /api/health when the backend becomes available."]);
-    renderBriefList(briefTwoMinuteReview, ["Open /api/health, /api/runtime/brief, a representative analyze flow, then /api/export/ics."]);
-    renderBriefList(briefOperatorRules, ["No operator rules loaded."]);
-    renderStageContract([]);
-    renderProofAssets(briefProofAssets, []);
-    renderBriefList(briefWatchouts, [`${error.message}`]);
+    const brief = RECORDED_REVIEW.runtimeBrief;
+    latestRuntimeBrief = brief;
+    const reportContract = brief.report_contract || {};
+    briefBadge.classList.remove("warn");
+    briefBadge.classList.add("ok");
+    briefBadge.textContent = "RECORDED";
+    briefHeadline.textContent = brief.headline;
+    briefSchema.textContent = reportContract.schema || "-";
+    briefParserMode.textContent = "recorded-demo";
+    briefCalendarReady.textContent = "Ready";
+    briefRouteCount.textContent = `${(brief.routes || []).length} routes`;
+    renderBriefList(briefReviewFlow, brief.review_flow || []);
+    renderBriefList(briefTwoMinuteReview, brief.two_minute_review || []);
+    renderBriefList(briefOperatorRules, reportContract.operator_rules || []);
+    renderStageContract(brief.stage_contract || []);
+    renderProofAssets(briefProofAssets, brief.proof_assets || []);
+    renderBriefList(briefWatchouts, brief.watchouts || []);
   }
 }
 
@@ -318,20 +395,24 @@ async function loadReviewPack() {
     renderProofAssets(reviewPackProofAssets, pack.proof_assets || []);
     renderBriefList(reviewPackWatchouts, pack.watchouts || []);
   } catch (error) {
-    reviewPackBadge.classList.remove("ok");
-    reviewPackBadge.classList.add("warn");
-    reviewPackBadge.textContent = "ERROR";
-    reviewPackHeadline.textContent = "Review pack unavailable.";
-    reviewPackRuntime.textContent = "-";
-    reviewPackRoutes.textContent = "-";
-    reviewPackSchema.textContent = "-";
-    reviewPackExport.textContent = "-";
-    renderBriefList(reviewPackPromises, ["Open /api/review-pack when the backend becomes available."]);
-    renderBriefList(reviewPackTwoMinuteReview, ["Open /api/health, /api/runtime/brief, /api/analyze, /api/what-if, then /api/export/ics."]);
-    renderBriefList(reviewPackBoundary, []);
-    renderBriefList(reviewPackSequence, []);
-    renderProofAssets(reviewPackProofAssets, []);
-    renderBriefList(reviewPackWatchouts, [`${error.message}`]);
+    const pack = RECORDED_REVIEW.reviewPack;
+    latestReviewPack = pack;
+    const proofBundle = pack.proof_bundle || {};
+    const analysisContract = pack.analysis_contract || {};
+    reviewPackBadge.classList.remove("warn");
+    reviewPackBadge.classList.add("ok");
+    reviewPackBadge.textContent = "RECORDED";
+    reviewPackHeadline.textContent = pack.headline;
+    reviewPackRuntime.textContent = proofBundle.parser_mode || "-";
+    reviewPackRoutes.textContent = `${(proofBundle.review_routes || []).length} routes`;
+    reviewPackSchema.textContent = analysisContract.schema || "-";
+    reviewPackExport.textContent = proofBundle.calendar_export_ready ? "Ready" : "Check";
+    renderBriefList(reviewPackPromises, pack.executive_promises || []);
+    renderBriefList(reviewPackTwoMinuteReview, pack.two_minute_review || []);
+    renderBriefList(reviewPackBoundary, pack.trust_boundary || []);
+    renderBriefList(reviewPackSequence, pack.review_sequence || []);
+    renderProofAssets(reviewPackProofAssets, pack.proof_assets || []);
+    renderBriefList(reviewPackWatchouts, pack.watchouts || []);
   }
 }
 
