@@ -34,6 +34,7 @@ A full-stack study planning project built around extraction, scheduling, and int
 - Builds date-by-date study allocations based on weekday availability.
 - Avoids single-day cram by chunking workload.
 - Reports unscheduled spillover when capacity is insufficient.
+- Supports missed-session recovery replanning via `/api/recover` when the student slips for a few days.
 
 3. **Deadline risk analytics**
 - Produces risk score (`0.0-1.0`) and level (`low/medium/high`).
@@ -89,6 +90,7 @@ Open `http://127.0.0.1:8000`
 - `GET /api/health`: exposes parser posture, export readiness, review links, and runtime contract.
 - `GET /api/meta`: returns the same health contract in a reviewer-friendly metadata envelope.
 - `GET /api/runtime/brief`: summarizes the extract -> plan -> simulate workflow, review flow, and watchouts.
+- `POST /api/recover`: compares baseline vs missed-session recovery plan with before/after risk deltas.
 - `GET /api/review-pack`: packages reviewer promises, trust boundary, and export posture before `.ics` handoff.
 - `GET /api/schema/analysis-report`: pins the expected analysis payload for extraction, study plan, risk, and diagnostics.
 - Landing-page runtime brief: the top of the UI now shows schema, parser mode, export readiness, route count, operator rules, and watchouts before analysis runs.
@@ -131,7 +133,7 @@ make test
 3. Walk through extracted tasks and estimated hours.
 4. Show adaptive daily schedule and unscheduled spillover logic.
 5. Explain risk score, top drivers, and execution signals.
-6. Change the what-if boost value to show dynamic recovery planning.
+6. Change the what-if boost value and the missed-session recovery flow to show dynamic replanning.
 
 ## Decision Log
 - **Rule-based extraction over LLM calls:** deterministic, offline-friendly, no token cost.
