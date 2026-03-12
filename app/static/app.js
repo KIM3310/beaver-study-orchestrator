@@ -124,7 +124,7 @@ let latestHistoryPayload = null;
 let currentLens = "planner";
 const LENSES = {
   planner: {
-    headline: "Planner Lens",
+    headline: "Study plan lens",
     summary: "Start with risk, then the generated schedule, then the calendar/export artifact.",
     cards: [
       ["01 · Risk First", "Open the plan and risk summary before talking about export or calendar polish."],
@@ -134,7 +134,7 @@ const LENSES = {
     actions: ["Copy Runtime Brief", "Copy Diagnostics", "Copy Execution Snapshot"],
   },
   reviewer: {
-    headline: "Reviewer Lens",
+    headline: "Review pass lens",
     summary: "Keep the brief, review pack, and proof assets together so the study workflow reads as one deliberate product.",
     cards: [
       ["01 · Runtime Contract", "Read the runtime brief before the syllabus sample so the operator posture is anchored."],
@@ -144,7 +144,7 @@ const LENSES = {
     actions: ["Copy Review Pack", "Copy Review Routes", "Copy Current View"],
   },
   recovery: {
-    headline: "Recovery Lens",
+    headline: "Recovery drill lens",
     summary: "Use this mode when you want to show adaptation: missed sessions, what-if boosts, and risk deltas in one flow.",
     cards: [
       ["01 · What-if", "Start with the boost simulation to show how the schedule responds to more study time."],
