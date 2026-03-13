@@ -2,6 +2,9 @@
 
 A full-stack study planning project built around extraction, scheduling, and interpretable risk modeling.
 
+## One concrete review story
+A reviewer can paste in one overloaded syllabus, watch the app pull out exams and projects, and immediately see where the student will fall behind before calendar export. The handoff is simple on purpose: text in, plan and risk out, then recovery options if the week slips.
+
 ## Portfolio posture
 - Read this repo like a study-planning product with an execution surface, not like a syllabus-themed chatbot.
 - The real product story is parse → plan → risk → recovery → calendar handoff.
