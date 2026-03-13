@@ -28,6 +28,77 @@ function buildSampleText() {
 
 const sampleText = buildSampleText();
 
+function buildStarterScenarioText(lines) {
+  const today = new Date();
+  return lines
+    .map(([label, dayOffset]) => {
+      const date = new Date(today);
+      date.setDate(today.getDate() + dayOffset);
+      return `${label} ${formatSampleDate(date)}`;
+    })
+    .join("\n");
+}
+
+const STARTER_SCENARIOS = [
+  {
+    id: "balanced-week",
+    title: "Balanced week",
+    headline: "A calm starting case with spaced homework and one midterm checkpoint.",
+    lens: "planner",
+    boost: 1.0,
+    missedDays: 2,
+    availability: { monday: 2, tuesday: 2, wednesday: 2, thursday: 2, friday: 1.5, saturday: 3, sunday: 3 },
+    syllabusText: [
+      "INFO 210 - Learning Systems",
+      buildStarterScenarioText([
+        ["Reading Reflection due", 6],
+        ["Quiz 2 due", 10],
+        ["Midterm Exam on", 18],
+        ["Project Milestone due", 25],
+      ]),
+    ].join("\n"),
+    note: "Best when you want the planner to feel trustworthy before stress-testing it."
+  },
+  {
+    id: "midterm-crunch",
+    title: "Midterm crunch",
+    headline: "A tighter week where two graded items land close together and buffer days matter.",
+    lens: "reviewer",
+    boost: 1.5,
+    missedDays: 2,
+    availability: { monday: 1.5, tuesday: 1.5, wednesday: 2, thursday: 1, friday: 1, saturday: 3, sunday: 2.5 },
+    syllabusText: [
+      "CS 344 - Systems Studio",
+      buildStarterScenarioText([
+        ["Lab 4 due", 5],
+        ["Midterm Exam on", 9],
+        ["Design Review due", 11],
+        ["Team Project Checkpoint due", 19],
+      ]),
+    ].join("\n"),
+    note: "Good for showing baseline risk first, then one adaptation path."
+  },
+  {
+    id: "recovery-drill",
+    title: "Recovery drill",
+    headline: "A heavier project plan designed to make the missed-session recovery flow useful immediately.",
+    lens: "recovery",
+    boost: 2.0,
+    missedDays: 3,
+    availability: { monday: 1, tuesday: 1.5, wednesday: 1.5, thursday: 1, friday: 1, saturday: 4, sunday: 4 },
+    syllabusText: [
+      "ENGR 401 - Product Delivery",
+      buildStarterScenarioText([
+        ["Prototype Review due", 7],
+        ["Research Memo due", 12],
+        ["Final Demo due", 16],
+        ["Retrospective Presentation on", 21],
+      ]),
+    ].join("\n"),
+    note: "Use this when the audience wants proof that replanning stays honest after lost days."
+  },
+];
+
 const weekdays = [
   ["monday", "Mon"],
   ["tuesday", "Tue"],
@@ -99,6 +170,7 @@ const lensRecoveryBtn = document.getElementById("lensRecoveryBtn");
 const lensPrimaryBtn = document.getElementById("lensPrimaryBtn");
 const lensSecondaryBtn = document.getElementById("lensSecondaryBtn");
 const lensTertiaryBtn = document.getElementById("lensTertiaryBtn");
+const starterGrid = document.getElementById("starterGrid");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -281,7 +353,7 @@ async function copyCurrentViewLink() {
   }
 }
 
-function renderHourInputs() {
+function renderHourInputs(values = defaultHours) {
   hoursGrid.innerHTML = "";
 
   weekdays.forEach(([key, label]) => {
@@ -296,13 +368,49 @@ function renderHourInputs() {
     input.min = "0";
     input.max = "12";
     input.step = "0.5";
-    input.value = defaultHours[key];
+    input.value = values[key] ?? defaultHours[key];
     input.dataset.day = key;
 
     card.appendChild(title);
     card.appendChild(input);
     hoursGrid.appendChild(card);
   });
+}
+
+function renderStarterScenarios() {
+  if (!starterGrid) return;
+  starterGrid.innerHTML = STARTER_SCENARIOS.map((scenario) => `
+    <article class="starter-card">
+      <span class="brief-label">${scenario.title}</span>
+      <strong>${scenario.headline}</strong>
+      <p class="subtitle">${scenario.note}</p>
+      <div class="starter-metrics">
+        <span>Lens ${scenario.lens}</span>
+        <span>Boost +${Number(scenario.boost).toFixed(1)}h/day</span>
+        <span>${scenario.missedDays} missed day(s)</span>
+      </div>
+      <button class="ghost starter-apply" type="button" data-starter-id="${scenario.id}">Load scenario</button>
+    </article>
+  `).join("");
+
+  starterGrid.querySelectorAll('[data-starter-id]').forEach((button) => {
+    button.addEventListener('click', () => loadStarterScenario(button.dataset.starterId));
+  });
+}
+
+function loadStarterScenario(id) {
+  const scenario = STARTER_SCENARIOS.find((item) => item.id === id);
+  if (!scenario) return;
+  syllabusText.value = scenario.syllabusText;
+  renderHourInputs(scenario.availability);
+  currentLens = scenario.lens;
+  renderLensPanel();
+  startDateInput.value = formatDateInputValue(new Date());
+  whatIfBoostInput.value = Number(scenario.boost).toFixed(1);
+  missedDaysInput.value = String(scenario.missedDays);
+  syncWhatIfLabel();
+  updateReviewViewUrl();
+  setStatus(`${scenario.title} loaded. Generate the plan to walk through a concrete student case.`);
 }
 
 function readAvailability() {
@@ -1206,6 +1314,7 @@ missedDaysInput.addEventListener("input", () => {
 startDateInput.addEventListener("change", updateReviewViewUrl);
 
 renderHourInputs();
+renderStarterScenarios();
 syllabusText.value = sampleText;
 startDateInput.value = initialViewParams.get("start") || formatDateInputValue(new Date());
 if (initialViewParams.get("boost")) {

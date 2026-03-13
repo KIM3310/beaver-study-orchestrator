@@ -132,6 +132,44 @@ h1 {
   margin-top: 14px;
 }
 
+.starter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.starter-card {
+  border: 1px solid #35415a;
+  border-radius: 14px;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(18, 23, 34, 0.95), rgba(28, 36, 50, 0.88));
+  display: grid;
+  gap: 10px;
+}
+
+.starter-card strong {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.starter-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.starter-metrics span {
+  border: 1px solid rgba(70, 217, 197, 0.2);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--muted);
+  font: 500 12px "IBM Plex Mono", monospace;
+}
+
+.starter-apply {
+  width: fit-content;
+}
+
 .brief-card,
 .brief-section {
   border: 1px solid #35415a;
@@ -464,6 +502,10 @@ thead {
   .brief-metrics,
   .brief-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .starter-grid {
+    grid-template-columns: 1fr;
   }
 
   .hours-grid {
