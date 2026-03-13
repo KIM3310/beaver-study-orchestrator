@@ -177,6 +177,13 @@ const lensSecondaryBtn = document.getElementById("lensSecondaryBtn");
 const lensTertiaryBtn = document.getElementById("lensTertiaryBtn");
 const starterGrid = document.getElementById("starterGrid");
 const starterSummary = document.getElementById("starterSummary");
+const firstPassHeadline = document.getElementById("firstPassHeadline");
+const firstPassMode = document.getElementById("firstPassMode");
+const firstPassSummary = document.getElementById("firstPassSummary");
+const firstPassStep1 = document.getElementById("firstPassStep1");
+const firstPassStep2 = document.getElementById("firstPassStep2");
+const firstPassStep3 = document.getElementById("firstPassStep3");
+const firstPassBoundary = document.getElementById("firstPassBoundary");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -389,6 +396,31 @@ function starterSummaryText(scenario) {
   return `${scenario.title} keeps the opening concrete: ${scenario.note} Next: load it, then generate the plan and read risk before export.`;
 }
 
+function renderFirstPassRoute() {
+  const scenario = STARTER_SCENARIOS.find((item) => item.id === activeStarterId) || STARTER_SCENARIOS[0];
+  const hasPlan = Boolean(latestPlanRequest?.tasks?.length);
+  const hasRecovery = Boolean(latestRecovery);
+  const hasWhatIf = Boolean(latestWhatIf);
+
+  if (!firstPassHeadline) return;
+
+  firstPassHeadline.textContent = `${scenario.title} is the calmest first proof`;
+  firstPassMode.textContent = hasRecovery ? "RECOVERY COMPARED" : hasWhatIf ? "ADAPTATION READY" : hasPlan ? "BASELINE READY" : "BASELINE FIRST";
+  firstPassSummary.textContent = `${scenario.headline} Start with the baseline plan, then add only one adaptation path so the reviewer can trust the progression.`;
+  firstPassStep1.textContent = `Load ${scenario.title.toLowerCase()} so the first pass starts with ${scenario.note.toLowerCase()}`;
+  firstPassStep2.textContent = hasPlan
+    ? "Baseline plan is ready. Read risk, spillover, and diagnostics together before changing the scenario."
+    : "Generate the baseline plan and confirm the first due date plus risk level before moving on.";
+  firstPassStep3.textContent = hasRecovery
+    ? "Recovery comparison is active. Keep the missed-session delta visible before talking about export."
+    : hasWhatIf
+      ? "What-if comparison is active. Use this as the single adaptation proof before export."
+      : "Use either what-if or recovery after baseline — not both at once for the first walkthrough.";
+  firstPassBoundary.textContent = hasPlan
+    ? "Reviewer-safe handoff: export only after the plan, diagnostics, and chosen adaptation path tell the same story."
+    : "Reviewer-safe handoff: leave export for later so the first walkthrough stays grounded in planning confidence.";
+}
+
 function renderStarterScenarios() {
   if (!starterGrid) return;
   starterGrid.innerHTML = STARTER_SCENARIOS.map((scenario) => {
@@ -411,6 +443,7 @@ function renderStarterScenarios() {
     const activeScenario = STARTER_SCENARIOS.find((scenario) => scenario.id === activeStarterId);
     starterSummary.textContent = starterSummaryText(activeScenario);
   }
+  renderFirstPassRoute();
 
   starterGrid.querySelectorAll('[data-starter-id]').forEach((button) => {
     button.addEventListener('click', () => loadStarterScenario(button.dataset.starterId));
@@ -470,6 +503,7 @@ function renderActionUnlockGuide() {
   );
   setUnlockChip(unlockExportChip, hasPlan ? "Export · Ready for .ics" : "Export · Locked until plan", hasPlan ? "ready" : "locked");
 
+  renderFirstPassRoute();
   if (!actionUnlockSummary) return;
   if (latestRecovery) {
     actionUnlockSummary.textContent = "Recovery comparison is ready. Walk through the replanned risk before exporting the calendar artifact.";
@@ -493,6 +527,7 @@ function resetDerivedPlanArtifacts(statusMessage) {
   recoverySummary.textContent = `Generate a plan first, then replan after ${readMissedDays()} missed day(s).`;
   renderScenarioComparison();
   renderActionUnlockGuide();
+  renderFirstPassRoute();
   if (statusMessage) setStatus(statusMessage);
 }
 

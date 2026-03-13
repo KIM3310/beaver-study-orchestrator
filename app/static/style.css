@@ -125,6 +125,10 @@ h1 {
   gap: 10px;
 }
 
+.first-pass-grid {
+  align-items: stretch;
+}
+
 .brief-actions {
   display: flex;
   flex-wrap: wrap;
