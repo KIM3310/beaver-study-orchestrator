@@ -130,6 +130,11 @@ const missedDaysInput = document.getElementById("missedDays");
 const downloadIcsBtn = document.getElementById("downloadIcsBtn");
 const copyCurrentViewBtn = document.getElementById("copyCurrentViewBtn");
 const statusText = document.getElementById("statusText");
+const actionUnlockSummary = document.getElementById("actionUnlockSummary");
+const unlockPlanChip = document.getElementById("unlockPlanChip");
+const unlockWhatIfChip = document.getElementById("unlockWhatIfChip");
+const unlockRecoveryChip = document.getElementById("unlockRecoveryChip");
+const unlockExportChip = document.getElementById("unlockExportChip");
 const hoursGrid = document.getElementById("hoursGrid");
 const startDateInput = document.getElementById("startDate");
 const briefBadge = document.getElementById("briefBadge");
@@ -427,6 +432,7 @@ function loadStarterScenario(id) {
   syncWhatIfLabel();
   updateReviewViewUrl();
   setStatus(`${scenario.title} loaded. Generate the plan to walk through a concrete student case.`);
+  renderActionUnlockGuide();
 }
 
 function readAvailability() {
@@ -440,6 +446,41 @@ function readAvailability() {
 function setStatus(message, isError = false) {
   statusText.textContent = message;
   statusText.style.color = isError ? "#ff8fa1" : "#a7b2c9";
+}
+
+function setUnlockChip(element, label, tone = "locked") {
+  if (!element) return;
+  element.textContent = label;
+  element.classList.remove("is-ready", "is-active");
+  if (tone === "ready") element.classList.add("is-ready");
+  if (tone === "active") element.classList.add("is-active");
+}
+
+function renderActionUnlockGuide() {
+  const hasPlan = Boolean(latestPlanRequest?.tasks?.length);
+  setUnlockChip(unlockPlanChip, hasPlan ? "Plan · Baseline ready" : "Plan · Ready to generate", hasPlan ? "active" : "ready");
+  setUnlockChip(
+    unlockWhatIfChip,
+    latestWhatIf ? "What-if · Compared" : hasPlan ? `What-if · Ready (+${readWhatIfBoost().toFixed(1)}h/day)` : "What-if · Locked until plan",
+    latestWhatIf ? "active" : hasPlan ? "ready" : "locked"
+  );
+  setUnlockChip(
+    unlockRecoveryChip,
+    latestRecovery ? "Recovery · Compared" : hasPlan ? `Recovery · Ready (${readMissedDays()} missed day(s))` : "Recovery · Locked until plan",
+    latestRecovery ? "active" : hasPlan ? "ready" : "locked"
+  );
+  setUnlockChip(unlockExportChip, hasPlan ? "Export · Ready for .ics" : "Export · Locked until plan", hasPlan ? "ready" : "locked");
+
+  if (!actionUnlockSummary) return;
+  if (latestRecovery) {
+    actionUnlockSummary.textContent = "Recovery comparison is ready. Walk through the replanned risk before exporting the calendar artifact.";
+  } else if (latestWhatIf) {
+    actionUnlockSummary.textContent = "What-if comparison is ready. Use it to explain capacity tradeoffs before recovery or export.";
+  } else if (hasPlan) {
+    actionUnlockSummary.textContent = "Baseline plan is ready. Next, compare what-if or recovery before treating export as the final handoff.";
+  } else {
+    actionUnlockSummary.textContent = "Generate one baseline plan to unlock what-if, recovery, and calendar export without guessing what comes next.";
+  }
 }
 
 function renderBriefList(container, items) {
@@ -1145,6 +1186,7 @@ async function runWhatIf() {
     setStatus(`What-if simulation failed: ${error.message}`, true);
   } finally {
     whatIfBtn.disabled = false;
+    renderActionUnlockGuide();
   }
 }
 
@@ -1197,6 +1239,7 @@ async function runRecovery() {
     setStatus(`Recovery replan failed: ${error.message}`, true);
   } finally {
     recoverBtn.disabled = false;
+    renderActionUnlockGuide();
   }
 }
 
@@ -1244,6 +1287,7 @@ async function analyze() {
     recoverBtn.disabled = data.extraction.tasks.length === 0;
     downloadIcsBtn.disabled = data.extraction.tasks.length === 0;
     renderScenarioComparison();
+    renderActionUnlockGuide();
 
     if (data.extraction.tasks.length === 0) {
       setStatus(
@@ -1270,6 +1314,7 @@ async function analyze() {
     recoverBtn.disabled = true;
     downloadIcsBtn.disabled = true;
     renderScenarioComparison();
+    renderActionUnlockGuide();
     setStatus(`Analysis failed: ${error.message}`, true);
   } finally {
     analyzeBtn.disabled = false;
@@ -1318,6 +1363,7 @@ whatIfBoostInput.addEventListener("input", () => {
     latestWhatIf = null;
     whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
     renderScenarioComparison();
+    renderActionUnlockGuide();
   }
 });
 missedDaysInput.addEventListener("input", () => {
@@ -1325,6 +1371,7 @@ missedDaysInput.addEventListener("input", () => {
     latestRecovery = null;
     recoverySummary.textContent = `Click 'Recover Missed Sessions' to replan after ${readMissedDays()} missed day(s).`;
     renderScenarioComparison();
+    renderActionUnlockGuide();
   }
 });
 startDateInput.addEventListener("change", updateReviewViewUrl);
@@ -1340,6 +1387,7 @@ syncWhatIfLabel();
 renderLensPanel();
 renderDiagnostics(null);
 renderScenarioComparison();
+renderActionUnlockGuide();
 recoverBtn.disabled = true;
 loadRecentHistory();
 loadRuntimeBrief();

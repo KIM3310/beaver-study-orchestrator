@@ -16,3 +16,8 @@ def test_first_fold_starter_summary_contract() -> None:
     assert 'Loaded scenario' in js
     assert '.starter-summary {' in css
     assert '.starter-card.is-active {' in css
+    assert 'id="actionUnlockSummary"' in html
+    assert 'unlockPlanChip' in html
+    assert 'renderActionUnlockGuide' in js
+    assert '.action-unlock-guide {' in css
+    assert '.action-chip.is-active {' in css

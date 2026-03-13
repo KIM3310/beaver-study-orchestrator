@@ -286,6 +286,47 @@ textarea {
   gap: 12px;
 }
 
+.action-unlock-guide {
+  border: 1px solid rgba(70, 217, 197, 0.18);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: rgba(13, 20, 32, 0.78);
+  display: grid;
+  gap: 12px;
+}
+
+.action-unlock-summary {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.action-unlock-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.action-chip {
+  border: 1px solid rgba(167, 178, 201, 0.18);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  font: 500 12px "IBM Plex Mono", monospace;
+}
+
+.action-chip.is-ready {
+  border-color: rgba(70, 217, 197, 0.32);
+  color: #cbfff6;
+  background: rgba(70, 217, 197, 0.08);
+}
+
+.action-chip.is-active {
+  border-color: rgba(255, 111, 60, 0.36);
+  color: #ffe4d9;
+  background: rgba(255, 111, 60, 0.1);
+}
+
 .date-control {
   display: grid;
   gap: 6px;
