@@ -19,5 +19,6 @@ def test_first_fold_starter_summary_contract() -> None:
     assert 'id="actionUnlockSummary"' in html
     assert 'unlockPlanChip' in html
     assert 'renderActionUnlockGuide' in js
+    assert 'resetDerivedPlanArtifacts' in js
     assert '.action-unlock-guide {' in css
     assert '.action-chip.is-active {' in css

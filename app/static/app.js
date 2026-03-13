@@ -431,8 +431,7 @@ function loadStarterScenario(id) {
   missedDaysInput.value = String(scenario.missedDays);
   syncWhatIfLabel();
   updateReviewViewUrl();
-  setStatus(`${scenario.title} loaded. Generate the plan to walk through a concrete student case.`);
-  renderActionUnlockGuide();
+  resetDerivedPlanArtifacts(`${scenario.title} loaded. Generate the plan to walk through a concrete student case.`);
 }
 
 function readAvailability() {
@@ -481,6 +480,20 @@ function renderActionUnlockGuide() {
   } else {
     actionUnlockSummary.textContent = "Generate one baseline plan to unlock what-if, recovery, and calendar export without guessing what comes next.";
   }
+}
+
+function resetDerivedPlanArtifacts(statusMessage) {
+  latestPlanRequest = null;
+  latestWhatIf = null;
+  latestRecovery = null;
+  whatIfBtn.disabled = true;
+  recoverBtn.disabled = true;
+  downloadIcsBtn.disabled = true;
+  whatIfSummary.textContent = `Click 'What-if +${readWhatIfBoost().toFixed(1)}h/day' to simulate extra study capacity.`;
+  recoverySummary.textContent = `Generate a plan first, then replan after ${readMissedDays()} missed day(s).`;
+  renderScenarioComparison();
+  renderActionUnlockGuide();
+  if (statusMessage) setStatus(statusMessage);
 }
 
 function renderBriefList(container, items) {
@@ -1323,12 +1336,12 @@ async function analyze() {
 
 loadSampleBtn.addEventListener("click", () => {
   syllabusText.value = sampleText;
-  setStatus("Sample loaded. Click Generate Plan.");
+  resetDerivedPlanArtifacts("Sample loaded. Click Generate Plan.");
 });
 
 resetHoursBtn.addEventListener("click", () => {
   renderHourInputs();
-  setStatus("Availability reset to recommended defaults.");
+  resetDerivedPlanArtifacts("Availability reset to recommended defaults.");
 });
 
 analyzeBtn.addEventListener("click", analyze);
