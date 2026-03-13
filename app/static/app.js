@@ -171,6 +171,7 @@ const lensPrimaryBtn = document.getElementById("lensPrimaryBtn");
 const lensSecondaryBtn = document.getElementById("lensSecondaryBtn");
 const lensTertiaryBtn = document.getElementById("lensTertiaryBtn");
 const starterGrid = document.getElementById("starterGrid");
+const starterSummary = document.getElementById("starterSummary");
 
 const tasksBody = document.getElementById("tasksBody");
 const taskSummary = document.getElementById("taskSummary");
@@ -200,6 +201,7 @@ let latestHistoryPayload = null;
 let latestWhatIf = null;
 let latestRecovery = null;
 let currentLens = "planner";
+let activeStarterId = STARTER_SCENARIOS[0]?.id || null;
 const LENSES = {
   planner: {
     headline: "Study plan lens",
@@ -377,10 +379,17 @@ function renderHourInputs(values = defaultHours) {
   });
 }
 
+function starterSummaryText(scenario) {
+  if (!scenario) return "Pick a first-run scenario to ground the opening story before generating a plan.";
+  return `${scenario.title} keeps the opening concrete: ${scenario.note} Next: load it, then generate the plan and read risk before export.`;
+}
+
 function renderStarterScenarios() {
   if (!starterGrid) return;
-  starterGrid.innerHTML = STARTER_SCENARIOS.map((scenario) => `
-    <article class="starter-card">
+  starterGrid.innerHTML = STARTER_SCENARIOS.map((scenario) => {
+    const isActive = scenario.id === activeStarterId;
+    return `
+    <article class="starter-card${isActive ? ' is-active' : ''}">
       <span class="brief-label">${scenario.title}</span>
       <strong>${scenario.headline}</strong>
       <p class="subtitle">${scenario.note}</p>
@@ -389,9 +398,14 @@ function renderStarterScenarios() {
         <span>Boost +${Number(scenario.boost).toFixed(1)}h/day</span>
         <span>${scenario.missedDays} missed day(s)</span>
       </div>
-      <button class="ghost starter-apply" type="button" data-starter-id="${scenario.id}">Load scenario</button>
-    </article>
-  `).join("");
+      <button class="ghost starter-apply${isActive ? ' is-active' : ''}" type="button" data-starter-id="${scenario.id}">${isActive ? 'Loaded scenario' : 'Load scenario'}</button>
+    </article>`;
+  }).join("");
+
+  if (starterSummary) {
+    const activeScenario = STARTER_SCENARIOS.find((scenario) => scenario.id === activeStarterId);
+    starterSummary.textContent = starterSummaryText(activeScenario);
+  }
 
   starterGrid.querySelectorAll('[data-starter-id]').forEach((button) => {
     button.addEventListener('click', () => loadStarterScenario(button.dataset.starterId));
@@ -401,6 +415,8 @@ function renderStarterScenarios() {
 function loadStarterScenario(id) {
   const scenario = STARTER_SCENARIOS.find((item) => item.id === id);
   if (!scenario) return;
+  activeStarterId = scenario.id;
+  renderStarterScenarios();
   syllabusText.value = scenario.syllabusText;
   renderHourInputs(scenario.availability);
   currentLens = scenario.lens;
