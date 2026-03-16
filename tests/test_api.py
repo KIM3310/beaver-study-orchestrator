@@ -27,10 +27,12 @@ def test_health():
     assert data["links"]["runtime_brief"] == "/api/runtime/brief"
     assert data["links"]["review_pack"] == "/api/review-pack"
     assert data["links"]["analysis_schema"] == "/api/schema/analysis-report"
+    assert data["links"]["outcomes_board"] == "/api/outcomes/board"
     assert data["links"]["analyze"] == "/api/analyze"
     assert "/api/runtime/brief" in data["routes"]
     assert "/api/review-pack" in data["routes"]
     assert "runtime-brief-surface" in data["capabilities"]
+    assert "outcome-board-surface" in data["capabilities"]
     assert "review-pack-surface" in data["capabilities"]
     assert "next_action" in data["diagnostics"]
 
@@ -52,12 +54,14 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert len(brief_payload["stage_contract"]) == 3
     assert len(brief_payload["two_minute_review"]) == 4
     assert brief_payload["proof_assets"][0]["path"] == "/api/health"
+    assert brief_payload["proof_assets"][-1]["path"] == "/api/outcomes/board"
 
     review_pack = client.get("/api/review-pack")
     assert review_pack.status_code == 200
     review_payload = review_pack.json()
     assert review_payload["readiness_contract"] == "beaver-study-review-pack-v1"
     assert "/api/review-pack" in review_payload["proof_bundle"]["review_routes"]
+    assert "/api/outcomes/board" in review_payload["proof_bundle"]["review_routes"]
     assert review_payload["analysis_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert len(review_payload["two_minute_review"]) == 4
     assert review_payload["proof_assets"][0]["label"] == "Health Route"
@@ -110,6 +114,14 @@ def test_analyze_endpoint_returns_plan_and_risk():
     assert history_payload["schema"] == "beaver-study-analysis-history-v1"
     assert history_payload["items"][0]["task_count"] >= 2
     assert history_payload["items"][0]["risk_level"] in {"low", "medium", "high"}
+
+    outcome_board = client.get("/api/outcomes/board?limit=3")
+    assert outcome_board.status_code == 200
+    outcome_payload = outcome_board.json()
+    assert outcome_payload["contract_version"] == "beaver-study-outcome-board-v1"
+    assert outcome_payload["summary"]["analyses_reviewed"] >= 1
+    assert outcome_payload["summary"]["next_action"]
+    assert outcome_payload["items"][0]["analysis_id"]
 
 
 def test_analyze_endpoint_respects_custom_start_date():

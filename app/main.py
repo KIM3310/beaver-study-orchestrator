@@ -37,6 +37,7 @@ ANALYSIS_REPORT_SCHEMA = "beaver-study-analysis-report-v1"
 RUNTIME_BRIEF_CONTRACT = "beaver-study-runtime-brief-v1"
 REVIEW_PACK_CONTRACT = "beaver-study-review-pack-v1"
 ANALYSIS_HISTORY_SCHEMA = "beaver-study-analysis-history-v1"
+OUTCOME_BOARD_CONTRACT = "beaver-study-outcome-board-v1"
 ANALYSIS_HISTORY_PATH = Path(
     os.getenv(
         "BEAVER_STUDY_HISTORY_PATH",
@@ -51,6 +52,7 @@ RUNTIME_ROUTES = [
     "/api/schema/analysis-report",
     "/api/history/recent",
     "/api/history/recent/schema",
+    "/api/outcomes/board",
     "/api/analyze",
     "/api/what-if",
     "/api/export/ics",
@@ -193,6 +195,7 @@ def build_runtime_brief() -> dict[str, object]:
             "max_daily_boost_hours": 4.0,
             "runtime_routes": len(RUNTIME_ROUTES),
             "diagnostic_cards": 8,
+            "history_backed_surfaces": 2,
         },
         "review_flow": [
             "Open /api/health or /api/meta to confirm parser posture and export readiness.",
@@ -251,8 +254,50 @@ def build_runtime_brief() -> dict[str, object]:
                 "path": "/api/history/recent",
                 "why": "Shows recent plan attempts so operators can compare risk and spillover over time.",
             },
+            {
+                "label": "Outcome Board",
+                "path": "/api/outcomes/board",
+                "why": "Summarizes repeated spillover, risk drift, and the next intervention to review before export.",
+            },
         ],
         "routes": RUNTIME_ROUTES,
+    }
+
+
+def build_outcome_board(limit: int = 6) -> dict[str, object]:
+    items = list_recent_analysis_history(limit=limit)
+    latest = items[0] if items else None
+    risk_scores = [float(item.get("risk_score", 0.0)) for item in items]
+    high_risk_runs = [item for item in items if item.get("risk_level") == "high"]
+    spillover_runs = [item for item in items if float(item.get("unscheduled_hours", 0.0)) > 0]
+    return {
+        "status": "ok",
+        "service": "beaver-study-orchestrator",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "contract_version": OUTCOME_BOARD_CONTRACT,
+        "history_contract": ANALYSIS_HISTORY_SCHEMA,
+        "summary": {
+            "analyses_reviewed": len(items),
+            "high_risk_runs": len(high_risk_runs),
+            "spillover_runs": len(spillover_runs),
+            "average_risk_score": round(sum(risk_scores) / len(risk_scores), 2) if risk_scores else 0.0,
+            "latest_risk_level": latest.get("risk_level") if latest else "no-history",
+            "latest_unscheduled_hours": latest.get("unscheduled_hours", 0) if latest else 0,
+            "next_action": latest.get("next_action") if latest else "Run /api/analyze with representative syllabus text to populate the board.",
+        },
+        "items": items,
+        "review_actions": [
+            "Compare repeated spillover before exporting any calendar from a new plan.",
+            "Treat consecutive medium/high risk runs as a planning failure, not just a calendar formatting issue.",
+            "Use the latest next_action plus what-if output to decide whether more weekly capacity is required.",
+        ],
+        "links": {
+            "history": "/api/history/recent",
+            "history_schema": "/api/history/recent/schema",
+            "outcomes_board": "/api/outcomes/board",
+            "analyze": "/api/analyze",
+            "what_if": "/api/what-if",
+        },
     }
 
 
@@ -274,6 +319,7 @@ def build_review_pack() -> dict[str, object]:
                 "/api/runtime/brief",
                 "/api/review-pack",
                 "/api/schema/analysis-report",
+                "/api/outcomes/board",
             ],
         },
         "executive_promises": [
@@ -332,6 +378,11 @@ def build_review_pack() -> dict[str, object]:
                 "path": "/api/history/recent",
                 "why": "Lets reviewers compare recent plans before exporting or re-running.",
             },
+            {
+                "label": "Outcome Board",
+                "path": "/api/outcomes/board",
+                "why": "Surfaces repeated spillover and risk drift in one reviewer snapshot.",
+            },
         ],
         "links": {
             "health": "/api/health",
@@ -340,6 +391,7 @@ def build_review_pack() -> dict[str, object]:
             "review_pack": "/api/review-pack",
             "analysis_schema": "/api/schema/analysis-report",
             "analysis_history": "/api/history/recent",
+            "outcomes_board": "/api/outcomes/board",
             "what_if": "/api/what-if",
             "export_ics": "/api/export/ics",
         },
@@ -371,6 +423,7 @@ def health() -> HealthResponse:
             "review_pack": "/api/review-pack",
             "analysis_schema": "/api/schema/analysis-report",
             "analysis_history": "/api/history/recent",
+            "outcomes_board": "/api/outcomes/board",
             "analyze": "/api/analyze",
             "what_if": "/api/what-if",
             "export_ics": "/api/export/ics",
@@ -388,6 +441,7 @@ def health() -> HealthResponse:
             "runtime-brief-surface",
             "analysis-schema-surface",
             "analysis-history-surface",
+            "outcome-board-surface",
             "review-pack-surface",
         ],
         routes=RUNTIME_ROUTES,
@@ -451,6 +505,11 @@ def analysis_history_recent(limit: int = 6, risk_level: str | None = None) -> di
         },
         "items": list_recent_analysis_history(limit=limit, risk_level=normalized_risk_level),
     }
+
+
+@app.get("/api/outcomes/board")
+def outcomes_board(limit: int = 6) -> dict[str, object]:
+    return build_outcome_board(limit=limit)
 
 
 @app.post("/api/extract", response_model=ExtractionResponse)
