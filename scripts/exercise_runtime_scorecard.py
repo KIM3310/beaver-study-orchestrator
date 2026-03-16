@@ -13,7 +13,22 @@ if str(ROOT) not in sys.path:
 from app.main import app
 
 
+def render_output(output: dict[str, object], output_path: Path | None = None) -> str:
+    rendered = json.dumps(output, ensure_ascii=True, indent=2)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(f"{rendered}\n", encoding="utf-8")
+    return rendered
+
+
 def main() -> None:
+    output_path = None
+    args = iter(sys.argv[1:])
+    for arg in args:
+      if arg == "--output":
+        candidate = next(args, "")
+        output_path = Path(candidate) if candidate else None
+
     client = TestClient(app)
     sample_syllabus = """
     Assignment 1 due March 12, 2026
@@ -75,7 +90,7 @@ def main() -> None:
             "boosted_risk": what_if_payload["boosted"]["risk_score"],
         },
     }
-    print(json.dumps(output, ensure_ascii=True, indent=2))
+    print(render_output(output, output_path))
 
 
 if __name__ == "__main__":
