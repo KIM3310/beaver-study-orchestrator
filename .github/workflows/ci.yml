@@ -23,3 +23,12 @@ jobs:
 
       - name: Run tests
         run: pytest -q
+
+      - name: Generate runtime proof artifact
+        run: python scripts/exercise_runtime_scorecard.py --output artifacts/runtime-proof.json
+
+      - name: Upload runtime proof artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: beaver-runtime-proof
+          path: artifacts/runtime-proof.json
