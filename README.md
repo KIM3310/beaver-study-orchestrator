@@ -101,6 +101,7 @@ Open `http://127.0.0.1:8000`
 - `GET /api/meta`: returns the same health contract in a reviewer-friendly metadata envelope.
 - `GET /api/runtime/brief`: summarizes the extract -> plan -> simulate workflow, review flow, and watchouts.
 - `GET /api/review-pack`: packages reviewer promises, trust boundary, and export posture before `.ics` handoff.
+- `GET /api/outcomes/board`: turns risk and what-if output into a reviewer board with recovery delta, unscheduled spillover, and next action.
 - `GET /api/schema/analysis-report`: pins the expected analysis payload for extraction, study plan, risk, and diagnostics.
 - Landing-page runtime brief: the top of the UI now shows schema, parser mode, export readiness, route count, operator rules, and watchouts before analysis runs.
 
@@ -108,12 +109,14 @@ Open `http://127.0.0.1:8000`
 - Open `/api/health` or `/api/meta` to confirm parser posture, route coverage, and export readiness.
 - Open `/api/runtime/brief` and pin the analysis schema, operator rules, and stage contract.
 - Run `/api/analyze` with representative syllabus text and verify due dates before reading risk or schedule quality.
+- Open `/api/outcomes/board` after `/api/what-if` to confirm recovery delta and reviewer handoff before exporting the calendar.
 - Use `/api/what-if` and `/api/export/ics` only after spillover and recommendations look reasonable.
 
 ## Proof Assets
 - `Health Route` -> `/api/health`
 - `Runtime Brief` -> `/api/runtime/brief`
 - `Review Pack` -> `/api/review-pack`
+- `Outcomes Board` -> `/api/outcomes/board`
 - `Analysis Schema` -> `/api/schema/analysis-report`
 - `What-If Route` -> `/api/what-if`
 - `Calendar Export` -> `/api/export/ics`
