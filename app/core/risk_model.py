@@ -12,8 +12,8 @@ def _sigmoid(value: float) -> float:
     return 1.0 / (1.0 + math.exp(-value))
 
 
-def _compute_features(tasks: List[Task], plan: StudyPlan, weekly_capacity: float) -> List[Tuple[str, float, float]]:
-    today = date.today()
+def _compute_features(tasks: List[Task], plan: StudyPlan, weekly_capacity: float, reference_date: date | None = None) -> List[Tuple[str, float, float]]:
+    today = reference_date or date.today()
     total_hours = sum(task.estimated_hours for task in tasks)
     weighted_hours = sum(task.estimated_hours * task.impact_weight for task in tasks)
     avg_difficulty = sum(task.difficulty for task in tasks) / max(len(tasks), 1)
@@ -64,10 +64,12 @@ def _build_recommendations(
     tasks: List[Task],
     plan: StudyPlan,
     availability: List[float],
+    reference_date: date | None = None,
 ) -> List[str]:
     recommendations: List[str] = []
+    ref = reference_date or date.today()
     missing_hours = round(max(0.0, plan.total_required_hours - plan.total_allocated_hours), 1)
-    nearest_due_days = min(max((task.due_date - date.today()).days, 0) for task in tasks)
+    nearest_due_days = min(max((task.due_date - ref).days, 0) for task in tasks)
 
     if missing_hours > 0:
         recommendations.append(
@@ -104,7 +106,7 @@ def _build_recommendations(
     return recommendations[:4]
 
 
-def assess_risk(tasks: List[Task], plan: StudyPlan, availability: List[float]) -> RiskAssessment:
+def assess_risk(tasks: List[Task], plan: StudyPlan, availability: List[float], reference_date: date | None = None) -> RiskAssessment:
     if not tasks:
         return RiskAssessment(
             score=0.0,
@@ -117,7 +119,7 @@ def assess_risk(tasks: List[Task], plan: StudyPlan, availability: List[float]) -
         )
 
     weekly_capacity = sum(availability)
-    features = _compute_features(tasks, plan, weekly_capacity)
+    features = _compute_features(tasks, plan, weekly_capacity, reference_date=reference_date)
 
     baseline = -2.3
     contributions: List[RiskDriver] = []
@@ -140,7 +142,7 @@ def assess_risk(tasks: List[Task], plan: StudyPlan, availability: List[float]) -
         rationale = "Schedule pressure is high; reduce scope or increase weekly availability."
 
     top_drivers = sorted(contributions, key=lambda item: abs(item.effect), reverse=True)[:3]
-    recommendations = _build_recommendations(score, tasks, plan, availability)
+    recommendations = _build_recommendations(score, tasks, plan, availability, reference_date=reference_date)
 
     return RiskAssessment(
         score=score,
