@@ -25,7 +25,8 @@ def _allocation_candidates(start: date, due: date) -> List[date]:
 
     # Encourage spaced repetition: early days first, then near-deadline reinforcement.
     midpoint = len(days) // 2
-    return days[:midpoint] + days[midpoint:][::2] + days[midpoint + 1 :][::2]
+    reordered = days[:midpoint] + days[midpoint:][::2] + days[midpoint + 1 :][::2]
+    return list(dict.fromkeys(reordered))
 
 
 def create_study_plan(tasks: List[Task], availability: List[float], start_date: date | None = None) -> StudyPlan:
