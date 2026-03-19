@@ -74,9 +74,19 @@ def _extract_due_date(raw_line: str, reference_year: int) -> Optional[date]:
             except ValueError:
                 continue
 
-            # If month/day likely points to next term and year is omitted, shift forward once.
-            if not year_token and parsed < date.today() and (date.today() - parsed).days > 120:
-                parsed = date(year + 1, month, day)
+            # If year is omitted and the date is in the past, decide whether to
+            # shift forward one year.  A simple 120-day cutoff broke across
+            # year boundaries (e.g. parsing "Jan 15" in December would not
+            # shift).  Instead, compare the parsed month to the current month:
+            # if the date is behind us *and* its month is earlier in the
+            # calendar year than the current month, it almost certainly refers
+            # to the next calendar year.
+            if not year_token and parsed < date.today():
+                today = date.today()
+                months_behind = (today.month - parsed.month) % 12
+                # If more than ~2 months behind, assume next year.
+                if months_behind > 2:
+                    parsed = date(year + 1, month, day)
 
             return parsed
 

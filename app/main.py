@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import os
-import tempfile
 from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import uuid4
@@ -33,6 +32,10 @@ from app.models import (
 
 APP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = APP_DIR / "static"
+# What-if simulation risk-reduction thresholds, configurable via env vars.
+WHATIF_STRONG_THRESHOLD = float(os.getenv("WHATIF_STRONG_THRESHOLD", "0.15"))
+WHATIF_MEANINGFUL_THRESHOLD = float(os.getenv("WHATIF_MEANINGFUL_THRESHOLD", "0.05"))
+
 ANALYSIS_REPORT_SCHEMA = "beaver-study-analysis-report-v1"
 RUNTIME_BRIEF_CONTRACT = "beaver-study-runtime-brief-v1"
 REVIEW_PACK_CONTRACT = "beaver-study-review-pack-v1"
@@ -41,7 +44,7 @@ OUTCOME_BOARD_CONTRACT = "beaver-study-outcome-board-v1"
 ANALYSIS_HISTORY_PATH = Path(
     os.getenv(
         "BEAVER_STUDY_HISTORY_PATH",
-        str(Path(tempfile.gettempdir()) / "beaver_study_analysis_history.jsonl"),
+        str(Path.home() / ".beaver-study" / "analysis_history.jsonl"),
     )
 ).expanduser()
 RUNTIME_ROUTES = [
@@ -619,11 +622,11 @@ def what_if(request: WhatIfRequest) -> WhatIfResponse:
     )
 
     risk_reduction = round(base_risk.score - boosted_risk.score, 3)
-    if risk_reduction > 0.15:
+    if risk_reduction > WHATIF_STRONG_THRESHOLD:
         recommendation = (
             "Adding this time buffer has a strong effect. Protect it on your calendar."
         )
-    elif risk_reduction > 0.05:
+    elif risk_reduction > WHATIF_MEANINGFUL_THRESHOLD:
         recommendation = (
             "This is a meaningful improvement. Keep the extra time until major deadlines pass."
         )
