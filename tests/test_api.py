@@ -9,7 +9,7 @@ os.environ["BEAVER_STUDY_HISTORY_PATH"] = str(HISTORY_PATH)
 if HISTORY_PATH.exists():
     HISTORY_PATH.unlink()
 
-from app.main import app
+from app.main import app  # noqa: E402
 
 client = TestClient(app)
 

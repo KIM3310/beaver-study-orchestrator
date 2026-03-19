@@ -121,13 +121,39 @@ Open `http://127.0.0.1:8000`
 - `What-If Route` -> `/api/what-if`
 - `Calendar Export` -> `/api/export/ics`
 
+## Evidence
+
+| Metric | Value |
+|---|---|
+| Test count | 40 |
+| Line coverage | 96% |
+| Coverage threshold (CI enforced) | 80% |
+| Pydantic-validated endpoints | `/api/analyze`, `/api/plan`, `/api/extract`, `/api/what-if`, `/api/export/ics` |
+| CI matrix | Python 3.11, 3.12 |
+| Lint | ruff (zero warnings) |
+
+**Test areas covered:**
+- Syllabus date parsing including year-boundary edge cases (9 tests)
+- What-if simulation with varied boost levels and capacity (5 tests)
+- Analysis history persistence, ordering, and filtering (4 tests)
+- Outcome board structure and consistency (2 tests)
+- Risk analytics: score bounds, driver ranking, and recommendations (6 tests)
+- Scheduler allocation and overdue recovery (2 tests)
+- Plan diagnostics with unscheduled guidance (2 tests)
+- API contract and metadata surfaces (7 tests)
+- Frontend metadata and preview assets (2 tests)
+- Static analysis clean: `ruff check app/ tests/` passes with zero errors
+
+**Input validation:**
+All API request bodies are validated with Pydantic v2 models using `Field` constraints (`min_length`, `max_length`, `ge`, `le`, `gt`) and `field_validator` decorators. Invalid payloads receive automatic 422 responses with structured error details.
+
 ## Run Tests
 ```bash
 make test
 ```
 
 ## CI
-- GitHub Actions runs `pytest` on every push/PR.
+- GitHub Actions runs `ruff` lint and `pytest --cov-fail-under=80` on every push/PR across Python 3.11 and 3.12.
 - Workflow file: `.github/workflows/ci.yml`
 
 ## Demo Assets Mapping
