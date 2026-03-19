@@ -312,7 +312,7 @@ def build_review_pack() -> dict[str, object]:
         "service": "beaver-study-orchestrator",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "readiness_contract": REVIEW_PACK_CONTRACT,
-        "headline": "Reviewer pack for syllabus extraction, adaptive study planning, what-if simulation, and calendar export.",
+        "headline": "Summary pack for syllabus extraction, adaptive study planning, what-if simulation, and calendar export.",
         "proof_bundle": {
             "parser_mode": "rule-based",
             "calendar_export_ready": True,
@@ -385,7 +385,7 @@ def build_review_pack() -> dict[str, object]:
             {
                 "label": "Outcome Board",
                 "path": "/api/outcomes/board",
-                "why": "Surfaces repeated spillover and risk drift in one reviewer snapshot.",
+                "why": "Surfaces repeated spillover and risk drift in one snapshot.",
             },
         ],
         "links": {
