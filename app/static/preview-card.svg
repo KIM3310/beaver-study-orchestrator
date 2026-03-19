@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Beaver Study Orchestrator preview card</title>
+  <desc id="desc">A study planning review card with deadline risk signals, focus windows, and calendar export.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#a78bfa" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="42" fill="url(#bg)" />
+  <circle cx="1040" cy="120" r="150" fill="#38bdf8" opacity="0.08" />
+  <circle cx="180" cy="520" r="230" fill="#a78bfa" opacity="0.12" />
+  <text x="96" y="126" fill="#7dd3fc" font-size="28" font-family="Inter, Arial, sans-serif" letter-spacing="8">SERVICE-GRADE STUDY PLANNER</text>
+  <text x="96" y="224" fill="#ffffff" font-size="82" font-weight="700" font-family="Inter, Arial, sans-serif">Beaver Study</text>
+  <text x="96" y="302" fill="#cbd5e1" font-size="34" font-family="Inter, Arial, sans-serif">Adaptive study plan, deadline risk, what-if simulation, and calendar export.</text>
+  <g transform="translate(780 150)">
+    <rect width="310" height="296" rx="26" fill="rgba(15,23,42,0.68)" stroke="rgba(255,255,255,0.12)" />
+    <text x="28" y="56" fill="#7dd3fc" font-size="24" font-family="Inter, Arial, sans-serif">Analysis outputs</text>
+    <text x="28" y="112" fill="#ffffff" font-size="50" font-weight="700" font-family="Inter, Arial, sans-serif">Risk-ready</text>
+    <text x="28" y="166" fill="#cbd5e1" font-size="24" font-family="Inter, Arial, sans-serif">• plan diagnostics</text>
+    <text x="28" y="206" fill="#cbd5e1" font-size="24" font-family="Inter, Arial, sans-serif">• weekly focus windows</text>
+    <text x="28" y="246" fill="#cbd5e1" font-size="24" font-family="Inter, Arial, sans-serif">• calendar export proof</text>
+  </g>
+  <rect x="96" y="388" width="348" height="76" rx="24" fill="url(#accent)" opacity="0.96" />
+  <text x="132" y="436" fill="#09111d" font-size="30" font-weight="700" font-family="Inter, Arial, sans-serif">Deadline risk → next action</text>
+</svg>
