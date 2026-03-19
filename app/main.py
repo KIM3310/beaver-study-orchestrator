@@ -7,6 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
+from pydantic import ValidationError
 from fastapi.responses import FileResponse
 from fastapi.responses import PlainTextResponse
 from fastapi.staticfiles import StaticFiles
@@ -171,7 +172,7 @@ def list_recent_analysis_history(*, limit: int = 6, risk_level: str | None = Non
                     continue
                 try:
                     item = AnalysisHistoryItem.model_validate_json(raw)
-                except Exception:
+                except (ValidationError, ValueError):
                     continue
                 items.append(item)
 
