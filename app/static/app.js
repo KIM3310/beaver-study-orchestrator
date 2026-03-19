@@ -331,7 +331,7 @@ async function handleCopyRuntimeBrief() {
 async function handleCopyReviewPack() {
   const pack = latestReviewPack || {};
   const lines = [
-    "beaver-study review pack",
+    "beaver-study summary",
     `Headline: ${pack.headline || reviewPackHeadline.textContent || "-"}`,
     `Runtime: ${reviewPackRuntime.textContent || "-"}`,
     `Schema: ${reviewPackSchema.textContent || "-"}`,

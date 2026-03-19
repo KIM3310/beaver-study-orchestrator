@@ -244,9 +244,9 @@ def build_runtime_brief() -> dict[str, object]:
                 "why": "Pins schema, stage contract, review flow, and watchouts before analysis.",
             },
             {
-                "label": "Review Pack",
+                "label": "Summary",
                 "path": "/api/review-pack",
-                "why": "Packages reviewer promises, trust boundary, and export posture in one envelope.",
+                "why": "Packages pipeline summary, trust boundary, and export posture in one envelope.",
             },
             {
                 "label": "Analysis Schema",
@@ -342,10 +342,10 @@ def build_review_pack() -> dict[str, object]:
             "Use /api/what-if before exporting the final .ics calendar.",
         ],
         "two_minute_review": [
-            "Open /api/health, /api/runtime/brief, and /api/review-pack to confirm parser posture and reviewer routes.",
+            "Open /api/health, /api/runtime/brief, and /api/review-pack to confirm parser posture and status routes.",
             "Run /api/analyze and verify extracted due dates before trusting schedule quality or risk level.",
             "Use /api/what-if to compare the baseline and boosted plan before selecting a final path.",
-            "Export .ics only after the reviewer checks spillover, diagnostics, and recommendations together.",
+            "Export .ics only after the user checks spillover, diagnostics, and recommendations together.",
         ],
         "analysis_contract": {
             "schema": ANALYSIS_REPORT_SCHEMA,
@@ -363,9 +363,9 @@ def build_review_pack() -> dict[str, object]:
                 "why": "Shows parser posture, export readiness, and next action before analysis.",
             },
             {
-                "label": "Review Pack",
+                "label": "Summary",
                 "path": "/api/review-pack",
-                "why": "Packages reviewer sequence, boundary, and promises into one contract.",
+                "why": "Packages summary sequence, boundary, and promises into one contract.",
             },
             {
                 "label": "What-If Route",
@@ -380,7 +380,7 @@ def build_review_pack() -> dict[str, object]:
             {
                 "label": "Recent History",
                 "path": "/api/history/recent",
-                "why": "Lets reviewers compare recent plans before exporting or re-running.",
+                "why": "Lets users compare recent plans before exporting or re-running.",
             },
             {
                 "label": "Outcome Board",

@@ -19,7 +19,7 @@
   <text x="96" y="302" fill="#cbd5e1" font-size="34" font-family="Inter, Arial, sans-serif">Adaptive study plan, deadline risk, what-if simulation, and calendar export.</text>
   <g transform="translate(780 150)">
     <rect width="310" height="296" rx="26" fill="rgba(15,23,42,0.68)" stroke="rgba(255,255,255,0.12)" />
-    <text x="28" y="56" fill="#7dd3fc" font-size="24" font-family="Inter, Arial, sans-serif">Reviewer surfaces</text>
+    <text x="28" y="56" fill="#7dd3fc" font-size="24" font-family="Inter, Arial, sans-serif">Analysis outputs</text>
     <text x="28" y="112" fill="#ffffff" font-size="50" font-weight="700" font-family="Inter, Arial, sans-serif">Risk-ready</text>
     <text x="28" y="166" fill="#cbd5e1" font-size="24" font-family="Inter, Arial, sans-serif">• plan diagnostics</text>
     <text x="28" y="206" fill="#cbd5e1" font-size="24" font-family="Inter, Arial, sans-serif">• weekly focus windows</text>

@@ -1,206 +1,90 @@
 # Beaver Study Orchestrator
 
-`Beaver Study Orchestrator` is a study-planning workflow built around syllabus extraction, schedule generation, and interpretable risk modeling.
+A study-planning tool that extracts deadlines from syllabus text, generates adaptive schedules, and provides interpretable risk scoring with what-if simulation.
 
-## Portfolio posture
-- Treat this repo as a focused study-planning workflow, not a general chatbot.
-- The planning API, what-if simulator, and ICS export are the proof surfaces behind the product story.
+## What it does
 
-## Role signals
-- **AI engineer:** syllabus parsing, planning heuristics, and interpretable risk modeling are all exposed instead of hidden.
-- **Solutions architect:** extraction, scheduling, and review surfaces are separated enough to discuss trade-offs cleanly.
-- **Field / solutions engineer:** the demo path is immediate: raw syllabus in, study plan and risk drivers out.
+1. **Syllabus extraction** - Parses due dates from free-form text, detects task types (assignment, exam, project, etc.), estimates effort with rule-based heuristics
+2. **Schedule generation** - Builds date-by-date study allocations based on weekday availability, avoids single-day cramming
+3. **Risk analytics** - Risk score (0.0-1.0) with top drivers (coverage gap, urgency, workload), mitigation recommendations
+4. **What-if simulation** - See how risk changes when you add extra study hours per day
+5. **Calendar export** - Exports study sessions as `.ics` for Google Calendar / Apple Calendar
+6. **Diagnostics** - Busiest day, deadline buffer, total focus days, recovery hours needed
 
-## Repository surfaces
-- **Primary runtime:** `app/` contains the study-planning service and `tests/` covers the core extraction/scheduling logic.
-- **Data + review assets:** `data/` and `docs/` provide demo inputs, exports, and reviewer-facing material.
-- **Scripts:** `scripts/` holds reproducible helpers for setup, demo prep, and validation.
-- **Start here if you're new:** run the app first, then use the docs/demo assets as supporting evidence rather than as the main entrypoint.
+## Quickstart
 
-## 4-Line Problem Frame
-- **User:** Busy students juggling multiple deadlines across classes.
-- **Problem:** Syllabi are unstructured; students underestimate workload and cram late.
-- **Constraint:** Planning must be fast, interpretable, and usable without paid APIs.
-- **Success Test:** From raw syllabus text, generate an actionable study plan + risk score in under 10 seconds.
+```bash
+make setup
+make run
+```
 
-## Why This Is Competitive
-- Solves a concrete student pain with clear measurable output.
-- Combines NLP-style extraction, planning optimization, and interpretable risk modeling.
-- Live demo is straightforward: paste syllabus -> click -> show plan + risk drivers.
-- Highly discussable in interviews (data modeling, tradeoffs, explainability, product decisions).
+Open `http://127.0.0.1:8000`
 
-## Core Features
-1. **Syllabus extraction**
-- Parses due dates from free-form text lines.
-- Detects task types (assignment, exam, project, lab, report, quiz).
-- Estimates effort using interpretable rule-based heuristics.
+## How it works
 
-2. **Adaptive schedule generation**
-- Builds date-by-date study allocations based on weekday availability.
-- Avoids single-day cram by chunking workload.
-- Reports unscheduled spillover when capacity is insufficient.
-
-3. **Deadline risk analytics**
-- Produces risk score (`0.0-1.0`) and level (`low/medium/high`).
-- Shows top risk drivers (coverage gap, urgency, workload, capacity).
-- Generates mitigation recommendations based on spillover and urgency.
-- Supports “what-if” simulation by changing availability inputs.
-
-4. **Calendar export for execution**
-- Exports generated study sessions as `.ics`.
-- Imports directly into Google Calendar / Apple Calendar.
-- Keeps demo focused on real habit formation, not just analysis.
-
-5. **What-if scenario simulator**
-- Simulates how risk changes if the student adds a configurable `+0.5h ~ +4.0h/day` capacity.
-- Compares baseline vs boosted risk and unscheduled-hour reduction.
-- Respects the same planning start date used in the main analysis flow.
-- Generates a direct recommendation for action.
-
-6. **Execution diagnostics cockpit**
-- Highlights the busiest study day, first deadline buffer, and total focus days.
-- Estimates additional daily hours needed to recover unscheduled spillover.
-- Produces a concrete `next_action` instead of only showing a risk score.
-7. **Demo-safe failure handling**
-- If no due dates are found, API returns a valid response (no 500 crash).
-- UI shows corrective guidance with a concrete date-format example.
-
-## Tech Stack
-- **Backend:** FastAPI, Pydantic
-- **Frontend:** Vanilla JS + HTML/CSS
-- **Testing:** Pytest, FastAPI TestClient
-- **Runtime:** Python 3.11+
-
-## Architecture
 ```text
 [Browser UI]
    |  POST /api/analyze, POST /api/what-if
    v
 [FastAPI app.main]
-   ├─ syllabus_parser.py   (text -> tasks)
-   ├─ scheduler.py         (tasks + availability -> daily plan)
-   ├─ risk_model.py        (tasks + plan -> interpretable risk + mitigation)
-   └─ calendar_export.py   (plan -> .ics)
+   |-- syllabus_parser.py   (text -> tasks)
+   |-- scheduler.py         (tasks + availability -> daily plan)
+   |-- risk_model.py        (tasks + plan -> risk + mitigation)
+   +-- calendar_export.py   (plan -> .ics)
 ```
 
-## Quickstart
-```bash
-make setup
-make run
-```
-Open `http://127.0.0.1:8000`
+## API
 
-## Canonical runtime + artifact map
-- Canonical runtime: the FastAPI app in `app/` serves the planner UI and export routes at `http://127.0.0.1:8000`.
-- `demo_artifacts/` contains application/review collateral (audio/video pitch assets), not the source of truth for planner logic.
-- `.ics` files are generated by the export route at runtime; the repo keeps the planner, tests, and reviewer docs rather than user calendars.
-- `docs/` explains the live demo and review flow; it does not replace the runnable app.
+| Endpoint | Description |
+|---|---|
+| `GET /api/health` | Parser status and export readiness |
+| `POST /api/analyze` | Analyze syllabus text |
+| `POST /api/what-if` | Simulate schedule with different availability |
+| `GET /api/export/ics` | Export study plan as .ics calendar |
+| `GET /api/outcomes/board` | Risk and what-if summary dashboard |
+| `GET /api/schema/analysis-report` | Analysis payload schema |
 
-## Runtime Surfaces
-- `GET /api/health`: exposes parser posture, export readiness, review links, and runtime contract.
-- `GET /api/meta`: returns the same health contract in a reviewer-friendly metadata envelope.
-- `GET /api/runtime/brief`: summarizes the extract -> plan -> simulate workflow, review flow, and watchouts.
-- `GET /api/review-pack`: packages reviewer promises, trust boundary, and export posture before `.ics` handoff.
-- `GET /api/outcomes/board`: turns risk and what-if output into a reviewer board with recovery delta, unscheduled spillover, and next action.
-- `GET /api/schema/analysis-report`: pins the expected analysis payload for extraction, study plan, risk, and diagnostics.
-- Landing-page runtime brief: the top of the UI now shows schema, parser mode, export readiness, route count, operator rules, and watchouts before analysis runs.
+## Tech Stack
 
-## Review Flow
-- Open `/api/health` or `/api/meta` to confirm parser posture, route coverage, and export readiness.
-- Open `/api/runtime/brief` and pin the analysis schema, operator rules, and stage contract.
-- Run `/api/analyze` with representative syllabus text and verify due dates before reading risk or schedule quality.
-- Open `/api/outcomes/board` after `/api/what-if` to confirm recovery delta and reviewer handoff before exporting the calendar.
-- Use `/api/what-if` and `/api/export/ics` only after spillover and recommendations look reasonable.
+- **Backend:** FastAPI, Pydantic
+- **Frontend:** Vanilla JS + HTML/CSS
+- **Testing:** Pytest, FastAPI TestClient
+- **Runtime:** Python 3.11+
 
-## Proof Assets
-- `Health Route` -> `/api/health`
-- `Runtime Brief` -> `/api/runtime/brief`
-- `Review Pack` -> `/api/review-pack`
-- `Outcomes Board` -> `/api/outcomes/board`
-- `Analysis Schema` -> `/api/schema/analysis-report`
-- `What-If Route` -> `/api/what-if`
-- `Calendar Export` -> `/api/export/ics`
-
-## Evidence
+## Tests
 
 | Metric | Value |
 |---|---|
 | Test count | 40 |
 | Line coverage | 96% |
-| Coverage threshold (CI enforced) | 80% |
-| Pydantic-validated endpoints | `/api/analyze`, `/api/plan`, `/api/extract`, `/api/what-if`, `/api/export/ics` |
+| CI threshold | 80% |
 | CI matrix | Python 3.11, 3.12 |
 | Lint | ruff (zero warnings) |
 
-**Test areas covered:**
-- Syllabus date parsing including year-boundary edge cases (9 tests)
-- What-if simulation with varied boost levels and capacity (5 tests)
-- Analysis history persistence, ordering, and filtering (4 tests)
-- Outcome board structure and consistency (2 tests)
-- Risk analytics: score bounds, driver ranking, and recommendations (6 tests)
-- Scheduler allocation and overdue recovery (2 tests)
-- Plan diagnostics with unscheduled guidance (2 tests)
-- API contract and metadata surfaces (7 tests)
-- Frontend metadata and preview assets (2 tests)
-- Static analysis clean: `ruff check app/ tests/` passes with zero errors
+Covers: date parsing (including year-boundary edges), what-if simulation, history persistence, outcome board, risk analytics, scheduler allocation, API contracts, and frontend metadata.
 
-**Input validation:**
-All API request bodies are validated with Pydantic v2 models using `Field` constraints (`min_length`, `max_length`, `ge`, `le`, `gt`) and `field_validator` decorators. Invalid payloads receive automatic 422 responses with structured error details.
+All request bodies are validated with Pydantic v2 (`Field` constraints + `field_validator`). Invalid payloads get 422 responses with structured error details.
 
-## Run Tests
 ```bash
 make test
 ```
 
-## CI
-- GitHub Actions runs `ruff` lint and `pytest --cov-fail-under=80` on every push/PR across Python 3.11 and 3.12.
-- Workflow file: `.github/workflows/ci.yml`
+## Design Decisions
 
-## Demo Assets Mapping
-- **Working Prototype:** This web app (`uvicorn app.main:app`)
-- **Video (2-4 min):** Script suggestion below
-- **GitHub Repo:** Includes commit-ready structure, tests, docs
-- **Final Checklist:** `docs/demo-package-checklist.md`
-- **Live Pitch Playbook:** `docs/pitch-runbook.md`
-- **Project Description Draft:** `docs/project-description-template.md`
-- **Timed Demo Script:** `docs/demo-script-2to4min.md`
-
-## 2-4 Minute Demo Script (Suggested)
-1. Show raw syllabus text with mixed formatting.
-2. Click **Generate Plan**.
-3. Walk through extracted tasks and estimated hours.
-4. Show adaptive daily schedule and unscheduled spillover logic.
-5. Explain risk score, top drivers, and execution signals.
-6. Change the what-if boost value to show dynamic recovery planning.
-
-## Decision Log
-- **Rule-based extraction over LLM calls:** deterministic, offline-friendly, no token cost.
-- **Interpretable risk model over black-box model:** judge-friendly reasoning and clear feature effects.
-- **Single-page app:** fast demo flow with no auth friction.
+- **Rule-based extraction over LLM calls** - deterministic, offline-friendly, no token cost
+- **Interpretable risk model** - clear feature effects, easy to explain in interviews
+- **Single-page app** - fast demo flow, no auth friction
 
 ## Known Limitations
-- Date parser supports common English month formats and `MM/DD` / `MM-DD`.
-- Task effort estimation is heuristic, not personalized by historical performance.
-- No calendar/LMS sync yet.
 
-## Next Steps
-1. Add Google Calendar and Canvas integration.
-2. Add user profile calibration from past completion data.
-3. Add per-course configuration and personalized weight calibration.
+- Date parser handles common English month formats and `MM/DD` / `MM-DD`
+- Effort estimation is heuristic, not personalized
+- No calendar/LMS sync yet
+
+## CI
+
+GitHub Actions runs `ruff` lint and `pytest --cov-fail-under=80` on every push/PR across Python 3.11 and 3.12.
 
 ## License
+
 MIT
-
-## Local Verification
-```bash
-/Library/Developer/CommandLineTools/usr/bin/python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
-python -m pytest
-python scripts/exercise_runtime_scorecard.py
-```
-
-## Repository Hygiene
-- Keep runtime artifacts out of commits (`.codex_runs/`, cache folders, temporary venvs).
-- Prefer running verification commands above before opening a PR.
