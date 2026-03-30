@@ -8,3 +8,4 @@ __pycache__/
 .DS_Store
 .codex_runs/
 demo_artifacts/
+dist/
