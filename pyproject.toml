@@ -11,16 +11,16 @@ requires-python = ">=3.11"
 authors = [{name = "Doeon Kim", email = "ehdjs1351@gmail.com"}]
 license = "MIT"
 dependencies = [
-  "fastapi==0.121.1",
-  "uvicorn[standard]==0.38.0",
-  "pydantic==2.12.5",
+  "fastapi==0.136.1",
+  "uvicorn[standard]==0.47.0",
+  "pydantic==2.13.4",
   "httpx==0.28.1"
 ]
 
 [project.optional-dependencies]
 dev = [
   "pytest==9.0.3",
-  "ruff==0.15.12"
+  "ruff==0.15.13"
 ]
 
 [tool.setuptools.packages.find]
