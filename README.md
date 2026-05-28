@@ -21,6 +21,10 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 - **Verification:** Run `make test`; CI also enforces lint and coverage on supported Python versions.
 - **Commercial read:** Use the advisory/cohort-risk angle for schools, bootcamps, and productivity products.
 
+## Commercialization Playbook
+
+- [Monetization and GTM playbook](docs/monetization-playbook.md) maps the repository to buyer segments, offer ladder, pricing hypotheses, proof gates, and risk boundaries.
+
 ## What it does
 
 1. **Syllabus extraction** - Parses due dates from free-form text, detects task types (assignment, exam, project, etc.), estimates effort with rule-based heuristics
