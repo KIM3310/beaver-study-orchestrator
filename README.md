@@ -2,6 +2,18 @@
 
 A study-planning tool that extracts deadlines from syllabus text, generates adaptive schedules, and provides interpretable risk scoring with what-if simulation.
 
+## Product and Review Surface
+
+A study planner that turns syllabus data into schedules, risk signals, and what-if decisions students can act on.
+
+| Lens | Definition |
+|---|---|
+| Buyer or user | Students, advisors, bootcamps, education platforms, and productivity-tool reviewers. |
+| Commercial route | Freemium planner with paid what-if simulations, advisor dashboards, or cohort-risk analytics. |
+| Review signal | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
+| Safety boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
+| Fast proof | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
+
 ## What it does
 
 1. **Syllabus extraction** - Parses due dates from free-form text, detects task types (assignment, exam, project, etc.), estimates effort with rule-based heuristics
