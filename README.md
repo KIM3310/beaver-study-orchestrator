@@ -14,6 +14,13 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 | Safety boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
 | Fast proof | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
 
+## Reviewer Fast Path
+
+- **First minute:** Run one syllabus through analyze, then compare the risk drivers with the what-if result.
+- **Local demo:** Run `make setup && make run`, then open `http://127.0.0.1:8000`.
+- **Verification:** Run `make test`; CI also enforces lint and coverage on supported Python versions.
+- **Commercial read:** Use the advisory/cohort-risk angle for schools, bootcamps, and productivity products.
+
 ## What it does
 
 1. **Syllabus extraction** - Parses due dates from free-form text, detects task types (assignment, exam, project, etc.), estimates effort with rule-based heuristics
