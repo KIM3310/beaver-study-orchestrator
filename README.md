@@ -1,5 +1,10 @@
 # Beaver Study Orchestrator
 
+> **Curated supporting repo**
+> This repository is kept as optional proof, but it no longer leads the portfolio.
+> Current front door: **aix-pilot, Nexus-Hive, and districtpilot-ai**.
+> Reason: Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes.
+
 A study-planning tool that extracts deadlines from syllabus text, generates adaptive schedules, and provides interpretable risk scoring with what-if simulation.
 
 ## Product and Review Surface
@@ -31,6 +36,7 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Revenue growth model](docs/revenue-growth-model.md) maps the project to an ethical revenue path, activation loop, pricing logic, and growth experiments.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
+- [Portfolio fit](docs/portfolio-fit.md) explains why this repository is archived/supporting and where the current portfolio front door lives.
 
 ## What it does
 

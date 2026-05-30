@@ -2,60 +2,47 @@
 
 Updated: 2026-05-30
 
-Use this page as the short path through the repository. It keeps the review grounded in the code, docs, commands, and boundaries that are already present.
+This repository is now curated as supporting material. Review it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
 
 ## Summary
 
 | Field | Notes |
 |---|---|
+| Repository | `beaver-study-orchestrator` |
+| Status | Archived supporting repository |
 | Lane | B2C/B2B education productivity |
-| Core idea | Syllabus-to-schedule planner with interpretable risk and what-if simulation. |
 | Primary reader | Students, advisors, bootcamps, and education platforms. |
-| Stack | Python |
+| Why it moved back | Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes. |
+| Current successor | aix-pilot, Nexus-Hive, and districtpilot-ai |
 
 ## Open First
 
-1. Start with the README fast path and architecture section.
-2. Open `docs/monetization-playbook.md` only when reviewing the product or service angle.
-3. Check the commands below before making claims about quality.
-4. Skim the CI workflows and fixture data before deeper implementation review.
-5. Read the boundaries section before presenting the project externally.
-
-## Checks
-
-| Purpose | Command |
-|---|---|
-| Test suite | `make test` |
-
-## CI
-
-- .github/workflows/architecture-blueprint.yml
-- .github/workflows/ci.yml
-- .github/workflows/dependency-review.yml
-- .github/workflows/repository-health.yml
-- .github/workflows/repository-surface.yml
-- .github/workflows/secret-scan.yml
+1. Start with the successor repositories named above.
+2. Use this repository only for optional domain breadth or historical product exploration.
+3. Check `docs/portfolio-fit.md` before presenting it externally.
+4. Keep the archived/supporting status visible in any resume, portfolio, or buyer conversation.
 
 ## Evidence
 
-- pytest/ruff-style local verification path
 - make test passes
 - Risk drivers are interpretable
 - ICS export path works
 
 ## Commercial Notes
 
-| Possible offer | Working price assumption |
-|---|---|
-| Freemium planner | Free + $5/month student |
-| Advisor dashboard pilot | $199-$999/month cohort |
-| Bootcamp cohort-risk analytics | $3k-$12k platform pilot |
+| Possible offer | Working price assumption | Scope |
+|---|---|---|
+| Freemium planner | Free + $5/month student | Scoped after review. |
+| Advisor dashboard pilot | $199-$999/month cohort | Scoped after review. |
+| Bootcamp cohort-risk analytics | $3k-$12k platform pilot | Scoped after review. |
 
 ## Boundaries
 
 - Advisory guidance only
 - Student data retention needs controls
 - Avoid outcome guarantees
+- Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes.
+- Do not present this as a current flagship or maintained product surface.
 
 ## Useful Metrics
 
