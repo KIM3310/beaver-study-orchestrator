@@ -32,9 +32,9 @@ This repository is now curated as supporting material. Review it only after the 
 
 | Possible offer | Working scope assumption | Scope |
 |---|---|---|
-| Freemium planner | Free + $5/month student | Scoped after review. |
-| Advisor dashboard pilot | $199-$999/month cohort | Scoped after review. |
-| Bootcamp cohort-risk analytics | $3k-$12k platform pilot | Scoped after review. |
+| Freemium planner | Scope after buyer intake | Scoped after review. |
+| Advisor dashboard pilot | Scope after buyer intake | Scoped after review. |
+| Bootcamp cohort-risk analytics | Scope after buyer intake | Scoped after review. |
 
 ## Boundaries
 

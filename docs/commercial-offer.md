@@ -12,7 +12,7 @@ This is the buyer-ready version of the repository. It turns the technical proof 
 | Buyer | Students, advisors, bootcamps, and education platforms. |
 | Pain wedge | Syllabus-to-schedule planner with interpretable risk and what-if simulation. |
 | Front-door offer | Freemium planner |
-| Entry scope | Free + $5/month student |
+| Entry scope | Scope after buyer intake |
 | Proof before pitch | make test passes |
 | Next buyer action | Review one proof artifact, then choose diagnostic, workshop, pilot, support, or revival path. |
 
@@ -20,9 +20,9 @@ This is the buyer-ready version of the repository. It turns the technical proof 
 
 | Offer | Scope assumption | Buyer-facing scope |
 |---|---|---|
-| Freemium planner | Free + $5/month student | Publish sample syllabus demos |
-| Advisor dashboard pilot | $199-$999/month cohort | Create advisor report |
-| Bootcamp cohort-risk analytics | $3k-$12k platform pilot | Pilot with one cohort |
+| Freemium planner | Scope after buyer intake | Publish sample syllabus demos |
+| Advisor dashboard pilot | Scope after buyer intake | Create advisor report |
+| Bootcamp cohort-risk analytics | Scope after buyer intake | Pilot with one cohort |
 
 ## Close Path
 

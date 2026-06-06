@@ -49,9 +49,9 @@ This note specializes the repository for service launch. It combines product str
 
 ## Conversion Path
 
-- Optional entry: Freemium planner (Free + $5/month student) when this archived proof exactly matches the buyer problem.
-- Revival step: Advisor dashboard pilot ($199-$999/month cohort) only after the active successor and support boundary are clear.
-- Longer-term path: Bootcamp cohort-risk analytics ($3k-$12k platform pilot) if the repository is refreshed and assigned an owner.
+- Optional entry: Freemium planner (scope after buyer intake) when this archived proof exactly matches the buyer problem.
+- Revival step: Advisor dashboard pilot (scope after buyer intake) only after the active successor and support boundary are clear.
+- Longer-term path: Bootcamp cohort-risk analytics (scope after buyer intake) if the repository is refreshed and assigned an owner.
 
 ## Scope Frame
 
