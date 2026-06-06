@@ -30,7 +30,7 @@ This repository is now curated as supporting material. Review it only after the 
 
 ## Commercial Notes
 
-| Possible offer | Working price assumption | Scope |
+| Possible offer | Working scope assumption | Scope |
 |---|---|---|
 | Freemium planner | Free + $5/month student | Scoped after review. |
 | Advisor dashboard pilot | $199-$999/month cohort | Scoped after review. |
