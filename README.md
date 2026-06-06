@@ -1,5 +1,10 @@
 # Beaver Study Orchestrator
 
+## Live Demo
+
+- [Open the public GitHub Pages demo](https://kim3310.github.io/beaver-study-orchestrator/)
+- Scope: credential-free, synthetic-data demo for reviewers and evaluators.
+
 > **Curated supporting repo**
 > This repository is kept as optional proof, but it no longer leads the portfolio.
 > Current front door: **aix-pilot, Nexus-Hive, and districtpilot-ai**.
