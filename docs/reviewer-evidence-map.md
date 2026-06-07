@@ -20,7 +20,7 @@ This repository is now curated as supporting material. Review it only after the 
 1. Start with the successor repositories named above.
 2. Use this repository only for optional domain breadth or historical product exploration.
 3. Check `docs/portfolio-fit.md` before presenting it externally.
-4. Keep the archived/supporting status visible in any resume, portfolio, or buyer conversation.
+4. Keep the archived/supporting status visible in any resume, portfolio, or reviewer conversation.
 
 ## Evidence
 
@@ -28,13 +28,13 @@ This repository is now curated as supporting material. Review it only after the 
 - Risk drivers are interpretable
 - ICS export path works
 
-## Commercial Notes
+## Review Notes
 
 | Possible offer | Working scope assumption | Scope |
 |---|---|---|
-| Freemium planner | Scope after buyer intake | Scoped after review. |
-| Advisor dashboard pilot | Scope after buyer intake | Scoped after review. |
-| Bootcamp cohort-risk analytics | Scope after buyer intake | Scoped after review. |
+| Freemium planner | Scope after reviewer intake | Scoped after review. |
+| Advisor dashboard pilot | Scope after reviewer intake | Scoped after review. |
+| Bootcamp cohort-risk analytics | Scope after reviewer intake | Scoped after review. |
 
 ## Boundaries
 

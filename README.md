@@ -18,8 +18,8 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 
 | Lens | Definition |
 |---|---|
-| Buyer or user | Students, advisors, bootcamps, education platforms, and productivity-tool reviewers. |
-| Commercial route | Freemium planner with paid what-if simulations, advisor dashboards, or cohort-risk analytics. |
+| Audience | Students, advisors, bootcamps, education platforms, and productivity-tool reviewers. |
+| Review path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
 | Review signal | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
 | Safety boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
 | Fast proof | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
@@ -29,20 +29,16 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 - **First minute:** Run one syllabus through analyze, then compare the risk drivers with the what-if result.
 - **Local demo:** Run `make setup && make run`, then open `http://127.0.0.1:8000`.
 - **Verification:** Run `make test`; CI also enforces lint and coverage on supported Python versions.
-- **Commercial read:** Use the advisory/cohort-risk angle for schools, bootcamps, and productivity products.
 
 ## Service Launch Playbook
 
-- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to buyer segments, offer ladder, proof gates, proof gates, and risk boundaries.
+- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to review audiences, offer ladder, proof gates, proof gates, and risk boundaries.
 
 ## Review Notes
 
 - [Review guide](docs/reviewer-evidence-map.md) summarizes the project angle, first files to inspect, verification commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
-- [Service growth model](docs/service-growth-model.md) maps the project to an ethical service path, activation loop, scope logic, and growth experiments.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
-- [Conversion UX model](docs/conversion-ux-model.md) maps the buyer path, behavioral design, UI/UX direction, scope frame, and ethical conversion guardrails.
-- [Commercial offer](docs/commercial-offer.md) packages the repository into a buyer-ready offer ladder, proof gate, outreach angle, and close path.
 - [Portfolio fit](docs/portfolio-fit.md) explains why this repository is archived/supporting and where the current portfolio front door lives.
 
 ## What it does
@@ -142,7 +138,7 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 
 ## Enterprise Productization
 
-- [Product operating model](docs/product-operating-model.md) defines the buyer, paid wedge, trust boundary, operating checks, and service path for this repository.
+- [Product operating model](docs/product-operating-model.md) defines the reviewer, trust boundary, trust boundary, operating checks, and service path for this repository.
 
 ## Service Architecture
 

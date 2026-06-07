@@ -28,7 +28,7 @@ Students often miss deadlines because course plans are fragmented across syllabi
 The most critical bug was a crash when no valid dates were extracted from input text. We fixed this by returning a graceful, informative response and user guidance instead of a server error.
 
 ## Accomplishments
-- end-to-end working prototype with no paid API dependencies
+- end-to-end working prototype with no external API dependencies
 - interpretable risk outputs suitable for technical review
 - direct calendar export bridging analysis to action
 - reproducible tests and CI pipeline

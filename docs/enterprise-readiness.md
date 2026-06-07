@@ -11,15 +11,15 @@ This repository is archived as supporting material. It should not be positioned 
 | Repository | `beaver-study-orchestrator` |
 | Status | Archived supporting proof |
 | Lane | B2C/B2B education productivity |
-| Primary reader or buyer | Students, advisors, bootcamps, and education platforms. |
+| Primary reader or reviewer | Students, advisors, bootcamps, and education platforms. |
 | Current successor | aix-pilot, Nexus-Hive, and districtpilot-ai |
 | Readiness posture | Historical or optional proof; not a current production-readiness claim. |
 
 ## Revival Requirements
 
 - Re-check dependencies, build path, secrets posture, and live demo status.
-- Reconfirm the buyer, data boundary, identity/access needs, monitoring, and support owner.
-- Replace broad consumer or experimental positioning with one narrow paid or reviewable use case.
+- Reconfirm the reviewer, data boundary, identity/access needs, monitoring, and support owner.
+- Replace broad consumer or experimental positioning with one narrow reviewable use case.
 - Keep the active flagship repositories as the main portfolio story unless this domain is explicitly requested.
 
 ## Proof Points
