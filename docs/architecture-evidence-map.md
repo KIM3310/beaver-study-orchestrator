@@ -1,8 +1,8 @@
-# Review Guide - Beaver Study Orchestrator
+# Architecture Guide - Beaver Study Orchestrator
 
 Updated: 2026-05-30
 
-This repository is now curated as supporting material. Review it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
+This repository is now curated as supporting material. Architecture it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
 
 ## Summary
 
@@ -20,7 +20,7 @@ This repository is now curated as supporting material. Review it only after the 
 1. Start with the successor repositories named above.
 2. Use this repository only for optional domain breadth or historical product exploration.
 3. Check `docs/portfolio-fit.md` before presenting it externally.
-4. Keep the archived/supporting status visible in any resume, portfolio, or reviewer conversation.
+4. Keep the archived/supporting status visible in any resume, portfolio, or technical reader conversation.
 
 ## Evidence
 
@@ -28,13 +28,13 @@ This repository is now curated as supporting material. Review it only after the 
 - Risk drivers are interpretable
 - ICS export path works
 
-## Review Notes
+## Architecture Notes
 
 | Possible offer | Working scope assumption | Scope |
 |---|---|---|
-| Freemium planner | Scope after reviewer intake | Scoped after review. |
-| Advisor dashboard pilot | Scope after reviewer intake | Scoped after review. |
-| Bootcamp cohort-risk analytics | Scope after reviewer intake | Scoped after review. |
+| Freemium planner | Scope after product intake | Scoped after architecture. |
+| Advisor dashboard pilot | Scope after product intake | Scoped after architecture. |
+| Bootcamp cohort-risk analytics | Scope after product intake | Scoped after architecture. |
 
 ## Boundaries
 
@@ -48,4 +48,4 @@ This repository is now curated as supporting material. Review it only after the 
 
 - Schedule completion
 - Risk reduction
-- Advisor review time saved
+- Advisor architecture time saved

@@ -47,7 +47,7 @@ def main() -> None:
 
     health = client.get("/api/health")
     brief = client.get("/api/runtime/brief")
-    review_pack = client.get("/api/review-pack")
+    architecture_pack = client.get("/api/architecture-pack")
     analysis = client.post(
         "/api/analyze",
         json={
@@ -68,7 +68,7 @@ def main() -> None:
         },
     )
 
-    for response in (health, brief, review_pack, what_if):
+    for response in (health, brief, architecture_pack, what_if):
         response.raise_for_status()
 
     analysis_payload = analysis.json()
@@ -77,7 +77,7 @@ def main() -> None:
         "service": "beaver-study-orchestrator",
         "health": health.json()["diagnostics"],
         "runtime_brief_contract": brief.json()["readiness_contract"],
-        "review_pack_contract": review_pack.json()["readiness_contract"],
+        "architecture_pack_contract": architecture_pack.json()["readiness_contract"],
         "analyze_summary": {
             "task_count": len(tasks),
             "risk_level": analysis_payload["plan"]["risk"]["level"],

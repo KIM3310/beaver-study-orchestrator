@@ -39,7 +39,7 @@ WHATIF_MEANINGFUL_THRESHOLD = float(os.getenv("WHATIF_MEANINGFUL_THRESHOLD", "0.
 
 ANALYSIS_REPORT_SCHEMA = "beaver-study-analysis-report-v1"
 RUNTIME_BRIEF_CONTRACT = "beaver-study-runtime-brief-v1"
-REVIEW_PACK_CONTRACT = "beaver-study-review-pack-v1"
+REVIEW_PACK_CONTRACT = "beaver-study-architecture-pack-v1"
 ANALYSIS_HISTORY_SCHEMA = "beaver-study-analysis-history-v1"
 OUTCOME_BOARD_CONTRACT = "beaver-study-outcome-board-v1"
 ANALYSIS_HISTORY_PATH = Path(
@@ -52,7 +52,7 @@ RUNTIME_ROUTES = [
     "/api/health",
     "/api/meta",
     "/api/runtime/brief",
-    "/api/review-pack",
+    "/api/architecture-pack",
     "/api/schema/analysis-report",
     "/api/history/recent",
     "/api/history/recent/schema",
@@ -245,7 +245,7 @@ def build_runtime_brief() -> dict[str, object]:
             },
             {
                 "label": "Summary",
-                "path": "/api/review-pack",
+                "path": "/api/architecture-pack",
                 "why": "Packages pipeline summary, trust boundary, and export posture in one envelope.",
             },
             {
@@ -305,7 +305,7 @@ def build_outcome_board(limit: int = 6) -> dict[str, object]:
     }
 
 
-def build_review_pack() -> dict[str, object]:
+def build_architecture_pack() -> dict[str, object]:
     brief = build_runtime_brief()
     return {
         "status": "ok",
@@ -321,7 +321,7 @@ def build_review_pack() -> dict[str, object]:
                 "/api/health",
                 "/api/meta",
                 "/api/runtime/brief",
-                "/api/review-pack",
+                "/api/architecture-pack",
                 "/api/schema/analysis-report",
                 "/api/outcomes/board",
             ],
@@ -342,7 +342,7 @@ def build_review_pack() -> dict[str, object]:
             "Use /api/what-if before exporting the final .ics calendar.",
         ],
         "two_minute_review": [
-            "Open /api/health, /api/runtime/brief, and /api/review-pack to confirm parser posture and status routes.",
+            "Open /api/health, /api/runtime/brief, and /api/architecture-pack to confirm parser posture and status routes.",
             "Run /api/analyze and verify extracted due dates before trusting schedule quality or risk level.",
             "Use /api/what-if to compare the baseline and boosted plan before selecting a final path.",
             "Export .ics only after the user checks spillover, diagnostics, and recommendations together.",
@@ -364,7 +364,7 @@ def build_review_pack() -> dict[str, object]:
             },
             {
                 "label": "Summary",
-                "path": "/api/review-pack",
+                "path": "/api/architecture-pack",
                 "why": "Packages summary sequence, boundary, and promises into one contract.",
             },
             {
@@ -392,7 +392,7 @@ def build_review_pack() -> dict[str, object]:
             "health": "/api/health",
             "meta": "/api/meta",
             "runtime_brief": "/api/runtime/brief",
-            "review_pack": "/api/review-pack",
+            "architecture_pack": "/api/architecture-pack",
             "analysis_schema": "/api/schema/analysis-report",
             "analysis_history": "/api/history/recent",
             "outcomes_board": "/api/outcomes/board",
@@ -419,12 +419,12 @@ def health() -> HealthResponse:
             "parser_mode": "rule-based",
             "calendar_export_ready": True,
             "what_if_supports_custom_start_date": True,
-            "next_action": "Review /api/review-pack, then POST /api/analyze with syllabus text to generate an execution-ready plan.",
+            "next_action": "Review /api/architecture-pack, then POST /api/analyze with syllabus text to generate an execution-ready plan.",
         },
         links={
             "meta": "/api/meta",
             "runtime_brief": "/api/runtime/brief",
-            "review_pack": "/api/review-pack",
+            "architecture_pack": "/api/architecture-pack",
             "analysis_schema": "/api/schema/analysis-report",
             "analysis_history": "/api/history/recent",
             "outcomes_board": "/api/outcomes/board",
@@ -446,7 +446,7 @@ def health() -> HealthResponse:
             "analysis-schema-surface",
             "analysis-history-surface",
             "outcome-board-surface",
-            "review-pack-surface",
+            "architecture-pack-surface",
         ],
         routes=RUNTIME_ROUTES,
     )
@@ -466,9 +466,9 @@ def runtime_brief() -> dict[str, object]:
     return build_runtime_brief()
 
 
-@app.get("/api/review-pack")
-def review_pack() -> dict[str, object]:
-    return build_review_pack()
+@app.get("/api/architecture-pack")
+def architecture_pack() -> dict[str, object]:
+    return build_architecture_pack()
 
 
 @app.get("/api/schema/analysis-report")

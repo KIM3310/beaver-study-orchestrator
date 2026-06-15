@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "beaver-study-orchestrator"
 version = "0.1.0"
-description = "Study planning orchestration service with syllabus parsing, planning, what-if analysis, and review surfaces."
+description = "Study planning orchestration service with syllabus parsing, planning, what-if analysis, and architecture surfaces."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{name = "Doeon Kim", email = "ehdjs1351@gmail.com"}]

@@ -25,15 +25,15 @@ def test_health():
     assert data["report_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert data["links"]["meta"] == "/api/meta"
     assert data["links"]["runtime_brief"] == "/api/runtime/brief"
-    assert data["links"]["review_pack"] == "/api/review-pack"
+    assert data["links"]["architecture_pack"] == "/api/architecture-pack"
     assert data["links"]["analysis_schema"] == "/api/schema/analysis-report"
     assert data["links"]["outcomes_board"] == "/api/outcomes/board"
     assert data["links"]["analyze"] == "/api/analyze"
     assert "/api/runtime/brief" in data["routes"]
-    assert "/api/review-pack" in data["routes"]
+    assert "/api/architecture-pack" in data["routes"]
     assert "runtime-brief-surface" in data["capabilities"]
     assert "outcome-board-surface" in data["capabilities"]
-    assert "review-pack-surface" in data["capabilities"]
+    assert "architecture-pack-surface" in data["capabilities"]
     assert "next_action" in data["diagnostics"]
 
 
@@ -56,11 +56,11 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert brief_payload["proof_assets"][0]["path"] == "/api/health"
     assert brief_payload["proof_assets"][-1]["path"] == "/api/outcomes/board"
 
-    review_pack = client.get("/api/review-pack")
-    assert review_pack.status_code == 200
-    review_payload = review_pack.json()
-    assert review_payload["readiness_contract"] == "beaver-study-review-pack-v1"
-    assert "/api/review-pack" in review_payload["proof_bundle"]["review_routes"]
+    architecture_pack = client.get("/api/architecture-pack")
+    assert architecture_pack.status_code == 200
+    review_payload = architecture_pack.json()
+    assert review_payload["readiness_contract"] == "beaver-study-architecture-pack-v1"
+    assert "/api/architecture-pack" in review_payload["proof_bundle"]["review_routes"]
     assert "/api/outcomes/board" in review_payload["proof_bundle"]["review_routes"]
     assert review_payload["analysis_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert len(review_payload["two_minute_review"]) == 4

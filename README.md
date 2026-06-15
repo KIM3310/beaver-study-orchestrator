@@ -3,7 +3,7 @@
 ## Live Demo
 
 - [Open the public GitHub Pages demo](https://kim3310.github.io/beaver-study-orchestrator/)
-- Scope: credential-free, synthetic-data demo for reviewers and evaluators.
+- Scope: credential-free, synthetic-data demo for technical readers and evaluators.
 
 > **Curated supporting repo**
 > This repository is kept as optional proof, but it no longer leads the portfolio.
@@ -12,19 +12,19 @@
 
 A study-planning tool that extracts deadlines from syllabus text, generates adaptive schedules, and provides interpretable risk scoring with what-if simulation.
 
-## Product and Review Surface
+## Product and System Surface
 
 A study planner that turns syllabus data into schedules, risk signals, and what-if decisions students can act on.
 
 | Lens | Definition |
 |---|---|
-| Audience | Students, advisors, bootcamps, education platforms, and productivity-tool reviewers. |
-| Review path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
-| Architecture signal | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
+| Audience | Students, advisors, bootcamps, education platforms, and productivity-tool technical readers. |
+| Architecture path | Validate the demo, README, architecture notes, and quality gate before deeper workflow architecture. |
+| System signal | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
 | Safety boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
-| Fast proof | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
+| Fast path | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
 
-## Reviewer Fast Path
+## System Fast Path
 
 - **First minute:** Run one syllabus through analyze, then compare the risk drivers with the what-if result.
 - **Local demo:** Run `make setup && make run`, then open `http://127.0.0.1:8000`.
@@ -32,11 +32,11 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 
 ## Service Launch Playbook
 
-- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to review audiences, proof gates, operating boundaries, and risk controls.
+- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to architecture audiences, operating gates, operating boundaries, and risk controls.
 
-## Review Notes
+## Architecture Notes
 
-- [Review guide](docs/reviewer-evidence-map.md) summarizes the project angle, first files to inspect, verification commands, and known boundaries.
+- [Architecture guide](docs/architecture-evidence-map.md) summarizes the project angle, first files to inspect, runtime commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
 - [Portfolio fit](docs/portfolio-fit.md) explains why this repository is archived/supporting and where the current portfolio front door lives.
@@ -111,7 +111,7 @@ make test
 ## Design Decisions
 
 - **Rule-based extraction over LLM calls** - deterministic, offline-friendly, no token cost
-- **Interpretable risk model** - clear feature effects, easy to explain in interviews
+- **Interpretable risk model** - clear feature effects, easy to explain in architecture walkthroughs
 - **Single-page app** - fast demo flow, no auth friction
 
 ## Known Limitations
@@ -138,7 +138,7 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 
 ## Enterprise Productization
 
-- [Product operating model](docs/product-operating-model.md) defines the reviewer, trust boundary, trust boundary, operating checks, and service path for this repository.
+- [Product operating model](docs/product-operating-model.md) defines the technical reader, trust boundary, trust boundary, operating checks, and service path for this repository.
 
 ## System Architecture
 

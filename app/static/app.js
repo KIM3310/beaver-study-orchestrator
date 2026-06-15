@@ -266,7 +266,7 @@ async function loadRuntimeBrief() {
 
 async function loadReviewPack() {
   try {
-    const response = await fetch("/api/review-pack");
+    const response = await fetch("/api/architecture-pack");
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
@@ -278,7 +278,7 @@ async function loadReviewPack() {
     reviewPackBadge.classList.remove("warn");
     reviewPackBadge.classList.add("ok");
     reviewPackBadge.textContent = String(pack.status || "ok").toUpperCase();
-    reviewPackHeadline.textContent = pack.headline || "Review pack available.";
+    reviewPackHeadline.textContent = pack.headline || "Architecture pack available.";
     reviewPackRuntime.textContent = proofBundle.parser_mode || "-";
     reviewPackRoutes.textContent = `${(proofBundle.review_routes || []).length} routes`;
     reviewPackSchema.textContent = analysisContract.schema || "-";
@@ -293,12 +293,12 @@ async function loadReviewPack() {
     reviewPackBadge.classList.remove("ok");
     reviewPackBadge.classList.add("warn");
     reviewPackBadge.textContent = "ERROR";
-    reviewPackHeadline.textContent = "Review pack unavailable.";
+    reviewPackHeadline.textContent = "Architecture pack unavailable.";
     reviewPackRuntime.textContent = "-";
     reviewPackRoutes.textContent = "-";
     reviewPackSchema.textContent = "-";
     reviewPackExport.textContent = "-";
-    renderBriefList(reviewPackPromises, ["Open /api/review-pack when the backend becomes available."]);
+    renderBriefList(reviewPackPromises, ["Open /api/architecture-pack when the backend becomes available."]);
     renderBriefList(reviewPackTwoMinuteReview, ["Open health, runtime brief, analyze, what-if, then export routes."]);
     renderBriefList(reviewPackBoundary, []);
     renderBriefList(reviewPackSequence, []);
@@ -351,22 +351,22 @@ async function handleCopyReviewPack() {
 
   try {
     await copyTextToClipboard(lines.join("\n"));
-    setStatus("Review pack copied.");
+    setStatus("Architecture pack copied.");
   } catch {
-    setStatus("Review pack copy failed.", true);
+    setStatus("Architecture pack copy failed.", true);
   }
 }
 
 async function handleCopyReviewRoutes() {
   const pack = latestReviewPack || {};
   const routes = pack.proof_bundle?.review_routes || [];
-  const lines = ["beaver-study review routes", ...routes.map((item) => `- ${item}`)];
+  const lines = ["beaver-study architecture routes", ...routes.map((item) => `- ${item}`)];
 
   try {
     await copyTextToClipboard(lines.join("\n"));
-    setStatus("Review routes copied.");
+    setStatus("Architecture routes copied.");
   } catch {
-    setStatus("Review routes copy failed.", true);
+    setStatus("Architecture routes copy failed.", true);
   }
 }
 
