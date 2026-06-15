@@ -20,7 +20,7 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 |---|---|
 | Audience | Students, advisors, bootcamps, education platforms, and productivity-tool reviewers. |
 | Review path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
-| Review signal | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
+| Architecture signal | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
 | Safety boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
 | Fast proof | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
 
@@ -139,6 +139,10 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 ## Enterprise Productization
 
 - [Product operating model](docs/product-operating-model.md) defines the reviewer, trust boundary, trust boundary, operating checks, and service path for this repository.
+
+## System Architecture
+
+- [System architecture](docs/system-architecture.md) maps the runtime boundary, data/control flow, cloud or local deployment surface, and operating assumptions for this repository.
 
 ## Service Architecture
 
