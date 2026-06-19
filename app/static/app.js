@@ -45,27 +45,27 @@ const briefSchema = document.getElementById("briefSchema");
 const briefParserMode = document.getElementById("briefParserMode");
 const briefCalendarReady = document.getElementById("briefCalendarReady");
 const briefRouteCount = document.getElementById("briefRouteCount");
-const briefReviewFlow = document.getElementById("briefReviewFlow");
-const briefTwoMinuteReview = document.getElementById("briefTwoMinuteReview");
+const briefArchitectureFlow = document.getElementById("briefArchitectureFlow");
+const briefTwoMinuteArchitecture = document.getElementById("briefTwoMinuteArchitecture");
 const briefOperatorRules = document.getElementById("briefOperatorRules");
 const briefStageContract = document.getElementById("briefStageContract");
 const briefProofAssets = document.getElementById("briefProofAssets");
 const briefWatchouts = document.getElementById("briefWatchouts");
-const reviewPackBadge = document.getElementById("reviewPackBadge");
-const reviewPackHeadline = document.getElementById("reviewPackHeadline");
-const reviewPackRuntime = document.getElementById("reviewPackRuntime");
-const reviewPackRoutes = document.getElementById("reviewPackRoutes");
-const reviewPackSchema = document.getElementById("reviewPackSchema");
-const reviewPackExport = document.getElementById("reviewPackExport");
-const reviewPackPromises = document.getElementById("reviewPackPromises");
-const reviewPackTwoMinuteReview = document.getElementById("reviewPackTwoMinuteReview");
-const reviewPackBoundary = document.getElementById("reviewPackBoundary");
-const reviewPackSequence = document.getElementById("reviewPackSequence");
-const reviewPackProofAssets = document.getElementById("reviewPackProofAssets");
-const reviewPackWatchouts = document.getElementById("reviewPackWatchouts");
+const architecturePackBadge = document.getElementById("architecturePackBadge");
+const architecturePackHeadline = document.getElementById("architecturePackHeadline");
+const architecturePackRuntime = document.getElementById("architecturePackRuntime");
+const architecturePackRoutes = document.getElementById("architecturePackRoutes");
+const architecturePackSchema = document.getElementById("architecturePackSchema");
+const architecturePackExport = document.getElementById("architecturePackExport");
+const architecturePackPromises = document.getElementById("architecturePackPromises");
+const architecturePackTwoMinuteArchitecture = document.getElementById("architecturePackTwoMinuteArchitecture");
+const architecturePackBoundary = document.getElementById("architecturePackBoundary");
+const architecturePackSequence = document.getElementById("architecturePackSequence");
+const architecturePackProofAssets = document.getElementById("architecturePackProofAssets");
+const architecturePackWatchouts = document.getElementById("architecturePackWatchouts");
 const copyRuntimeBriefBtn = document.getElementById("copyRuntimeBriefBtn");
-const copyReviewRoutesBtn = document.getElementById("copyReviewRoutesBtn");
-const copyReviewPackBtn = document.getElementById("copyReviewPackBtn");
+const copyArchitectureRoutesBtn = document.getElementById("copyArchitectureRoutesBtn");
+const copyArchitecturePackBtn = document.getElementById("copyArchitecturePackBtn");
 const copyDiagnosticsBtn = document.getElementById("copyDiagnosticsBtn");
 const copyExecutionSnapshotBtn = document.getElementById("copyExecutionSnapshotBtn");
 
@@ -85,7 +85,7 @@ const historySummary = document.getElementById("historySummary");
 const historyTimeline = document.getElementById("historyTimeline");
 let latestPlanRequest = null;
 let latestRuntimeBrief = null;
-let latestReviewPack = null;
+let latestArchitecturePack = null;
 let latestRisk = null;
 let latestDiagnostics = null;
 let latestHistoryPayload = null;
@@ -240,8 +240,8 @@ async function loadRuntimeBrief() {
     briefParserMode.textContent = health.diagnostics?.parser_mode || "-";
     briefCalendarReady.textContent = health.diagnostics?.calendar_export_ready ? "Ready" : "Check";
     briefRouteCount.textContent = `${(brief.routes || []).length} routes`;
-    renderBriefList(briefReviewFlow, brief.review_flow || []);
-    renderBriefList(briefTwoMinuteReview, brief.two_minute_review || []);
+    renderBriefList(briefArchitectureFlow, brief.architecture_flow || []);
+    renderBriefList(briefTwoMinuteArchitecture, brief.two_minute_architecture || []);
     renderBriefList(briefOperatorRules, reportContract.operator_rules || []);
     renderStageContract(brief.stage_contract || []);
     renderProofAssets(briefProofAssets, brief.proof_assets || []);
@@ -255,8 +255,8 @@ async function loadRuntimeBrief() {
     briefParserMode.textContent = "-";
     briefCalendarReady.textContent = "-";
     briefRouteCount.textContent = "-";
-    renderBriefList(briefReviewFlow, ["Open /api/health when the backend becomes available."]);
-    renderBriefList(briefTwoMinuteReview, ["Open health, runtime brief, representative analyze flow, then export routes."]);
+    renderBriefList(briefArchitectureFlow, ["Open /api/health when the backend becomes available."]);
+    renderBriefList(briefTwoMinuteArchitecture, ["Open health, runtime brief, representative analyze flow, then export routes."]);
     renderBriefList(briefOperatorRules, ["No operator rules loaded."]);
     renderStageContract([]);
     renderProofAssets(briefProofAssets, []);
@@ -264,46 +264,46 @@ async function loadRuntimeBrief() {
   }
 }
 
-async function loadReviewPack() {
+async function loadArchitecturePack() {
   try {
     const response = await fetch("/api/architecture-pack");
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
     const pack = await response.json();
-    latestReviewPack = pack;
+    latestArchitecturePack = pack;
     const proofBundle = pack.proof_bundle || {};
     const analysisContract = pack.analysis_contract || {};
 
-    reviewPackBadge.classList.remove("warn");
-    reviewPackBadge.classList.add("ok");
-    reviewPackBadge.textContent = String(pack.status || "ok").toUpperCase();
-    reviewPackHeadline.textContent = pack.headline || "Architecture pack available.";
-    reviewPackRuntime.textContent = proofBundle.parser_mode || "-";
-    reviewPackRoutes.textContent = `${(proofBundle.review_routes || []).length} routes`;
-    reviewPackSchema.textContent = analysisContract.schema || "-";
-    reviewPackExport.textContent = proofBundle.calendar_export_ready ? "Ready" : "Check";
-    renderBriefList(reviewPackPromises, pack.executive_promises || []);
-    renderBriefList(reviewPackTwoMinuteReview, pack.two_minute_review || []);
-    renderBriefList(reviewPackBoundary, pack.trust_boundary || []);
-    renderBriefList(reviewPackSequence, pack.review_sequence || []);
-    renderProofAssets(reviewPackProofAssets, pack.proof_assets || []);
-    renderBriefList(reviewPackWatchouts, pack.watchouts || []);
+    architecturePackBadge.classList.remove("warn");
+    architecturePackBadge.classList.add("ok");
+    architecturePackBadge.textContent = String(pack.status || "ok").toUpperCase();
+    architecturePackHeadline.textContent = pack.headline || "Architecture pack available.";
+    architecturePackRuntime.textContent = proofBundle.parser_mode || "-";
+    architecturePackRoutes.textContent = `${(proofBundle.architecture_routes || []).length} routes`;
+    architecturePackSchema.textContent = analysisContract.schema || "-";
+    architecturePackExport.textContent = proofBundle.calendar_export_ready ? "Ready" : "Check";
+    renderBriefList(architecturePackPromises, pack.executive_promises || []);
+    renderBriefList(architecturePackTwoMinuteArchitecture, pack.two_minute_architecture || []);
+    renderBriefList(architecturePackBoundary, pack.trust_boundary || []);
+    renderBriefList(architecturePackSequence, pack.architecture_sequence || []);
+    renderProofAssets(architecturePackProofAssets, pack.proof_assets || []);
+    renderBriefList(architecturePackWatchouts, pack.watchouts || []);
   } catch (error) {
-    reviewPackBadge.classList.remove("ok");
-    reviewPackBadge.classList.add("warn");
-    reviewPackBadge.textContent = "ERROR";
-    reviewPackHeadline.textContent = "Architecture pack unavailable.";
-    reviewPackRuntime.textContent = "-";
-    reviewPackRoutes.textContent = "-";
-    reviewPackSchema.textContent = "-";
-    reviewPackExport.textContent = "-";
-    renderBriefList(reviewPackPromises, ["Open /api/architecture-pack when the backend becomes available."]);
-    renderBriefList(reviewPackTwoMinuteReview, ["Open health, runtime brief, analyze, what-if, then export routes."]);
-    renderBriefList(reviewPackBoundary, []);
-    renderBriefList(reviewPackSequence, []);
-    renderProofAssets(reviewPackProofAssets, []);
-    renderBriefList(reviewPackWatchouts, [`${error.message}`]);
+    architecturePackBadge.classList.remove("ok");
+    architecturePackBadge.classList.add("warn");
+    architecturePackBadge.textContent = "ERROR";
+    architecturePackHeadline.textContent = "Architecture pack unavailable.";
+    architecturePackRuntime.textContent = "-";
+    architecturePackRoutes.textContent = "-";
+    architecturePackSchema.textContent = "-";
+    architecturePackExport.textContent = "-";
+    renderBriefList(architecturePackPromises, ["Open /api/architecture-pack when the backend becomes available."]);
+    renderBriefList(architecturePackTwoMinuteArchitecture, ["Open health, runtime brief, analyze, what-if, then export routes."]);
+    renderBriefList(architecturePackBoundary, []);
+    renderBriefList(architecturePackSequence, []);
+    renderProofAssets(architecturePackProofAssets, []);
+    renderBriefList(architecturePackWatchouts, [`${error.message}`]);
   }
 }
 
@@ -316,8 +316,8 @@ async function handleCopyRuntimeBrief() {
     `Parser mode: ${briefParserMode.textContent || "-"}`,
     `Calendar export: ${briefCalendarReady.textContent || "-"}`,
     "",
-    "2-minute review",
-    ...((brief.two_minute_review || []).map((item) => `- ${item}`)),
+    "2-minute architecture path",
+    ...((brief.two_minute_architecture || []).map((item) => `- ${item}`)),
   ];
 
   try {
@@ -328,17 +328,17 @@ async function handleCopyRuntimeBrief() {
   }
 }
 
-async function handleCopyReviewPack() {
-  const pack = latestReviewPack || {};
+async function handleCopyArchitecturePack() {
+  const pack = latestArchitecturePack || {};
   const lines = [
     "beaver-study summary",
-    `Headline: ${pack.headline || reviewPackHeadline.textContent || "-"}`,
-    `Runtime: ${reviewPackRuntime.textContent || "-"}`,
-    `Schema: ${reviewPackSchema.textContent || "-"}`,
-    `Export: ${reviewPackExport.textContent || "-"}`,
+    `Headline: ${pack.headline || architecturePackHeadline.textContent || "-"}`,
+    `Runtime: ${architecturePackRuntime.textContent || "-"}`,
+    `Schema: ${architecturePackSchema.textContent || "-"}`,
+    `Export: ${architecturePackExport.textContent || "-"}`,
     "",
-    "Review sequence",
-    ...((pack.review_sequence || []).map((item) => `- ${item}`)),
+    "Architecture sequence",
+    ...((pack.architecture_sequence || []).map((item) => `- ${item}`)),
     "",
     "Proof assets",
     ...((pack.proof_assets || []).map((item) => {
@@ -357,9 +357,9 @@ async function handleCopyReviewPack() {
   }
 }
 
-async function handleCopyReviewRoutes() {
-  const pack = latestReviewPack || {};
-  const routes = pack.proof_bundle?.review_routes || [];
+async function handleCopyArchitectureRoutes() {
+  const pack = latestArchitecturePack || {};
+  const routes = pack.proof_bundle?.architecture_routes || [];
   const lines = ["beaver-study architecture routes", ...routes.map((item) => `- ${item}`)];
 
   try {
@@ -430,14 +430,14 @@ async function handleCopyExecutionSnapshot() {
     `Task count: ${latestPlanRequest.tasks?.length || 0}`,
     `Plan start: ${latestDiagnostics.start_date || readStartDate() || "-"}`,
     `Parser mode: ${briefParserMode.textContent || "-"}`,
-    `Schema: ${briefSchema.textContent || reviewPackSchema.textContent || "-"}`,
-    `Calendar export: ${reviewPackExport.textContent || briefCalendarReady.textContent || "-"}`,
+    `Schema: ${briefSchema.textContent || architecturePackSchema.textContent || "-"}`,
+    `Calendar export: ${architecturePackExport.textContent || briefCalendarReady.textContent || "-"}`,
     `Risk: ${latestRisk ? `${latestRisk.level.toUpperCase()} ${riskPct}%` : riskLabel.textContent || "-"}`,
     `Next action: ${latestDiagnostics.next_action || diagnosticsAction.textContent || "-"}`,
     `What-if: ${whatIfSummary.textContent || "not simulated"}`,
     "",
     "Focused routes",
-    ...((latestReviewPack?.proof_bundle?.review_routes || []).slice(0, 4).map((item) => `- ${item}`)),
+    ...((latestArchitecturePack?.proof_bundle?.architecture_routes || []).slice(0, 4).map((item) => `- ${item}`)),
   ];
 
   try {
@@ -760,8 +760,8 @@ analyzeBtn.addEventListener("click", analyze);
 whatIfBtn.addEventListener("click", runWhatIf);
 downloadIcsBtn.addEventListener("click", downloadIcs);
 copyRuntimeBriefBtn.addEventListener("click", handleCopyRuntimeBrief);
-copyReviewRoutesBtn.addEventListener("click", handleCopyReviewRoutes);
-copyReviewPackBtn.addEventListener("click", handleCopyReviewPack);
+copyArchitectureRoutesBtn.addEventListener("click", handleCopyArchitectureRoutes);
+copyArchitecturePackBtn.addEventListener("click", handleCopyArchitecturePack);
 copyDiagnosticsBtn.addEventListener("click", handleCopyDiagnostics);
 copyExecutionSnapshotBtn.addEventListener("click", handleCopyExecutionSnapshot);
 copyCurrentViewBtn.addEventListener("click", copyCurrentViewLink);
@@ -784,6 +784,6 @@ syncWhatIfLabel();
 renderDiagnostics(null);
 loadRecentHistory();
 loadRuntimeBrief();
-loadReviewPack();
+loadArchitecturePack();
 updateReviewViewUrl();
 setStatus("Ready. Update sample text or paste your own syllabus.");

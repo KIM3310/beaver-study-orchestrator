@@ -96,7 +96,7 @@ def test_outcome_board_structure():
     assert "latest_risk_level" in summary
     assert "next_action" in summary
 
-    assert len(data["review_actions"]) >= 1
+    assert len(data["architecture_actions"]) >= 1
     assert "links" in data
 
 

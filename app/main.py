@@ -39,7 +39,7 @@ WHATIF_MEANINGFUL_THRESHOLD = float(os.getenv("WHATIF_MEANINGFUL_THRESHOLD", "0.
 
 ANALYSIS_REPORT_SCHEMA = "beaver-study-analysis-report-v1"
 RUNTIME_BRIEF_CONTRACT = "beaver-study-runtime-brief-v1"
-REVIEW_PACK_CONTRACT = "beaver-study-architecture-pack-v1"
+ARCHITECTURE_PACK_CONTRACT = "beaver-study-architecture-pack-v1"
 ANALYSIS_HISTORY_SCHEMA = "beaver-study-analysis-history-v1"
 OUTCOME_BOARD_CONTRACT = "beaver-study-outcome-board-v1"
 ANALYSIS_HISTORY_PATH = Path(
@@ -201,13 +201,13 @@ def build_runtime_brief() -> dict[str, object]:
             "diagnostic_cards": 8,
             "history_backed_surfaces": 2,
         },
-        "review_flow": [
+        "architecture_flow": [
             "Open /api/health or /api/meta to confirm parser posture and export readiness.",
             "Run /api/analyze with representative syllabus text and inspect extracted due dates first.",
             "Review risk drivers, recommendations, and unscheduled spillover before trusting the plan.",
             "Use /api/what-if and /api/export/ics only after the baseline plan looks correct.",
         ],
-        "two_minute_review": [
+        "two_minute_architecture": [
             "Open /api/health or /api/meta to confirm parser posture, route coverage, and export readiness.",
             "Open /api/runtime/brief and pin the analysis schema, operator rules, and stage contract.",
             "Run /api/analyze with representative syllabus text and verify due dates before reading risk or schedule output.",
@@ -241,7 +241,7 @@ def build_runtime_brief() -> dict[str, object]:
             {
                 "label": "Runtime Brief",
                 "path": "/api/runtime/brief",
-                "why": "Pins schema, stage contract, review flow, and watchouts before analysis.",
+                "why": "Pins schema, stage contract, architecture flow, and watchouts before analysis.",
             },
             {
                 "label": "Summary",
@@ -290,7 +290,7 @@ def build_outcome_board(limit: int = 6) -> dict[str, object]:
             "next_action": latest.get("next_action") if latest else "Run /api/analyze with representative syllabus text to populate the board.",
         },
         "items": items,
-        "review_actions": [
+        "architecture_actions": [
             "Compare repeated spillover before exporting any calendar from a new plan.",
             "Treat consecutive medium/high risk runs as a planning failure, not just a calendar formatting issue.",
             "Use the latest next_action plus what-if output to decide whether more weekly capacity is required.",
@@ -311,13 +311,13 @@ def build_architecture_pack() -> dict[str, object]:
         "status": "ok",
         "service": "beaver-study-orchestrator",
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "readiness_contract": REVIEW_PACK_CONTRACT,
+        "readiness_contract": ARCHITECTURE_PACK_CONTRACT,
         "headline": "Summary pack for syllabus extraction, adaptive study planning, what-if simulation, and calendar export.",
         "proof_bundle": {
             "parser_mode": "rule-based",
             "calendar_export_ready": True,
             "what_if_supported": True,
-            "review_routes": [
+            "architecture_routes": [
                 "/api/health",
                 "/api/meta",
                 "/api/runtime/brief",
@@ -327,7 +327,7 @@ def build_architecture_pack() -> dict[str, object]:
             ],
         },
         "executive_promises": [
-            "Extraction, plan generation, risk scoring, and calendar export stay reviewable through explicit contracts.",
+            "Extraction, plan generation, risk scoring, and calendar export stay inspectable through explicit contracts.",
             "What-if simulation is available before operators commit to a final study schedule.",
             "Calendar export is downstream of the reviewed plan rather than a side effect of raw extraction.",
         ],
@@ -336,12 +336,12 @@ def build_architecture_pack() -> dict[str, object]:
             "Generated plans and what-if simulations are local computations over the extracted task set.",
             "Calendar export mirrors the approved plan, so extraction mistakes must be caught before export.",
         ],
-        "review_sequence": [
+        "architecture_sequence": [
             "Open /api/health or /api/meta to confirm parser posture and export readiness.",
             "Run /api/analyze with representative syllabus text and review due dates, spillover, and risk drivers.",
             "Use /api/what-if before exporting the final .ics calendar.",
         ],
-        "two_minute_review": [
+        "two_minute_architecture": [
             "Open /api/health, /api/runtime/brief, and /api/architecture-pack to confirm parser posture and status routes.",
             "Run /api/analyze and verify extracted due dates before trusting schedule quality or risk level.",
             "Use /api/what-if to compare the baseline and boosted plan before selecting a final path.",

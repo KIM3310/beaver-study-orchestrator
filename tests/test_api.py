@@ -52,7 +52,7 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert brief_payload["report_contract"]["schema"] == "beaver-study-analysis-report-v1"
     assert brief_payload["evidence_counts"]["weekly_inputs"] == 7
     assert len(brief_payload["stage_contract"]) == 3
-    assert len(brief_payload["two_minute_review"]) == 4
+    assert len(brief_payload["two_minute_architecture"]) == 4
     assert brief_payload["proof_assets"][0]["path"] == "/api/health"
     assert brief_payload["proof_assets"][-1]["path"] == "/api/outcomes/board"
 
@@ -60,10 +60,10 @@ def test_meta_runtime_brief_and_schema() -> None:
     assert architecture_pack.status_code == 200
     review_payload = architecture_pack.json()
     assert review_payload["readiness_contract"] == "beaver-study-architecture-pack-v1"
-    assert "/api/architecture-pack" in review_payload["proof_bundle"]["review_routes"]
-    assert "/api/outcomes/board" in review_payload["proof_bundle"]["review_routes"]
+    assert "/api/architecture-pack" in review_payload["proof_bundle"]["architecture_routes"]
+    assert "/api/outcomes/board" in review_payload["proof_bundle"]["architecture_routes"]
     assert review_payload["analysis_contract"]["schema"] == "beaver-study-analysis-report-v1"
-    assert len(review_payload["two_minute_review"]) == 4
+    assert len(review_payload["two_minute_architecture"]) == 4
     assert review_payload["proof_assets"][0]["label"] == "Health Route"
 
     schema = client.get("/api/schema/analysis-report")
