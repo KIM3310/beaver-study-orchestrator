@@ -10,7 +10,7 @@ This repository now exposes a search-readable service surface in addition to the
 | Revenue architecture | [docs/revenue-architecture.md](./revenue-architecture.md) |
 | System architecture | [docs/system-architecture.md](./system-architecture.md) |
 | Public canonical URL | https://kim3310.github.io/beaver-study-orchestrator/ |
-| Lead capture URL | mailto:ehdjs1351@gmail.com?subject=Beaver%20Study%20Orchestrator%20private%20workspace&body=I%20am%20interested%20in%20premium%20study%20history%2C%20cohort%20dashboard%2C%20and%20exportable%20progress%20report%20for%20Beaver%20Study%20Orchestrator. |
+| Lead capture URL | https://github.com/KIM3310/beaver-study-orchestrator/issues/new?template=service-inquiry.yml&title=Private+workspace+inquiry%3A+Beaver+Study+Orchestrator |
 
 ## Search Positioning
 
@@ -27,5 +27,5 @@ The public surface stays crawlable and free. Paid value starts when a visitor wa
 
 - Keep the sitemap and robots file aligned with the final production domain.
 - Submit the canonical URL and sitemap in Google Search Console after the domain is connected.
-- Use a real checkout or lead-capture endpoint only after the free demo shows repeated intent.
+- The lead-capture path is a GitHub Issue Form so private workspace and paid-package requests create a trackable queue before payment infrastructure is added.
 - Keep exact free-tier quotas out of public promises because provider limits change.
