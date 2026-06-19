@@ -147,3 +147,17 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 ## Service Architecture
 
 - [Service architecture](docs/service-architecture.md) defines the cloud resources, account information, cost controls, and production guardrails needed to turn this repo into a scoped service without publishing public financial assumptions.
+
+<!-- search-growth-readme:start -->
+
+## Search And Service Surface
+
+- Public entry: free local study planner and public demo
+- Paid boundary: premium study history, cohort dashboard, and exportable progress report
+- Canonical URL: https://kim3310.github.io/beaver-study-orchestrator/
+- Lead capture: mailto:ehdjs1351@gmail.com?subject=Beaver%20Study%20Orchestrator%20private%20workspace&body=I%20am%20interested%20in%20premium%20study%20history%2C%20cohort%20dashboard%2C%20and%20exportable%20progress%20report%20for%20Beaver%20Study%20Orchestrator.
+- Machine-readable offer: [docs/service-offer.json](docs/service-offer.json)
+- Search growth implementation: [docs/search-growth-implementation.md](docs/search-growth-implementation.md)
+- Revenue architecture: [docs/revenue-architecture.md](docs/revenue-architecture.md)
+
+<!-- search-growth-readme:end -->

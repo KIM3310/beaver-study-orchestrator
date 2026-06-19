@@ -1,0 +1,73 @@
+{
+  "name": "Beaver Study Orchestrator",
+  "slug": "beaver-study-orchestrator",
+  "canonical_url": "https://kim3310.github.io/beaver-study-orchestrator/",
+  "repository_url": "https://github.com/KIM3310/beaver-study-orchestrator",
+  "architecture_url": "https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/system-architecture.md",
+  "revenue_architecture_url": "https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/revenue-architecture.md",
+  "lead_capture_url": "mailto:ehdjs1351@gmail.com?subject=Beaver%20Study%20Orchestrator%20private%20workspace&body=I%20am%20interested%20in%20premium%20study%20history%2C%20cohort%20dashboard%2C%20and%20exportable%20progress%20report%20for%20Beaver%20Study%20Orchestrator.",
+  "productized_offer": "study orchestration board with planning, outcomes, history, and adaptive next steps",
+  "first_paid_sku": "premium study history, cohort dashboard, and exportable progress report",
+  "free_lead_magnet": "free local study planner and public demo",
+  "search_positioning": {
+    "primary_query": "Beaver Study Orchestrator orchestration board planning",
+    "secondary_queries": [
+      "Beaver Study Orchestrator demo",
+      "Beaver Study Orchestrator system architecture",
+      "Beaver Study Orchestrator educational tool",
+      "study orchestration board with planning, outcomes, history, and adaptive next steps service"
+    ],
+    "audience_intent": "Find a runnable demo, inspect the system architecture, and decide whether a private workspace or implementation package is useful."
+  },
+  "monetization_boundary": {
+    "free": "free local study planner and public demo",
+    "paid": "premium study history, cohort dashboard, and exportable progress report",
+    "metering_hooks": [
+      "workspace_id",
+      "plan",
+      "quota_day",
+      "export_count",
+      "lead_source"
+    ],
+    "cost_guardrails": [
+      "static first",
+      "edge functions",
+      "customer API keys",
+      "cached AI outputs",
+      "synthetic public data"
+    ]
+  },
+  "structured_data": {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Beaver Study Orchestrator",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web, serverless, and local development environments",
+    "url": "https://kim3310.github.io/beaver-study-orchestrator/",
+    "codeRepository": "https://github.com/KIM3310/beaver-study-orchestrator",
+    "description": "Beaver Study Orchestrator: study orchestration board with planning, outcomes, history, and adaptive next steps. Free entry point: free local study planner and public demo. Paid path: premium study history, cohort.",
+    "creator": {
+      "@type": "Person",
+      "name": "KIM3310",
+      "url": "https://github.com/KIM3310"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "free local study planner and public demo",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "url": "https://kim3310.github.io/beaver-study-orchestrator/"
+      },
+      {
+        "@type": "Offer",
+        "name": "premium study history, cohort dashboard, and exportable progress report",
+        "availability": "https://schema.org/LimitedAvailability",
+        "url": "https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/revenue-architecture.md"
+      }
+    ],
+    "isAccessibleForFree": true,
+    "keywords": "beaver-study-orchestrator, Beaver, Study, Orchestrator, study, orchestration, board, planning, outcomes, history, adaptive, next, steps, premium, cohort, dashboard, exportable, progress, local, planner, tier"
+  }
+}
