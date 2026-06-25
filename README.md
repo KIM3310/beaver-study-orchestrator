@@ -57,7 +57,7 @@ make setup
 make run
 ```
 
-Open `http://127.0.0.1:8000`
+Open `http://127.0.0.1:8000`. Requires Python 3.11+; if your default `python3` is older, run `make BOOTSTRAP_PYTHON=/path/to/python3.11 verify`.
 
 ## How it works
 
