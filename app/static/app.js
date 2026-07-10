@@ -278,7 +278,7 @@ async function loadArchitecturePack() {
     architecturePackBadge.classList.remove("warn");
     architecturePackBadge.classList.add("ok");
     architecturePackBadge.textContent = String(pack.status || "ok").toUpperCase();
-    architecturePackHeadline.textContent = pack.headline || "Architecture pack available.";
+    architecturePackHeadline.textContent = pack.headline || "Summary available.";
     architecturePackRuntime.textContent = proofBundle.parser_mode || "-";
     architecturePackRoutes.textContent = `${(proofBundle.architecture_routes || []).length} routes`;
     architecturePackSchema.textContent = analysisContract.schema || "-";
@@ -293,7 +293,7 @@ async function loadArchitecturePack() {
     architecturePackBadge.classList.remove("ok");
     architecturePackBadge.classList.add("warn");
     architecturePackBadge.textContent = "ERROR";
-    architecturePackHeadline.textContent = "Architecture pack unavailable.";
+    architecturePackHeadline.textContent = "Summary unavailable.";
     architecturePackRuntime.textContent = "-";
     architecturePackRoutes.textContent = "-";
     architecturePackSchema.textContent = "-";
@@ -316,7 +316,7 @@ async function handleCopyRuntimeBrief() {
     `Parser mode: ${briefParserMode.textContent || "-"}`,
     `Calendar export: ${briefCalendarReady.textContent || "-"}`,
     "",
-    "2-minute architecture path",
+    "2-minute review path",
     ...((brief.two_minute_architecture || []).map((item) => `- ${item}`)),
   ];
 
@@ -337,7 +337,7 @@ async function handleCopyArchitecturePack() {
     `Schema: ${architecturePackSchema.textContent || "-"}`,
     `Export: ${architecturePackExport.textContent || "-"}`,
     "",
-    "Architecture sequence",
+    "Review sequence",
     ...((pack.architecture_sequence || []).map((item) => `- ${item}`)),
     "",
     "Proof assets",
@@ -351,22 +351,22 @@ async function handleCopyArchitecturePack() {
 
   try {
     await copyTextToClipboard(lines.join("\n"));
-    setStatus("Architecture pack copied.");
+    setStatus("Summary copied.");
   } catch {
-    setStatus("Architecture pack copy failed.", true);
+    setStatus("Summary copy failed.", true);
   }
 }
 
 async function handleCopyArchitectureRoutes() {
   const pack = latestArchitecturePack || {};
   const routes = pack.proof_bundle?.architecture_routes || [];
-  const lines = ["beaver-study architecture routes", ...routes.map((item) => `- ${item}`)];
+  const lines = ["beaver-study review routes", ...routes.map((item) => `- ${item}`)];
 
   try {
     await copyTextToClipboard(lines.join("\n"));
-    setStatus("Architecture routes copied.");
+    setStatus("Review routes copied.");
   } catch {
-    setStatus("Architecture routes copy failed.", true);
+    setStatus("Review routes copy failed.", true);
   }
 }
 

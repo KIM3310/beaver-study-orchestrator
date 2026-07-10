@@ -3,7 +3,7 @@
 ## Live Demo
 
 - [Open the public GitHub Pages demo](https://kim3310.github.io/beaver-study-orchestrator/)
-- Scope: credential-free, synthetic-data demo for architecture inspection paths and evaluators.
+- Scope: credential-free, synthetic-data demo for students, advisors, and technical evaluators.
 
 > **Curated supporting repo**
 > This repository is kept as optional proof, but it no longer leads the portfolio.
@@ -12,31 +12,31 @@
 
 A study-planning tool that extracts deadlines from syllabus text, generates adaptive schedules, and provides interpretable risk scoring with what-if simulation.
 
-## Product and System Surface
+## System Overview
 
 A study planner that turns syllabus data into schedules, risk signals, and what-if decisions students can act on.
 
-| Lens | Definition |
+| Area | Details |
 |---|---|
-| Audience | Students, advisors, bootcamps, education platforms, and productivity-tool architecture inspection paths. |
-| Architecture path | Validate the demo, README, architecture notes, and quality gate before deeper workflow architecture. |
-| System signal | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
-| Safety boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
-| Fast path | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
+| Users | Students, advisors, bootcamps, education platforms, and productivity-tool evaluators. |
+| Technical path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
+| System scope | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
+| Operating boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
+| Evaluation path | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
 
-## System Fast Path
+## Evaluation Path
 
-- **First minute:** Run one syllabus through analyze, then compare the risk drivers with the what-if result.
+- **Start here:** Run one syllabus through analyze, then compare the risk drivers with the what-if result.
 - **Local demo:** Run `make setup && make run`, then open `http://127.0.0.1:8000`.
-- **Verification:** Run `make test`; CI also enforces lint and coverage on supported Python versions.
+- **Checks:** Run `make test`; CI also enforces lint and coverage on supported Python versions.
 
 ## Service Launch Playbook
 
-- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to architecture audiences, operating gates, operating boundaries, and risk controls.
+- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to intended audiences, operating gates, operating boundaries, and risk controls.
 
 ## Architecture Notes
 
-- [Architecture guide](docs/architecture-evidence-map.md) summarizes the project angle, first files to inspect, runtime commands, and known boundaries.
+- [Architecture guide](docs/architecture-evidence-map.md) summarizes the system scope, first files to inspect, runtime commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
 - [Repository positioning](docs/repository-positioning.md) explains why this repository is archived/supporting and where the current technical entry points live.
@@ -111,7 +111,7 @@ make test
 ## Design Decisions
 
 - **Rule-based extraction over LLM calls** - deterministic, offline-friendly, no token cost
-- **Interpretable risk model** - clear feature effects, easy to explain in architecture walkthroughs
+- **Interpretable risk model** - clear feature effects, easy to explain in technical walkthroughs
 - **Single-page app** - fast demo flow, no auth friction
 
 ## Known Limitations
@@ -130,15 +130,13 @@ MIT
 
 ## Cloud + AI Architecture
 
-This repository includes a neutral cloud and AI engineering blueprint that maps the current proof surface to runtime boundaries, data contracts, model-risk controls, deployment posture, and validation hooks.
-
 - [Cloud + AI architecture blueprint](docs/cloud-ai-architecture.md)
 - [Machine-readable architecture manifest](docs/architecture/blueprint.json)
 - Validation command: `python3 scripts/validate_architecture_blueprint.py`
 
 ## Enterprise Productization
 
-- [Product operating model](docs/product-operating-model.md) defines the architecture inspection, trust boundary, trust boundary, operating checks, and service path for this repository.
+- [Product operating model](docs/product-operating-model.md) defines the product scope, trust boundary, operating checks, and service path for this repository.
 
 ## System Architecture
 

@@ -29,7 +29,7 @@ The most critical bug was a crash when no valid dates were extracted from input 
 
 ## Accomplishments
 - end-to-end working prototype with no external API dependencies
-- interpretable risk outputs suitable for architecture walkthrough
+- interpretable risk outputs suitable for a technical walkthrough
 - direct calendar export bridging analysis to action
 - reproducible tests and CI pipeline
 

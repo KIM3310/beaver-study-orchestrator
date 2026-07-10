@@ -3,14 +3,14 @@
 ## Public Demo
 
 - URL: https://kim3310.github.io/beaver-study-orchestrator/
-- Scope: credential-free synthetic demo surface for quick architecture inspection inspection.
+- Scope: credential-free synthetic demo surface for quick technical evaluation.
 
 Repository: `beaver-study-orchestrator`
 Last updated: 2026-06-03 KST
 
 ## Enterprise Product Position
 
-Study planning orchestration service with syllabus parsing, planning, what-if analysis, and architecture surfaces.
+Study planning orchestration service with syllabus parsing, planning, what-if analysis, and review surfaces.
 
 This repository is packaged as a concrete system surface, not a loose code sample. The enterprise value is a narrow proof that can be inspected, run, tested, and converted into a scoped implementation motion.
 

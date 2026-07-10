@@ -241,7 +241,7 @@ def build_runtime_brief() -> dict[str, object]:
             {
                 "label": "Runtime Brief",
                 "path": "/api/runtime/brief",
-                "why": "Pins schema, stage contract, architecture flow, and watchouts before analysis.",
+                "why": "Pins schema, stage contract, review flow, and watchouts before analysis.",
             },
             {
                 "label": "Summary",

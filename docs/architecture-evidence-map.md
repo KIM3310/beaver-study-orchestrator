@@ -2,7 +2,7 @@
 
 Updated: 2026-05-30
 
-This repository is now curated as supporting material. Architecture it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
+This repository is now curated as supporting material. Review it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
 
 ## Summary
 
@@ -32,9 +32,9 @@ This repository is now curated as supporting material. Architecture it only afte
 
 | Possible offer | Working scope assumption | Scope |
 |---|---|---|
-| Freemium planner | Scope after product intake | Scoped after architecture. |
-| Advisor dashboard pilot | Scope after product intake | Scoped after architecture. |
-| Bootcamp cohort-risk analytics | Scope after product intake | Scoped after architecture. |
+| Freemium planner | Scope after product intake | Scoped after review. |
+| Advisor dashboard pilot | Scope after product intake | Scoped after review. |
+| Bootcamp cohort-risk analytics | Scope after product intake | Scoped after review. |
 
 ## Boundaries
 
@@ -48,4 +48,4 @@ This repository is now curated as supporting material. Architecture it only afte
 
 - Schedule completion
 - Risk reduction
-- Advisor architecture time saved
+- Advisor review time saved
