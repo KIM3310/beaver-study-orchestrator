@@ -8,5 +8,6 @@ Repository: https://github.com/KIM3310/beaver-study-orchestrator
 System architecture: https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/system-architecture.md
 Revenue architecture: https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/revenue-architecture.md
 Lead capture: https://github.com/KIM3310/beaver-study-orchestrator/issues/new?template=service-inquiry.yml&title=Private+workspace+inquiry%3A+Beaver+Study+Orchestrator
+Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator#service-offers
 
 Use this project as a runnable or inspectable reference for Beaver Study Orchestrator demo, Beaver Study Orchestrator system architecture, Beaver Study Orchestrator educational tool, study orchestration board with planning, outcomes, history, and adaptive next steps service.
