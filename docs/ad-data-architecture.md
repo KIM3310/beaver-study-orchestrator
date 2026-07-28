@@ -8,7 +8,7 @@ Free study-orchestration template for planning learning sessions and review loop
 
 - Audience: students and education-tool builders
 - Central resource: https://kim3310-doeon-kim-portfolio.pages.dev/resources/beaver-study-orchestrator/
-- Live system: https://kim3310.github.io/beaver-study-orchestrator/
+- Live system: https://beaver-study-orchestrator.pages.dev/
 - Advertising boundary: ads allowed only on public study-template pages; personal schedules, notes, progress, and result flows are ad-free
 - Current ad state: code-ready on the central resource; serving depends on Google AdSense site approval and consent policy.
 

@@ -6,7 +6,7 @@
   "audience": "students and education-tool builders",
   "public_resource": {
     "url": "https://kim3310-doeon-kim-portfolio.pages.dev/resources/beaver-study-orchestrator/",
-    "live_demo": "https://kim3310.github.io/beaver-study-orchestrator/",
+    "live_demo": "https://beaver-study-orchestrator.pages.dev/",
     "readiness_checklist": [
       "Architecture Summary",
       "Runtime And Data Flow",

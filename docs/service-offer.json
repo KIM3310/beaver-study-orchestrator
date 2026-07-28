@@ -1,7 +1,7 @@
 {
   "name": "Beaver Study Orchestrator",
   "slug": "beaver-study-orchestrator",
-  "canonical_url": "https://kim3310.github.io/beaver-study-orchestrator/",
+  "canonical_url": "https://beaver-study-orchestrator.pages.dev/",
   "repository_url": "https://github.com/KIM3310/beaver-study-orchestrator",
   "architecture_url": "https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/system-architecture.md",
   "revenue_architecture_url": "https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/revenue-architecture.md",
@@ -43,7 +43,7 @@
     "name": "Beaver Study Orchestrator",
     "applicationCategory": "EducationalApplication",
     "operatingSystem": "Web, serverless, and local development environments",
-    "url": "https://kim3310.github.io/beaver-study-orchestrator/",
+    "url": "https://beaver-study-orchestrator.pages.dev/",
     "codeRepository": "https://github.com/KIM3310/beaver-study-orchestrator",
     "description": "Beaver Study Orchestrator: study orchestration board with planning, outcomes, and adaptive next steps. Free entry point: free local study planner and public demo. Paid or research inquiries route through the private inquiry lane.",
     "creator": {
@@ -58,7 +58,7 @@
         "price": "0",
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock",
-        "url": "https://kim3310.github.io/beaver-study-orchestrator/"
+        "url": "https://beaver-study-orchestrator.pages.dev/"
       },
       {
         "@type": "Offer",

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kim3310.github.io/beaver-study-orchestrator/sitemap.xml
+Sitemap: https://beaver-study-orchestrator.pages.dev/sitemap.xml

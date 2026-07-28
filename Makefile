@@ -10,7 +10,7 @@ BOOTSTRAP_PYTHON ?= $(shell for py in $(PYTHON_CANDIDATES); do \
 	fi; \
 done)
 
-.PHONY: check-bootstrap-python setup install run lint test verify
+.PHONY: check-bootstrap-python setup install run lint test verify pages-deploy
 
 check-bootstrap-python:
 	@if [ -z "$(BOOTSTRAP_PYTHON)" ]; then \
@@ -46,3 +46,6 @@ test: install
 	$(VENV_PYTHON) -m pytest
 
 verify: lint test
+
+pages-deploy:
+	npx --yes wrangler@4 pages deploy site --project-name beaver-study-orchestrator

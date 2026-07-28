@@ -2,7 +2,7 @@
 
 ## Public Demo
 
-- URL: https://kim3310.github.io/beaver-study-orchestrator/
+- URL: https://beaver-study-orchestrator.pages.dev/
 - Scope: credential-free synthetic demo surface for quick technical evaluation.
 
 Repository: `beaver-study-orchestrator`

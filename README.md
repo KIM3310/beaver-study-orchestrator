@@ -2,7 +2,7 @@
 
 ## Live Demo
 
-- [Open the public GitHub Pages demo](https://kim3310.github.io/beaver-study-orchestrator/)
+- [Open the public GitHub Pages demo](https://beaver-study-orchestrator.pages.dev/)
 - Scope: credential-free, synthetic-data demo for students, advisors, and technical evaluators.
 
 > **Product proof surface**
@@ -152,7 +152,7 @@ MIT
 
 - Public entry: free local study planner and public demo
 - Paid boundary: Consumer Prototype Customization
-- Canonical URL: https://kim3310.github.io/beaver-study-orchestrator/
+- Canonical URL: https://beaver-study-orchestrator.pages.dev/
 - Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator&inquiry=consumer-prototype-customization#private-inquiry
 - Resource route: https://kim3310-doeon-kim-portfolio.pages.dev/resources/beaver-study-orchestrator/
 - Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator#service-offers

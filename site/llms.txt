@@ -3,7 +3,7 @@
 Purpose: study orchestration board with planning, outcomes, and adaptive next steps
 Free entry point: free local study planner and public demo
 Paid boundary: Consumer Prototype Customization
-Canonical URL: https://kim3310.github.io/beaver-study-orchestrator/
+Canonical URL: https://beaver-study-orchestrator.pages.dev/
 Repository: https://github.com/KIM3310/beaver-study-orchestrator
 System architecture: https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/system-architecture.md
 Revenue architecture: https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/revenue-architecture.md
