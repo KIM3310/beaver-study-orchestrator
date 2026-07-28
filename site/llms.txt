@@ -12,3 +12,9 @@ Resource route: https://kim3310-doeon-kim-portfolio.pages.dev/resources/beaver-s
 Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator#service-offers
 
 Use this project as a runnable or inspectable reference for Beaver Study Orchestrator demo, Beaver Study Orchestrator system architecture, Beaver Study Orchestrator educational tool, study orchestration board with planning, outcomes, and adaptive next steps service.
+# ADSENSE-PUBLICATION:START
+Editorial guide: https://beaver-study-orchestrator.pages.dev/guide.html
+Architecture article: https://beaver-study-orchestrator.pages.dev/architecture.html
+Verification article: https://beaver-study-orchestrator.pages.dev/verification.html
+Publisher information: https://beaver-study-orchestrator.pages.dev/publisher.html
+# ADSENSE-PUBLICATION:END
