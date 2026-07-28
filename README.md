@@ -5,10 +5,10 @@
 - [Open the public GitHub Pages demo](https://kim3310.github.io/beaver-study-orchestrator/)
 - Scope: credential-free, synthetic-data demo for students, advisors, and technical evaluators.
 
-> **Curated supporting repo**
-> This repository is kept as optional proof, but it no longer leads the portfolio.
-> Current front door: **aix-pilot, Nexus-Hive, and districtpilot-ai**.
-> Reason: Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes.
+> **Product proof surface**
+> This repository leads with the working study-planning product: parser, scheduler, risk model,
+> what-if analysis, history, and calendar export. Commercial exploration is limited to the
+> private inquiry lane listed in the service manifest.
 
 A study-planning tool that extracts deadlines from syllabus text, generates adaptive schedules, and provides interpretable risk scoring with what-if simulation.
 
@@ -39,7 +39,7 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 - [Architecture guide](docs/architecture-evidence-map.md) summarizes the system scope, first files to inspect, runtime commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
-- [Repository positioning](docs/repository-positioning.md) explains why this repository is archived/supporting and where the current technical entry points live.
+- [Repository positioning](docs/repository-positioning.md) records scope boundaries and current technical entry points.
 
 ## What it does
 
@@ -151,9 +151,9 @@ MIT
 ## Search And Service Surface
 
 - Public entry: free local study planner and public demo
-- Paid boundary: premium study history, cohort dashboard, and exportable progress report
+- Paid boundary: Consumer Prototype Customization
 - Canonical URL: https://kim3310.github.io/beaver-study-orchestrator/
-- Lead capture: https://github.com/KIM3310/beaver-study-orchestrator/issues/new?template=service-inquiry.yml&title=Private+workspace+inquiry%3A+Beaver+Study+Orchestrator
+- Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator&inquiry=consumer-prototype-customization#private-inquiry
 - Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator#service-offers
 - Machine-readable offer: [docs/service-offer.json](docs/service-offer.json)
 - Search growth implementation: [docs/search-growth-implementation.md](docs/search-growth-implementation.md)

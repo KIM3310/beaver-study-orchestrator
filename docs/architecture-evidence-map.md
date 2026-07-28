@@ -2,25 +2,25 @@
 
 Updated: 2026-05-30
 
-This repository is now curated as supporting material. Review it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
+Use this guide to review the study-orchestration product proof surface without adding unsupported customer, production, or outcome claims.
 
 ## Summary
 
 | Field | Notes |
 |---|---|
 | Repository | `beaver-study-orchestrator` |
-| Status | Archived supporting repository |
+| Status | Product proof surface |
 | Lane | B2C/B2B education productivity |
 | Primary reader | Students, advisors, bootcamps, and education platforms. |
-| Why it moved back | Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes. |
-| Current successor | aix-pilot, Nexus-Hive, and districtpilot-ai |
+| Product proof | Parser, scheduler, risk analytics, what-if simulation, history, and export surfaces. |
+| Private inquiry lane | consumer-prototype-customization |
 
 ## Open First
 
-1. Start with the successor repositories named above.
-2. Use this repository only for optional domain breadth or historical product exploration.
-3. Check `docs/repository-positioning.md` before presenting it externally.
-4. Keep the archived/supporting status visible in any external writeup or technical walkthrough.
+1. Start with the README fast path and public demo.
+2. Check `docs/service-offer.json` before presenting paid or research next steps.
+3. Run the local verification command before making quality claims.
+4. Keep data, payment, and production claims behind explicit scoping.
 
 ## Evidence
 
@@ -41,8 +41,8 @@ This repository is now curated as supporting material. Review it only after the 
 - Advisory guidance only
 - Student data retention needs controls
 - Avoid outcome guarantees
-- Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes.
-- Do not present this as a current flagship or maintained product surface.
+- No outcome guarantees.
+- Private workspace, cohort, and reporting work require explicit scope through the inquiry lane.
 
 ## Useful Metrics
 

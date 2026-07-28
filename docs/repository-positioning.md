@@ -2,17 +2,17 @@
 
 Updated: 2026-05-30
 
-## Curation Decision
+## Product Positioning
 
 | Field | Decision |
 |---|---|
-| Status | Archived/supporting |
-| Why | Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes. |
-| Show instead | aix-pilot, Nexus-Hive, and districtpilot-ai |
-| Still useful for | Keep as supporting context for scheduling, risk explanation, and cohort planning ideas. |
+| Status | Product proof surface |
+| Why | Demonstrates an inspectable study-planning workflow with parser, scheduler, risk, what-if, history, and export surfaces. |
+| Service lane | consumer-prototype-customization |
+| Useful for | Scheduling, risk explanation, cohort planning ideas, and private prototype customization scoping. |
 
 ## Operating Rule
 
-- Keep this repository available, but do not lead with it.
+- Lead with the product workflow and current verification evidence.
 - Use it only when this exact domain, stack, or product pattern is relevant.
-- Do not lead with it unless it is revived with fresh operating data and a narrow product path.
+- Route paid or research interest through the central private inquiry URL before making delivery or payment commitments.

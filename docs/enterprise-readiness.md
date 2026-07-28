@@ -2,25 +2,25 @@
 
 Updated: 2026-05-30
 
-This repository is archived as supporting material. It should not be positioned as a maintained enterprise product without a fresh revival scope.
+This repository is a study-orchestration product proof surface. It should not be positioned as a production education platform without customer-specific identity, data, monitoring, and support controls.
 
 ## Scope
 
 | Field | Notes |
 |---|---|
 | Repository | `beaver-study-orchestrator` |
-| Status | Archived supporting proof |
+| Status | Product proof surface |
 | Lane | B2C/B2B education productivity |
 | Primary reader | Students, advisors, bootcamps, and education platforms. |
-| Current successor | aix-pilot, Nexus-Hive, and districtpilot-ai |
-| Readiness posture | Historical or optional proof; not a current production-readiness claim. |
+| Private inquiry lane | consumer-prototype-customization |
+| Readiness posture | Runnable technical surface; production use requires customer-specific validation and controls. |
 
-## Revival Requirements
+## Scope Requirements
 
 - Re-check dependencies, build path, secrets posture, and runtime walkthrough status.
 - Reconfirm the intended audience, data boundary, identity/access needs, monitoring, and support owner.
 - Replace broad consumer or experimental positioning with one narrow inspectable use case.
-- Keep the active flagship repositories as the main portfolio story unless this domain is explicitly requested.
+- Keep paid or research next steps on the central private inquiry lane until scope is approved.
 
 ## Proof Points
 
@@ -33,4 +33,4 @@ This repository is archived as supporting material. It should not be positioned 
 - Advisory guidance only
 - Student data retention needs controls
 - Avoid outcome guarantees
-- Useful education-planning experiment, but weaker than the current B2B AI, data, and operations lanes.
+- Private workspace or cohort analytics require explicit data retention, consent, and support controls.

@@ -7,11 +7,15 @@ This document turns the repository architecture into a zero-to-low-cost service 
 | Layer | Decision |
 | --- | --- |
 | Target buyer / user | students, self-study communities, tutoring operators, or bootcamp teams needing structured study execution |
-| Productized offer | study orchestration board with planning, outcomes, history, and adaptive next steps |
-| First paid SKU | premium study history, cohort dashboard, and exportable progress report |
+| Productized offer | study orchestration board with planning, outcomes, and adaptive next steps |
+| First paid SKU | Consumer Prototype Customization |
 | Free lead magnet | free local study planner and public demo |
-| Paid expansion | individual subscription, cohort workspace, and tutor dashboard seats |
+| Private inquiry CTA | https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator&inquiry=consumer-prototype-customization#private-inquiry |
+| Inquiry lane | consumer-prototype-customization |
+| Payment status | not configured; use private inquiry before quoting or collecting payment |
+| Paid expansion | post-customization expansion can evaluate premium study history, cohort dashboards, exportable progress reports, and tutor seats |
 | Data / workflow moat | study plan histories, outcome deltas, spaced repetition patterns, and anonymized cohort benchmarks |
+| Private inquiry | https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator&inquiry=consumer-prototype-customization#private-inquiry |
 
 ## Free-Tier-First Launch Stack
 
@@ -37,7 +41,7 @@ flowchart LR
   Meter --> Core["Repository core workflow"]
   Core --> AI["Free or customer-key AI inference"]
   Core --> Export["Reports, traces, bundles, or templates"]
-  Export --> Upgrade["Paid SKU: private workspace / support / connector / export pack"]
+  Export --> Upgrade["Paid SKU: Consumer Prototype Customization"]
   Upgrade --> Retention["Saved history, private data, team controls, and recurring reports"]
 ```
 
@@ -51,11 +55,11 @@ flowchart LR
 
 ## 30-Day Revenue Test
 
-1. Publish the public demo or architecture page with one clear CTA: request private workspace, download a pack, or run a sample report.
-2. Add a lead capture route using Workers + D1/KV, Supabase, Firebase, or a GitHub issue form.
+1. Publish the public demo or architecture page with one clear CTA: request the scoped private inquiry lane.
+2. Route paid or research interest through the central private inquiry URL before adding checkout infrastructure.
 3. Create one downloadable artifact: report PDF, template pack, runbook, dataset sample, or export bundle.
 4. Offer a fixed-scope paid package before building subscription complexity.
-5. Track activation manually first: visits, CTA clicks, export requests, email replies, and paid pilot conversations.
+5. Track activation manually first: visits, CTA clicks, export requests, private inquiry replies, and scoped pilot conversations.
 
 ## Cost Guardrails
 
@@ -69,8 +73,8 @@ flowchart LR
 
 The paid version should not be a different product. It should unlock more trust, privacy, retention, and operational surface area:
 
-- private workspace or local deployment
-- saved history and longer retention
+- consumer-scoped customization workspace or local deployment
+- post-customization history and longer retention
 - branded exports or signed evidence bundles
 - connector setup for the customer's systems
 - team roles, audit logs, and admin controls

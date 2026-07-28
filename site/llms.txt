@@ -1,13 +1,13 @@
 # Beaver Study Orchestrator
 
-Purpose: study orchestration board with planning, outcomes, history, and adaptive next steps
+Purpose: study orchestration board with planning, outcomes, and adaptive next steps
 Free entry point: free local study planner and public demo
-Paid boundary: premium study history, cohort dashboard, and exportable progress report
+Paid boundary: Consumer Prototype Customization
 Canonical URL: https://kim3310.github.io/beaver-study-orchestrator/
 Repository: https://github.com/KIM3310/beaver-study-orchestrator
 System architecture: https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/system-architecture.md
 Revenue architecture: https://github.com/KIM3310/beaver-study-orchestrator/blob/main/docs/revenue-architecture.md
-Lead capture: https://github.com/KIM3310/beaver-study-orchestrator/issues/new?template=service-inquiry.yml&title=Private+workspace+inquiry%3A+Beaver+Study+Orchestrator
+Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator&inquiry=consumer-prototype-customization#private-inquiry
 Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator#service-offers
 
-Use this project as a runnable or inspectable reference for Beaver Study Orchestrator demo, Beaver Study Orchestrator system architecture, Beaver Study Orchestrator educational tool, study orchestration board with planning, outcomes, history, and adaptive next steps service.
+Use this project as a runnable or inspectable reference for Beaver Study Orchestrator demo, Beaver Study Orchestrator system architecture, Beaver Study Orchestrator educational tool, study orchestration board with planning, outcomes, and adaptive next steps service.

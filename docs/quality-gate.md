@@ -2,26 +2,26 @@
 
 Updated: 2026-05-30
 
-These notes keep the repository available as supporting proof while preventing it from weakening the main technical signal.
+These notes keep the repository easy to review as a study-orchestration product proof surface.
 
 ## Profile
 
 | Field | Value |
 |---|---|
 | Repository | `beaver-study-orchestrator` |
-| Status | Archived supporting proof |
-| Project role | Keep as supporting proof for scheduling, risk explanation, and cohort planning ideas. |
-| Current successor | aix-pilot, Nexus-Hive, and districtpilot-ai |
+| Status | Product proof surface |
+| Project role | Demonstrate scheduling, risk explanation, what-if planning, history, and cohort-planning extension points. |
+| Current service lane | consumer-prototype-customization |
 
 ## Presentation Boundary
 
-- Do not lead with this repository in technical evaluation, product, or consulting conversations.
-- Keep it behind the active B2B/enterprise project index unless a technical evaluator asks for this exact domain.
-- Treat any growth idea here as optional or experimental, not the main technical thesis.
-- Refresh dependencies, demos, validation, and support ownership before reviving it.
+- Lead with the working planner, API contracts, tests, and data-boundary notes.
+- Keep paid or research interest on the central private inquiry lane before quoting work.
+- Treat growth ideas as scoped experiments until validated by explicit inquiry.
+- Refresh dependencies, demos, validation, and support ownership before accepting private data.
 
 ## Before Presenting
 
-- The archived/supporting status is visible in README and `docs/repository-positioning.md`.
+- README, service manifest, and revenue docs agree on the product scope and private inquiry lane.
 - Claims are limited to what the public repository actually demonstrates.
 - Any sensitive, financial, health, personal, or behavioral data boundary is stated conservatively.
