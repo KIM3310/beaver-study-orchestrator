@@ -154,9 +154,20 @@ MIT
 - Paid boundary: Consumer Prototype Customization
 - Canonical URL: https://kim3310.github.io/beaver-study-orchestrator/
 - Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator&inquiry=consumer-prototype-customization#private-inquiry
+- Resource route: https://kim3310-doeon-kim-portfolio.pages.dev/resources/beaver-study-orchestrator/
 - Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator#service-offers
 - Machine-readable offer: [docs/service-offer.json](docs/service-offer.json)
 - Search growth implementation: [docs/search-growth-implementation.md](docs/search-growth-implementation.md)
 - Revenue architecture: [docs/revenue-architecture.md](docs/revenue-architecture.md)
 
 <!-- search-growth-readme:end -->
+
+<!-- KIM3310:AD-DATA-PIVOT:START -->
+## Free Resource, Advertising, and Aggregate Data
+
+- [Public utility and architecture checklist](https://kim3310-doeon-kim-portfolio.pages.dev/resources/beaver-study-orchestrator/)
+- Revenue model: contextual advertising on the policy-eligible central resource page.
+- Aggregate value: anonymous aggregate study-template demand and resource CTA counts
+- Boundary: ads allowed only on public study-template pages; personal schedules, notes, progress, and result flows are ad-free
+- Consent defaults off, DNT/GPC fail closed, and personal or sensitive data is never sold.
+<!-- KIM3310:AD-DATA-PIVOT:END -->

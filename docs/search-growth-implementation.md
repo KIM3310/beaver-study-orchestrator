@@ -11,6 +11,7 @@ This repository now exposes a search-readable service surface in addition to the
 | System architecture | [docs/system-architecture.md](./system-architecture.md) |
 | Public canonical URL | https://kim3310.github.io/beaver-study-orchestrator/ |
 | Lead capture URL | https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator&inquiry=consumer-prototype-customization#private-inquiry |
+| Repository resource route | https://kim3310-doeon-kim-portfolio.pages.dev/resources/beaver-study-orchestrator/ |
 | Commercial route | https://kim3310-doeon-kim-portfolio.pages.dev/?offer=beaver-study-orchestrator#service-offers |
 
 ## Search Positioning
