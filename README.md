@@ -2,7 +2,7 @@
 
 ## Live Demo
 
-- [Open the public GitHub Pages demo](https://beaver-study-orchestrator.pages.dev/)
+- [Open the public Cloudflare Pages demo](https://beaver-study-orchestrator.pages.dev/)
 - Scope: credential-free, synthetic-data demo for students, advisors, and technical evaluators.
 
 > **Product proof surface**
@@ -19,7 +19,6 @@ A study planner that turns syllabus data into schedules, risk signals, and what-
 | Area | Details |
 |---|---|
 | Users | Students, advisors, bootcamps, education platforms, and productivity-tool evaluators. |
-| Technical path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
 | System scope | Syllabus extraction, adaptive scheduling, risk scoring, what-if simulation, FastAPI/NLP planning surface. |
 | Operating boundary | Study guidance is advisory; personal education data needs explicit retention and sharing controls. |
 | Evaluation path | Run the planner tests and inspect sample schedules, risk outputs, and scenario simulations. |
@@ -94,7 +93,7 @@ Open `http://127.0.0.1:8000`. Requires Python 3.11+; if your default `python3` i
 
 | Metric | Value |
 |---|---|
-| Test count | 40 |
+| Test coverage | Parser, scheduler, API, history, and scenario behavior |
 | Line coverage | 96% |
 | CI threshold | 80% |
 | CI matrix | Python 3.11, 3.12 |
