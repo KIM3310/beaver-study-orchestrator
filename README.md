@@ -1,5 +1,7 @@
 # Beaver Study Orchestrator
 
+[![CI](https://github.com/KIM3310/beaver-study-orchestrator/actions/workflows/ci.yml/badge.svg)](https://github.com/KIM3310/beaver-study-orchestrator/actions/workflows/ci.yml)
+
 ## Live Demo
 
 - [Open the public Cloudflare Pages demo](https://beaver-study-orchestrator.pages.dev/)
